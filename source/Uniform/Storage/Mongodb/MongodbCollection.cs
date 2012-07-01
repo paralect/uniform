@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using Uniform.Documents;
 
 namespace Uniform.Storage.Mongodb
 {
@@ -74,7 +78,45 @@ namespace Uniform.Storage.Mongodb
         {
             var doc = _collection.FindOneById(key);
             updater(doc);
-            Save(key, doc);
+            _db.Helper.SetDocumentId(doc, key);
+            _collection.Save(doc);
+
+            var deps = _db.Analyzer.GetDependents(typeof (TDocument));
+
+            foreach (var dependent in deps)
+            {
+                var collectionName = "";
+                if (dependent.DependentType == typeof(QuestionDocument))
+                    collectionName = "Questions";
+
+                var col = _db.Database.GetCollection(collectionName);
+                var pathToQuery = PathToQuery(dependent.Path, key);
+                var pathToUpdate = PathToUpdate(dependent.Path, BsonDocumentWrapper.Create(doc));
+                col.Update(pathToQuery, pathToUpdate);
+            }
+        }
+
+        public QueryComplete PathToQuery(List<PropertyInfo> infos, String key)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var propertyInfo in infos)
+            {
+                builder.Append(propertyInfo.Name);
+            }
+
+            builder.Append("._id");
+            return Query.EQ(builder.ToString(), key);
+        }
+
+        public UpdateBuilder PathToUpdate(List<PropertyInfo> infos, BsonValue value)
+        {
+            StringBuilder builder = new StringBuilder();
+            foreach (var propertyInfo in infos)
+            {
+                builder.Append(propertyInfo.Name);
+            }
+
+            return MongoDB.Driver.Builders.Update.Set(builder.ToString(), value);
         }
 
         public TDocument GetById(String key)

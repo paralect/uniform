@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Practices.Unity;
 using MongoDB.Bson;
 using Uniform.Common.Dispatching;
+using Uniform.Documents;
 using Uniform.Events;
 using Uniform.Storage;
 using Uniform.Storage.InMemory;
@@ -16,6 +17,11 @@ namespace Uniform
     {
         public static void Main(string[] args)
         {
+            var analyzer = new Analyzer(new List<Type> { typeof(UserDocument), typeof(QuestionDocument), typeof(CommentDocument)});
+            analyzer.Analyze();
+            
+            
+
             var repo = new MongoRepository("mongodb://localhost:27017/local");
             var events = new List<Object>
             {
@@ -29,7 +35,8 @@ namespace Uniform
                 new CommentAdded("comment/1", "user/1", "question/3", "My first comment!")
             };
 
-            var instance = new MongodbDatabase("mongodb://localhost:27017/local");
+            var instance = new MongodbDatabase("mongodb://localhost:27017/local", analyzer);
+            //var instance = new InMemoryDatabase();
             var container = new UnityContainer();
             container.RegisterInstance(repo);
             container.RegisterInstance<IDatabase>(instance);

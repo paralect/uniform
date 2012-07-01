@@ -6,5 +6,6 @@ namespace Uniform.Storage
     {
         ICollection GetCollection(String name);
         ICollection<TDocument> GetCollection<TDocument>(String name);
+        ICollection<TDocument> GetCollection<TDocument>();
     }
 }

@@ -1,15 +1,22 @@
 ﻿using System;
 using MongoDB.Driver;
+using Uniform.Documents;
 
 namespace Uniform.Storage.Mongodb
 {
     public class MongodbDatabase : IDatabase
     {
+        private readonly Analyzer _analyzer;
         private DocumentHelper _helper = new DocumentHelper();
 
         public DocumentHelper Helper
         {
             get { return _helper; }
+        }
+
+        public Analyzer Analyzer
+        {
+            get { return _analyzer; }
         }
 
         /// <summary>
@@ -25,8 +32,9 @@ namespace Uniform.Storage.Mongodb
         /// <summary>
         /// Opens connection to MongoDB Server
         /// </summary>
-        public MongodbDatabase(String connectionString)
+        public MongodbDatabase(String connectionString, Analyzer analyzer)
         {
+            _analyzer = analyzer;
             _databaseName = MongoUrl.Create(connectionString).DatabaseName;
             _server = MongoServer.Create(connectionString);
         }
