@@ -6,6 +6,9 @@ using Microsoft.Practices.Unity;
 using MongoDB.Bson;
 using Uniform.Common.Dispatching;
 using Uniform.Events;
+using Uniform.Storage;
+using Uniform.Storage.InMemory;
+using Uniform.Storage.Mongodb;
 
 namespace Uniform
 {
@@ -26,7 +29,7 @@ namespace Uniform
                 new CommentAdded("comment/1", "user/1", "question/3", "My first comment!")
             };
 
-            var instance = new Database();
+            var instance = new MongodbDatabase("mongodb://localhost:27017/local");
             var container = new UnityContainer();
             container.RegisterInstance(repo);
             container.RegisterInstance<IDatabase>(instance);

@@ -1,5 +1,6 @@
 ﻿using System;
 using Uniform.Documents;
+using Uniform.Storage;
 
 namespace Uniform
 {
