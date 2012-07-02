@@ -18,5 +18,8 @@ namespace Uniform.Tests.Specs.updaters.lists
                 School = null
             });
         };
+
+        It should_be_aga = () =>
+            user.Student[1].StudentId.ShouldEqual("student_new");
     }
 }

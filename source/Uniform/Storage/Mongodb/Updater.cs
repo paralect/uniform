@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -22,44 +23,67 @@ namespace Uniform.Storage.Mongodb
                 return;
 
             foreach (var foundEntry in prop)
-                foundEntry.PropertyInfo.SetValue(foundEntry.Document, value, new object[0]);
+            {
+                if (foundEntry.Index == -1)
+                {
+                    foundEntry.PropertyInfo.SetValue(foundEntry.Document, value, new object[0]);
+                }
+                else
+                {
+                    var list = (IList) foundEntry.PropertyInfo.GetValue(foundEntry.Document, new object[0]);
+                    list[foundEntry.Index] = value;
+                }
+
+            }
         }
 
         public IEnumerable<FoundEntry> Find(Object obj, List<PropertyInfo> infos, Object key, Int32 current)
         {
-            var result = FindObject(obj, infos, key, current);
+            var currentInfo = infos[current];
 
-            foreach (var foundEntry in result)
-                yield return foundEntry;
-        }
-
-        private IEnumerable<FoundEntry> FindObject(Object obj, List<PropertyInfo> infos, Object key, Int32 current)
-        {
-            var info = infos[current];
-
-            if (current == infos.Count - 1)
+            if (IsList(currentInfo.PropertyType))
             {
-                // check that key is valid
-                var value = info.GetValue(obj, new object[0]);
+                var list = (IList) currentInfo.GetValue(obj, new object[0]);
+
+                for (int index = 0; index < list.Count; index++)
+                {
+                    var inner = list[index];
+                    var parentInfo = new ParentInfo(obj, currentInfo, index);
+
+                    var result = FindObject(parentInfo, inner, infos, key, current + 1);
+
+                    foreach (var foundEntry in result)
+                        yield return foundEntry;
+                }
+            }
+            else
+            {
+                var value = currentInfo.GetValue(obj, new object[0]);
                 if (value == null)
                     yield break;
 
-                var id = _metadata.GetDocumentId(value);
+                var parentInfo = new ParentInfo(obj, currentInfo, -1);
+                var result = FindObject(parentInfo, value, infos, key, current + 1);
+
+                foreach (var foundEntry in result)
+                    yield return foundEntry;
+            }
+        }
+
+        private IEnumerable<FoundEntry> FindObject(ParentInfo parentInfo, Object obj, List<PropertyInfo> infos, Object key, Int32 current)
+        {
+            if (current >= infos.Count)
+            {
+                var id = _metadata.GetDocumentId(obj);
 
                 if (id != key)
                     yield break;
 
-                yield return new FoundEntry(obj, info);
-                yield break;
+                yield return new FoundEntry(parentInfo.ParentObject, parentInfo.ParentPropertyInfo, parentInfo.Index);
+                yield break;                
             }
 
-
-            var nbj = info.GetValue(obj, new object[0]);
-
-            if (nbj == null)
-                yield break;
-
-            foreach (var entry in Find(nbj, infos, key, current + 1))
+            foreach (var entry in Find(obj, infos, key, current))
                 yield return entry;
         }
 
@@ -78,13 +102,29 @@ namespace Uniform.Storage.Mongodb
 
     public class FoundEntry
     {
+        public Int32 Index { get; set; }
         public Object Document { get; set; }
         public PropertyInfo PropertyInfo { get; set; }
 
-        public FoundEntry(object document, PropertyInfo propertyInfo)
+        public FoundEntry(object document, PropertyInfo propertyInfo, Int32 index)
         {
             Document = document;
             PropertyInfo = propertyInfo;
+            Index = index;
+        }
+    }
+
+    public class ParentInfo
+    {
+        public Object ParentObject { get; set; }
+        public PropertyInfo ParentPropertyInfo { get; set; }
+        public Int32 Index { get; set; }
+
+        public ParentInfo(object parentObject, PropertyInfo parentPropertyInfo, int index)
+        {
+            ParentObject = parentObject;
+            ParentPropertyInfo = parentPropertyInfo;
+            Index = index;
         }
     }
 }
