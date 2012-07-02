@@ -11,9 +11,11 @@ namespace Uniform.Tests.Specs.updaters.case1
             var path = new List<PropertyInfo>();
             path.Add(typeof(User).GetProperty("Student"));
 
-            updater.Update(user, path, "student1", new Student()
+            updater.Update(user, path, new Student()
             {
-                StudentId = "student_new", School = null
+                StudentId = "student1", 
+                Name = "New John",
+                School = null
             });
         };
 
@@ -21,6 +23,9 @@ namespace Uniform.Tests.Specs.updaters.case1
             user.Student.School.ShouldBeNull();
 
         It id_should_be_updated = () =>
-            user.Student.StudentId.ShouldEqual("student_new");
+            user.Student.StudentId.ShouldEqual("student1");
+
+        It name_should_be_updated = () =>
+            user.Student.Name.ShouldEqual("New John");
     }
 }

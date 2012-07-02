@@ -96,7 +96,7 @@ namespace Uniform.Storage.Mongodb
                 foreach (var document in res)
                 {
                     var updater2 = new Updater(_db.Metadata);
-                    updater2.Update(document, dependent.SourceDocumentPath, doc, key);
+                    updater2.Update(document, dependent.SourceDocumentPath, doc);
                 }
 
 //                var pathToUpdate = builder.PathToUpdate(dependent.SourceDocumentPath, BsonDocumentWrapper.Create(doc));

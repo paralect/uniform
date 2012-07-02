@@ -15,9 +15,13 @@ namespace Uniform.Storage.Mongodb
             _metadata = metadata;
         }
 
-        public void Update(Object obj, List<PropertyInfo> infos, Object key, Object value)
+        public void Update(Object obj, List<PropertyInfo> infos, Object value)
         {
-            var prop = Find(obj, infos, key, 0).ToList();
+            var id = _metadata.GetDocumentId(value);
+            if (id == null)
+                throw new Exception("Object don't have valid id");
+
+            var prop = Find(obj, infos, id, 0).ToList();
 
             if (prop.Count == 0)
                 return;

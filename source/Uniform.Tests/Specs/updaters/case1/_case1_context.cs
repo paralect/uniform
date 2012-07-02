@@ -21,6 +21,7 @@ namespace Uniform.Tests.Specs.updaters.case1
                 Student = new Student()
                 {
                     StudentId = "student1",
+                    Name = "Tom",
                     School = new School()
                     {
                         SchoolId = "school1",
@@ -45,6 +46,7 @@ namespace Uniform.Tests.Specs.updaters.case1
     {
         [BsonId]
         public String StudentId { get; set; }
+        public String Name { get; set; }
         public School School { get; set; }
     }
 

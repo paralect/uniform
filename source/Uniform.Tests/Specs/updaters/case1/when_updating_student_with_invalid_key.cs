@@ -11,9 +11,9 @@ namespace Uniform.Tests.Specs.updaters.case1
             var path = new List<PropertyInfo>();
             path.Add(typeof(User).GetProperty("Student"));
 
-            updater.Update(user, path, "student_invalid_key", new Student()
+            updater.Update(user, path, new Student
             {
-                StudentId = "student_new",
+                StudentId = "student_invalid_key",
                 School = null
             });
         };

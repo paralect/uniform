@@ -13,9 +13,10 @@ namespace Uniform.Tests.Specs.updaters.case1
             path.Add(typeof(User).GetProperty("Student"));
             path.Add(typeof(Student).GetProperty("School"));
             
-            updater.Update(user, path, "school1", new School()
+            updater.Update(user, path, new School
             {
-                SchoolId = "school1", Year = 2012
+                SchoolId = "school1", 
+                Year = 2012
             });
         };
 
