@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using MongoDB.Bson;
@@ -81,40 +82,26 @@ namespace Uniform.Storage.Mongodb
             _db.Helper.SetDocumentId(doc, key);
             _collection.Save(doc);
 
+            var builder = new MongodbDependencyBuilder(_db.Metadata);
             var deps = _db.Metadata.GetDependents(typeof (TDocument));
 
             foreach (var dependent in deps)
             {
                 var collectionName = _db.Metadata.GetCollectionName(dependent.DependentDocumentType);
-
                 var col = _db.Database.GetCollection(collectionName);
-                var pathToQuery = PathToQuery(dependent.SourceDocumentPath, key);
-                var pathToUpdate = PathToUpdate(dependent.SourceDocumentPath, BsonDocumentWrapper.Create(doc));
-                col.Update(pathToQuery, pathToUpdate);
+                var pathToQuery = builder.PathToQuery(dependent.SourceDocumentPath, key);
+
+                var res = col.FindAs(dependent.DependentDocumentType, pathToQuery);
+                
+                foreach (var document in res)
+                {
+                    var updater2 = new Updater(_db.Metadata);
+                    updater2.Update(document, dependent.SourceDocumentPath, doc, key);
+                }
+
+//                var pathToUpdate = builder.PathToUpdate(dependent.SourceDocumentPath, BsonDocumentWrapper.Create(doc));
+//                col.Update(pathToQuery, pathToUpdate);
             }
-        }
-
-        public QueryComplete PathToQuery(List<PropertyInfo> infos, String key)
-        {
-            StringBuilder builder = new StringBuilder();
-            foreach (var propertyInfo in infos)
-            {
-                builder.Append(propertyInfo.Name);
-            }
-
-            builder.Append("._id");
-            return Query.EQ(builder.ToString(), key);
-        }
-
-        public UpdateBuilder PathToUpdate(List<PropertyInfo> infos, BsonValue value)
-        {
-            StringBuilder builder = new StringBuilder();
-            foreach (var propertyInfo in infos)
-            {
-                builder.Append(propertyInfo.Name);
-            }
-
-            return MongoDB.Driver.Builders.Update.Set(builder.ToString(), value);
         }
 
         public TDocument GetById(String key)
