@@ -81,17 +81,15 @@ namespace Uniform.Storage.Mongodb
             _db.Helper.SetDocumentId(doc, key);
             _collection.Save(doc);
 
-            var deps = _db.Analyzer.GetDependents(typeof (TDocument));
+            var deps = _db.Metadata.GetDependents(typeof (TDocument));
 
             foreach (var dependent in deps)
             {
-                var collectionName = "";
-                if (dependent.DependentType == typeof(QuestionDocument))
-                    collectionName = "Questions";
+                var collectionName = _db.Metadata.GetCollectionName(dependent.DependentDocumentType);
 
                 var col = _db.Database.GetCollection(collectionName);
-                var pathToQuery = PathToQuery(dependent.Path, key);
-                var pathToUpdate = PathToUpdate(dependent.Path, BsonDocumentWrapper.Create(doc));
+                var pathToQuery = PathToQuery(dependent.SourceDocumentPath, key);
+                var pathToUpdate = PathToUpdate(dependent.SourceDocumentPath, BsonDocumentWrapper.Create(doc));
                 col.Update(pathToQuery, pathToUpdate);
             }
         }

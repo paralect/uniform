@@ -15,17 +15,17 @@ namespace Uniform
 
         public ICollection<UserDocument> Users
         {
-            get { return _database.GetCollection<UserDocument>("Users"); }
+            get { return _database.GetCollection<UserDocument>(); }
         }        
         
         public ICollection<QuestionDocument> Questions
         {
-            get { return _database.GetCollection<QuestionDocument>("Questions"); }
+            get { return _database.GetCollection<QuestionDocument>(); }
         }
 
         public ICollection<CommentDocument> Comments
         {
-            get { return _database.GetCollection<CommentDocument>("Comments"); }
+            get { return _database.GetCollection<CommentDocument>(); }
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using Uniform.Common.Dispatching;
 using Uniform.Documents;
 using Uniform.Events;

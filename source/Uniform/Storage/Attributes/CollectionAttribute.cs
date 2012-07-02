@@ -2,7 +2,7 @@
 
 namespace Uniform.Storage.Attributes
 {
-    public class CollectionAttribute
+    public class CollectionAttribute : Attribute
     {
         public string CollectionName { get; set; }
 

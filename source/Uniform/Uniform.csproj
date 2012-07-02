@@ -61,7 +61,6 @@
     <Compile Include="Common\Dispatching\DispatcherConfigurationExtensions.cs" />
     <Compile Include="Common\Dispatching\DispatcherHandlerRegistry.cs" />
     <Compile Include="Common\Dispatching\DispatcherInvocationContext.cs" />
-    <Compile Include="Documents\Analyzer.cs" />
     <Compile Include="Documents\CommentDocument.cs" />
     <Compile Include="Documents\QuestionDocument.cs" />
     <Compile Include="Storage\Attributes\CollectionAttribute.cs" />

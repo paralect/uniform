@@ -6,7 +6,7 @@ namespace Uniform.Storage.Mongodb
 {
     public class MongodbDatabase : IDatabase
     {
-        private readonly Analyzer _analyzer;
+        private readonly DatabaseMetadata _metadata;
         private DocumentHelper _helper = new DocumentHelper();
 
         public DocumentHelper Helper
@@ -14,9 +14,9 @@ namespace Uniform.Storage.Mongodb
             get { return _helper; }
         }
 
-        public Analyzer Analyzer
+        public DatabaseMetadata Metadata
         {
-            get { return _analyzer; }
+            get { return _metadata; }
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ namespace Uniform.Storage.Mongodb
         /// <summary>
         /// Opens connection to MongoDB Server
         /// </summary>
-        public MongodbDatabase(String connectionString, Analyzer analyzer)
+        public MongodbDatabase(String connectionString, DatabaseMetadata metadata)
         {
-            _analyzer = analyzer;
+            _metadata = metadata;
             _databaseName = MongoUrl.Create(connectionString).DatabaseName;
             _server = MongoServer.Create(connectionString);
         }
@@ -63,6 +63,11 @@ namespace Uniform.Storage.Mongodb
         public ICollection<TDocument> GetCollection<TDocument>(string name)
         {
             return new MongodbCollection<TDocument>(name, this, new MongodbCollection(name, this));
+        }
+
+        public ICollection<TDocument> GetCollection<TDocument>()
+        {
+            return GetCollection<TDocument>(_metadata.GetCollectionName(typeof (TDocument)));
         }
     }
 }

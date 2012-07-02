@@ -1,8 +1,10 @@
 using System;
 using MongoDB.Bson.Serialization.Attributes;
+using Uniform.Storage.Attributes;
 
 namespace Uniform.Documents
 {
+    [Collection("questions")]
     public class QuestionDocument
     {
         [BsonId]

@@ -7,7 +7,13 @@ namespace Uniform.Storage.InMemory
 {
     public class InMemoryDatabase : IDatabase
     {
+        private readonly DatabaseMetadata _metadata;
         private readonly Dictionary<String, InMemoryCollection> _collections = new Dictionary<string, InMemoryCollection>();
+
+        public InMemoryDatabase(DatabaseMetadata metadata)
+        {
+            _metadata = metadata;
+        }
 
         public ICollection GetCollection(String name)
         {
@@ -25,11 +31,7 @@ namespace Uniform.Storage.InMemory
 
         public ICollection<TDocument> GetCollection<TDocument>()
         {
-            var collectionAttribute = ReflectionHelper.GetSingleAttribute<CollectionAttribute>(typeof (TDocument));
-            if (collectionAttribute == null)
-                throw new Exception(String.Format("Collection attribute for document {0} was not specified", typeof(TDocument).FullName));
-
-            return GetCollection<TDocument>(collectionAttribute.CollectionName);
+            return GetCollection<TDocument>(_metadata.GetCollectionName(typeof (TDocument)));
         }
     }
 }

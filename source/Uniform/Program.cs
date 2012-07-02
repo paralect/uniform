@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Practices.Unity;
 using MongoDB.Bson;
+using MongoDB.Driver.Linq;
 using Uniform.Common.Dispatching;
 using Uniform.Documents;
 using Uniform.Events;
@@ -17,12 +18,14 @@ namespace Uniform
     {
         public static void Main(string[] args)
         {
-            var analyzer = new Analyzer(new List<Type> { typeof(UserDocument), typeof(QuestionDocument), typeof(CommentDocument)});
-            analyzer.Analyze();
+            var metadata = new DatabaseMetadata(new List<Type> { typeof(UserDocument), typeof(QuestionDocument), typeof(CommentDocument)});
+            metadata.Analyze();
             
             
 
             var repo = new MongoRepository("mongodb://localhost:27017/local");
+
+
             var events = new List<Object>
             {
                 new UserCreated("user/1", "Tom", "It's me"),
@@ -32,11 +35,25 @@ namespace Uniform
                 new UserNameChanged("user/2", "Super John"),
                 new QuestionCreated("question/3", "user/2", "How are you?"),
                 new QuestionUpdated("question/3", "user/2", "Updated question. How are you?"),
-                new CommentAdded("comment/1", "user/1", "question/3", "My first comment!")
+                new CommentAdded("comment/1", "user/1", "question/3", "My first comment!"),
             };
 
-            var instance = new MongodbDatabase("mongodb://localhost:27017/local", analyzer);
-            //var instance = new InMemoryDatabase();
+            /*
+            for (int i = 0; i < 20000; i++)
+            {
+                events.Add(new UserCreated("user/1", "Tom", "It's me"));
+                events.Add(new UserCreated("user/2", "John", "Hello!"));
+                events.Add(new QuestionCreated("question/1", "user/1", "Who are you?"));
+                events.Add(new QuestionCreated("question/2", "user/2", "And you?"));
+                events.Add(new UserNameChanged("user/2", "Super John"));
+                events.Add(new QuestionCreated("question/3", "user/2", "How are you?"));
+                events.Add(new QuestionUpdated("question/3", "user/2", "Updated question. How are you?"));
+                events.Add(new CommentAdded("comment/1", "user/1", "question/3", "My first comment!"));
+            }*/
+
+            var instance = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
+            //var instance = new InMemoryDatabase(metadata);
+
             var container = new UnityContainer();
             container.RegisterInstance(repo);
             container.RegisterInstance<IDatabase>(instance);
