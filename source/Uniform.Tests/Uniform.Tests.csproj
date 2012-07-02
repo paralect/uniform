@@ -50,11 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specs\updaters\case1\when_updating_school.cs" />
-    <Compile Include="Specs\updaters\case1\when_updating_student.cs" />
-    <Compile Include="Specs\updaters\case1\when_updating_student_with_invalid_key.cs" />
-    <Compile Include="Specs\updaters\case1\_case1_context.cs" />
-    <Compile Include="Specs\updaters\lists\when_updating_student1.cs" />
+    <Compile Include="Specs\updaters\simple\when_updating_school.cs" />
+    <Compile Include="Specs\updaters\simple\when_updating_student.cs" />
+    <Compile Include="Specs\updaters\simple\when_updating_student_with_invalid_key.cs" />
+    <Compile Include="Specs\updaters\simple\_case1_context.cs" />
+    <Compile Include="Specs\updaters\inner_lists\when_updating_school.cs" />
+    <Compile Include="Specs\updaters\inner_lists\when_updating_student.cs" />
+    <Compile Include="Specs\updaters\inner_lists\_inner_lists_context.cs" />
+    <Compile Include="Specs\updaters\lists\when_updating_school_1.cs" />
+    <Compile Include="Specs\updaters\lists\when_updating_student_2.cs" />
+    <Compile Include="Specs\updaters\lists\when_updating_student_1.cs" />
     <Compile Include="Specs\updaters\lists\_lists_context.cs" />
   </ItemGroup>
   <ItemGroup>

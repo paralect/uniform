@@ -6,9 +6,9 @@ using Uniform.Storage;
 using Uniform.Storage.Attributes;
 using Uniform.Storage.Mongodb;
 
-namespace Uniform.Tests.Specs.updaters.case1
+namespace Uniform.Tests.Specs.updaters.simple
 {
-    public class _case1_context
+    public class _simple_context
     {
         Establish context = () =>
         {

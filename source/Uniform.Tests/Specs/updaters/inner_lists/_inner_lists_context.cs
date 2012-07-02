@@ -5,9 +5,9 @@ using MongoDB.Bson.Serialization.Attributes;
 using Uniform.Storage;
 using Uniform.Storage.Mongodb;
 
-namespace Uniform.Tests.Specs.updaters.lists
+namespace Uniform.Tests.Specs.updaters.inner_lists
 {
-    public class _lists_context
+    public class _inner_lists_context
     {
         Establish context = () =>
         {
@@ -23,20 +23,22 @@ namespace Uniform.Tests.Specs.updaters.lists
                     {
                         StudentId = "student1",
                         Name = "Tom",
-                        School = new School()
+                        School = new List<School>
                         {
-                            SchoolId = "school1",
-                            Year = 2011,
+                            new School { SchoolId = "school1", Year = 2011 },
+                            new School { SchoolId = "school2", Year = 2012 }
                         }
                     },
                     new Student()
                     {
                         StudentId = "student2",
                         Name = "John",
-                        School = new School()
+                        School = new List<School>
                         {
-                            SchoolId = "school2",
-                            Year = 2012,
+                            new School { SchoolId = "school3", Year = 2013 },
+                            new School { SchoolId = "school4", Year = 2014 },
+                            new School { SchoolId = "school5", Year = 2015 },
+                            new School { SchoolId = "school6", Year = 2016 },
                         }
                     }                    
                 }
@@ -46,7 +48,6 @@ namespace Uniform.Tests.Specs.updaters.lists
         public static Updater updater;
         public static User user;
     }
-
     public class User
     {
         [BsonId]
@@ -59,7 +60,7 @@ namespace Uniform.Tests.Specs.updaters.lists
         [BsonId]
         public String StudentId { get; set; }
         public String Name { get; set; }
-        public School School { get; set; }
+        public List<School> School { get; set; }
     }
 
     public class School

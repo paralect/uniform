@@ -5,7 +5,7 @@ using Machine.Specifications;
 
 namespace Uniform.Tests.Specs.updaters.lists
 {
-    public class when_updating_student2 : _lists_context
+    public class when_updating_student_2 : _lists_context
     {
         Because of = () =>
         {
@@ -30,6 +30,5 @@ namespace Uniform.Tests.Specs.updaters.lists
 
         It should_not_update_student_at_index_0 = () =>
             user.Student[0].Name.ShouldEqual("Tom");
-            
     }
 }
