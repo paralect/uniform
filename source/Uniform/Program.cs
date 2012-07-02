@@ -36,6 +36,7 @@ namespace Uniform
                 new QuestionCreated("question/3", "user/2", "How are you?"),
                 new QuestionUpdated("question/3", "user/2", "Updated question. How are you?"),
                 new CommentAdded("comment/1", "user/1", "question/3", "My first comment!"),
+                new UserNameChanged("user/2", "Fucking Tonny"),
             };
 
             /*

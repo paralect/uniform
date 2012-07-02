@@ -21,6 +21,7 @@ namespace Uniform.Handlers
                 comment.Content = message.Content;
                 comment.QuestionId = message.QuestionId;
                 comment.UserId = message.UserId;
+                comment.QuestionDocument = _db.Questions.GetById(message.QuestionId);
             });
         }
     }

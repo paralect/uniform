@@ -65,7 +65,7 @@ namespace Uniform.Storage.Mongodb
         public void Save(string key, TDocument obj)
         {
             _db.Helper.SetDocumentId(obj, key);
-            _collection.Insert(obj);
+            _collection.Save(obj);
         }
 
         public void Save(String key, Action<TDocument> creator)
@@ -81,27 +81,32 @@ namespace Uniform.Storage.Mongodb
             updater(doc);
             _db.Helper.SetDocumentId(doc, key);
             _collection.Save(doc);
+            UpdateDependentDocuments(key, doc);
+        }
 
+        public void UpdateDependentDocuments(String key, TDocument doc)
+        {
             var builder = new MongodbDependencyBuilder(_db.Metadata);
-            var deps = _db.Metadata.GetDependents(typeof (TDocument));
+            var deps = _db.Metadata.GetDependents(typeof(TDocument));
 
             foreach (var dependent in deps)
             {
-                var collectionName = _db.Metadata.GetCollectionName(dependent.DependentDocumentType);
-                var col = _db.Database.GetCollection(collectionName);
-                var pathToQuery = builder.PathToQuery(dependent.SourceDocumentPath, key);
+                UpdateCollection(key, doc, dependent.DependentDocumentType, builder, dependent.SourceDocumentPath);
+            }            
+        }
 
-                var res = col.FindAs(dependent.DependentDocumentType, pathToQuery);
-                
-                foreach (var document in res)
-                {
-                    var updater2 = new Updater(_db.Metadata);
-                    updater2.Update(document, dependent.SourceDocumentPath, doc);
-                }
+        public Dictionary<Type, List<PropertyInfo>> Distill()
+        {
+            return null;
+        }
 
-//                var pathToUpdate = builder.PathToUpdate(dependent.SourceDocumentPath, BsonDocumentWrapper.Create(doc));
-//                col.Update(pathToQuery, pathToUpdate);
-            }
+        public void UpdateCollection(String key, Object doc, Type documentType, MongodbDependencyBuilder builder, List<PropertyInfo> infos)
+        {
+            var collectionName = _db.Metadata.GetCollectionName(documentType);
+            var col = _db.Database.GetCollection(collectionName);
+            var pathToQuery = builder.PathToQuery(infos, key);
+            var pathToUpdate = builder.PathToUpdate(infos, BsonDocumentWrapper.Create(doc));
+            col.Update(pathToQuery, pathToUpdate, UpdateFlags.Multi);
         }
 
         public TDocument GetById(String key)
@@ -120,3 +125,9 @@ namespace Uniform.Storage.Mongodb
         }
     }
 }
+
+
+
+
+// var pathToUpdate = builder.PathToUpdate(dependent.SourceDocumentPath, BsonDocumentWrapper.Create(doc));
+// col.Update(pathToQuery, pathToUpdate);

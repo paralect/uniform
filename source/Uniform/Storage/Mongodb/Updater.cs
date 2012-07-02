@@ -80,7 +80,7 @@ namespace Uniform.Storage.Mongodb
             {
                 var id = _metadata.GetDocumentId(obj);
 
-                if (id != key)
+                if (!id.Equals(key))
                     yield break;
 
                 yield return new FoundEntry(parentInfo.ParentObject, parentInfo.ParentPropertyInfo, parentInfo.Index);

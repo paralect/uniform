@@ -22,18 +22,23 @@ namespace Uniform.Storage.Mongodb
             foreach (var propertyInfo in infos)
             {
                 builder.Append(propertyInfo.Name);
+                builder.Append(".");
             }
 
-            builder.Append("._id");
+            builder.Append("_id");
             return builder.ToString();
         }
 
         public String BuildUpdateString(List<PropertyInfo> infos)
         {
             StringBuilder builder = new StringBuilder();
-            foreach (var propertyInfo in infos)
+            for (int i = 0; i < infos.Count; i++)
             {
+                var propertyInfo = infos[i];
                 builder.Append(propertyInfo.Name);
+
+                if (i != infos.Count - 1)
+                    builder.Append(".");
             }
 
             return builder.ToString();

@@ -22,25 +22,31 @@ namespace Uniform.Storage
         {
             foreach (var type in _documentTypes)
             {
-                AnalyzeType(type);
+                AnalyzeType(type, new List<PropertyInfo>(),  type);
             }
         }
 
-        private void AnalyzeType(Type type)
+        private void AnalyzeType(Type originalType, List<PropertyInfo> path, Type type)
         {
             var infos = type.GetProperties();
 
             foreach (var propertyInfo in infos)
             {
-                if (!IsDocumentType(propertyInfo.PropertyType))
-                    continue;
+                var newPath = new List<PropertyInfo>(path);
+                newPath.Add(propertyInfo);
 
-                var dep = new DependentDocumentMetadata();
-                dep.DependentDocumentType = type;
-                dep.SourceDocumentPath.Add(propertyInfo);
+                if (IsDocumentType(propertyInfo.PropertyType))
+                {
+                    var dep = new DependentDocumentMetadata();
+                    dep.DependentDocumentType = originalType;
+                    dep.SourceDocumentPath = new List<PropertyInfo>(newPath);
 
-                var list = GetDependents(propertyInfo.PropertyType);
-                list.Add(dep);
+                    var list = GetDependents(propertyInfo.PropertyType);
+                    list.Add(dep);
+                }
+
+                if (!propertyInfo.PropertyType.IsPrimitive && propertyInfo.PropertyType != typeof(String))
+                    AnalyzeType(originalType, newPath, propertyInfo.PropertyType);
             }
         }
 
