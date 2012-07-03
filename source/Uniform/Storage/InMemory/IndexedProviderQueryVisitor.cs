@@ -4,10 +4,11 @@ using System.Linq.Expressions;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 
-namespace IndexedLinq.IndexedProvider
+namespace Uniform.Storage.InMemory
 {
     public class IndexedProviderQueryVisitor<TDocument> : QueryModelVisitorBase
     {
+        private readonly IIndexContext _indexContext;
         private readonly MemberExpression _currentItemExpression;
         private readonly ParameterExpression _parameterExpression;
 
@@ -18,14 +19,17 @@ namespace IndexedLinq.IndexedProvider
             get { return _compiledWhereClauses; }
         }
 
-        public IndexedProviderQueryVisitor(MemberExpression currentItemExpression, ParameterExpression parameterExpression)
+        public IndexedProviderQueryVisitor(IIndexContext indexContext, MemberExpression currentItemExpression, ParameterExpression parameterExpression)
         {
+            _indexContext = indexContext;
             _currentItemExpression = currentItemExpression;
             _parameterExpression = parameterExpression;
         }
 
         public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index)
         {
+
+
             var whereExpression = Expression.Lambda<Func<TDocument, Boolean>>(whereClause.Predicate, _parameterExpression);
             var compiledWhereExpression = whereExpression.Compile();
             _compiledWhereClauses.Add(compiledWhereExpression);

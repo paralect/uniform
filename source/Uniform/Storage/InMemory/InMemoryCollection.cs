@@ -44,21 +44,35 @@ namespace Uniform.Storage.InMemory
 
         public void Save(String key, Object obj)
         {
-            CheckForIndexes(key, obj);
             _documents[key] = obj;
+            InsureIndexes(key, obj);
         }
 
-        private Dictionary<Type, IIndexDefinition> _indexDefinitions = new Dictionary<Type, IIndexDefinition>();
+        private IIndexContext _indexContext = null;
+
+        public IIndexContext IndexContext
+        {
+            get { return _indexContext; }
+        }
+
+        public void InsureIndexes(String key, Object obj)
+        {
+            CheckForIndexes(key, obj);
+
+//            foreach (var expression in _indexContext.Definitions)
+//            {
+                //GetIndex(_indexDefinitions.n
+//            }
+        }
 
         public void CheckForIndexes(String key, Object obj)
         {
-            IIndexDefinition definition;
-            if (_indexDefinitions.TryGetValue(obj.GetType(), out definition))
+            if (_indexContext != null)
                 return;
 
             var type = obj.GetType();
-            var defType = typeof (IndexDefinition<>).MakeGenericType(type);
-            var def = (IIndexDefinition) Activator.CreateInstance(defType);
+            var defType = typeof (IndexContext<>).MakeGenericType(type);
+            var def = (IIndexContext) Activator.CreateInstance(defType);
 
             var mthd = type.GetMethod("DefineIndexes");
 
@@ -67,7 +81,7 @@ namespace Uniform.Storage.InMemory
                 mthd.Invoke(obj, new object[] { def });
             }
 
-            _indexDefinitions[type] = def;
+            _indexContext = def;
         }
     }
 }

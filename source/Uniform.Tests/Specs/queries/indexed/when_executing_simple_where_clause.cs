@@ -11,6 +11,7 @@ namespace Uniform.Tests.Specs.queries.indexed
         {
             query = from u in users.AsQueryable()
                 where u.UserName == "Tom"
+                where u.Student.Name == "Super Student"
                 select u;
 
             result = query.ToList();

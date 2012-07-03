@@ -20,6 +20,11 @@ namespace Uniform.Storage.InMemory
         private readonly ConcreteCollection<TDocument> _collection;
         private readonly Dictionary<String, Object> _documents; 
 
+        public InMemoryCollection InMemoryCollection
+        {
+            get { return (InMemoryCollection) _collection.Collection; }
+        }
+
         public IndexedProviderQueryExecutor(ConcreteCollection<TDocument> collection)
         {
             _collection = collection;
@@ -44,7 +49,7 @@ namespace Uniform.Storage.InMemory
             var projection = Expression.Lambda<Func<TDocument, T>>(queryModel.SelectClause.Selector, currentItemProperty);
             var projector = projection.Compile();
 
-            var visitor = new IndexedProviderQueryVisitor<TDocument>(currentItemExpression, currentItemProperty);
+            var visitor = new IndexedProviderQueryVisitor<TDocument>(InMemoryCollection.IndexContext, currentItemExpression, currentItemProperty);
             
             for (int i = 0; i < queryModel.BodyClauses.Count; i++)
             {

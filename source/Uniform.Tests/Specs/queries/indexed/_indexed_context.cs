@@ -62,7 +62,7 @@ namespace Uniform.Tests.Specs.queries.indexed
         public String UserName { get; set; }
         public Student Student { get; set; }
 
-        public void DefineIndexes(IndexDefinition<User> definition)
+        public void DefineIndexes(IndexContext<User> definition)
         {
             definition.Define("first_index", u => u.UserId);
             definition.Define("second_index", u => u.UserId, u => u.Student.Name);
