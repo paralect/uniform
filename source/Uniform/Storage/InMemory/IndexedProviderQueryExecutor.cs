@@ -6,6 +6,7 @@ using IndexedLinq.IndexedProvider;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Clauses.StreamedData;
 
 namespace Uniform.Storage.InMemory
 {
@@ -92,10 +93,15 @@ namespace Uniform.Storage.InMemory
 
         public T ExecuteScalar<T>(QueryModel queryModel)
         {
-            var aga = queryModel.ResultOperators[0];
-            //            aga.a
-            // We'll get to this one later...
-            throw new NotImplementedException();
+            var res = ExecuteCollection<TDocument>(queryModel);
+
+            ResultOperatorBase aga = queryModel.ResultOperators[0];
+
+            var info = new StreamedSequenceInfo(typeof (IEnumerable<TDocument>), queryModel.SelectClause.Selector);
+
+            var result = aga.ExecuteInMemory(new StreamedSequence(res, info));
+
+            return (T) result.Value;
         }
     }
 }

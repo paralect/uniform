@@ -51,8 +51,10 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Specs\queries\simple\when_executing_all_query.cs" />
+    <Compile Include="Specs\queries\simple\when_executing_count.cs" />
     <Compile Include="Specs\queries\simple\when_executing_simple_where_clause.cs" />
     <Compile Include="Specs\queries\simple\when_executing_two_where_clauses.cs" />
+    <Compile Include="Specs\queries\simple\when_executing_with_projection.cs" />
     <Compile Include="Specs\queries\simple\_simple_context.cs" />
     <Compile Include="Specs\updaters\simple\when_updating_school.cs" />
     <Compile Include="Specs\updaters\simple\when_updating_student.cs" />
