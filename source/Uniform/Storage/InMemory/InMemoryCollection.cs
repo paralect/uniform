@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using Uniform.Common;
 
 namespace Uniform.Storage.InMemory
 {
@@ -59,10 +61,26 @@ namespace Uniform.Storage.InMemory
         {
             CheckForIndexes(key, obj);
 
-//            foreach (var expression in _indexContext.Definitions)
-//            {
-                //GetIndex(_indexDefinitions.n
-//            }
+            foreach (var definition in _indexContext.Definitions)
+            {
+                var index = GetIndex(definition.Name);
+
+                object[] values = new object[definition.Expressions.Count];
+                for (int i = 0; i < definition.Expressions.Count; i++)
+                {
+                    var expression = definition.Expressions[i];
+                    var linq = expression as LambdaExpression;
+                    values[i] = linq.Compile().DynamicInvoke(obj);
+                }
+
+                var hash = HashCodeUtils.Compute(values);
+
+                List<object> list;
+                if (!index.TryGetValue(hash, out list))
+                    index[hash] = list = new List<object>();
+
+                list.Add(obj);
+            }
         }
 
         public void CheckForIndexes(String key, Object obj)

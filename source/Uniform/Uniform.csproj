@@ -94,6 +94,7 @@
     <Compile Include="Common\Dispatching\DispatcherConfigurationExtensions.cs" />
     <Compile Include="Common\Dispatching\DispatcherHandlerRegistry.cs" />
     <Compile Include="Common\Dispatching\DispatcherInvocationContext.cs" />
+    <Compile Include="Common\HashCodeUtils.cs" />
     <Compile Include="Documents\CommentDocument.cs" />
     <Compile Include="Documents\QuestionDocument.cs" />
     <Compile Include="Storage\Abstract\IIndexable.cs" />

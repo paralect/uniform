@@ -25,11 +25,17 @@ namespace Uniform.Storage
     {
         public List<IndexDefinition> Definitions { get; set; }
 
+        public IndexContext()
+        {
+            Definitions = new List<IndexDefinition>();
+        }
+
         public void Define<T>(String name, params Expression<Func<TDocument, T>>[] definitions)
         {
             var def = new IndexDefinition();
             def.Name = name;
             def.Expressions = ((Expression[])definitions).ToList();
+            Definitions.Add(def);
         }
     }
 }
