@@ -21,7 +21,7 @@ namespace Uniform.Tests.Specs.queries.simple
                 Student = new Student()
                 {
                     StudentId = "student1",
-                    Name = "Tom",
+                    Name = "Super Student",
                     School = new School()
                     {
                         SchoolId = "school1",
@@ -34,14 +34,14 @@ namespace Uniform.Tests.Specs.queries.simple
             {
                 UserId = "user1",
                 UserName = "Pol",
-                Student = null,
+                Student = new Student(),
             };
 
             var user3 = new User()
             {
                 UserId = "user1",
                 UserName = "John",
-                Student = null,
+                Student = new Student(),
             };
 
             users = db.GetCollection<User>();

@@ -26,12 +26,9 @@ namespace Uniform.Storage.InMemory
             _documents = ((InMemoryCollection) collection.Collection).Documents;
         }
 
-//        // Set up a proeprty that will hold the current item being enumerated.
-//        public SampleDataSourceItem Current { get; private set; }
-
         public IEnumerable<T> ExecuteCollection<T>(QueryModel queryModel)
         {
-            var state = new CurrentState<TDocument>() { Current = default(TDocument) };
+            var state = new CurrentState<TDocument> { Current = default(TDocument) };
 
             // Create an expression that returns the current item when invoked.
             MemberExpression currentItemExpression = Expression.Property(Expression.Constant(state), "Current");
@@ -48,15 +45,12 @@ namespace Uniform.Storage.InMemory
             var projector = projection.Compile();
 
             var visitor = new IndexedProviderQueryVisitor<TDocument>(currentItemExpression, currentItemProperty);
-
             
             for (int i = 0; i < queryModel.BodyClauses.Count; i++)
             {
                 var bodyClause = queryModel.BodyClauses[i];
                 bodyClause.Accept(visitor, queryModel, i);
             }
-
-            // Pretend we're getting SampleDataSourceItems from somewhere...
 
             foreach (var document in _documents)
             {
@@ -93,13 +87,14 @@ namespace Uniform.Storage.InMemory
 
         public T ExecuteScalar<T>(QueryModel queryModel)
         {
-            var res = ExecuteCollection<TDocument>(queryModel);
+            if (queryModel.ResultOperators.Count > 1)
+                throw new Exception("Multiple result operators not supported");
 
-            ResultOperatorBase aga = queryModel.ResultOperators[0];
+            var documents = ExecuteCollection<TDocument>(queryModel);
+            ResultOperatorBase resultOperator = queryModel.ResultOperators[0];
 
             var info = new StreamedSequenceInfo(typeof (IEnumerable<TDocument>), queryModel.SelectClause.Selector);
-
-            var result = aga.ExecuteInMemory(new StreamedSequence(res, info));
+            var result = resultOperator.ExecuteInMemory(new StreamedSequence(documents, info));
 
             return (T) result.Value;
         }

@@ -26,9 +26,9 @@ namespace IndexedLinq.IndexedProvider
 
         public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index)
         {
-            var wherector = Expression.Lambda<Func<TDocument, Boolean>>(whereClause.Predicate, _parameterExpression);
-            var compilector = wherector.Compile();
-            _compiledWhereClauses.Add(compilector);
+            var whereExpression = Expression.Lambda<Func<TDocument, Boolean>>(whereClause.Predicate, _parameterExpression);
+            var compiledWhereExpression = whereExpression.Compile();
+            _compiledWhereClauses.Add(compiledWhereExpression);
             base.VisitWhereClause(whereClause, queryModel, index);
         }
     }
