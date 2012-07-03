@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Uniform.Storage.InMemory
@@ -6,6 +7,12 @@ namespace Uniform.Storage.InMemory
     public class InMemoryCollection : ICollection
     {
         private readonly Dictionary<string, object> _documents = new Dictionary<string, object>();
+
+        public Dictionary<string, object> Documents
+        {
+            get { return _documents; }
+        }
+
 
         public Object GetById(String key)
         {

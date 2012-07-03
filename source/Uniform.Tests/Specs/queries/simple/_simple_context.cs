@@ -40,7 +40,7 @@ namespace Uniform.Tests.Specs.queries.simple
             var user3 = new User()
             {
                 UserId = "user1",
-                UserName = "Pol",
+                UserName = "John",
                 Student = null,
             };
 

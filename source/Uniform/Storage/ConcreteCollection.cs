@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using IndexedLinq.IndexedProvider;
-using IndexedLinq.Tests;
 using Remotion.Linq.Parsing.Structure;
+using Uniform.Storage.InMemory;
 
 namespace Uniform.Storage
 {
@@ -12,6 +12,11 @@ namespace Uniform.Storage
     public class ConcreteCollection<TDocument> : ICollection<TDocument>
     {
         private readonly ICollection _collection;
+
+        public ICollection Collection
+        {
+            get { return _collection; }
+        }
 
         public ConcreteCollection(ICollection collection)
         {
@@ -58,7 +63,7 @@ namespace Uniform.Storage
         public IQueryable<TDocument> AsQueryable()
         {
             var queryParser = QueryParser.CreateDefault();
-            var queryable = new IndexedProviderQueryable<TDocument>(queryParser, new IndexedProviderQueryExecutor());
+            var queryable = new IndexedProviderQueryable<TDocument>(queryParser, new IndexedProviderQueryExecutor<TDocument>(this));
             return queryable;
         }
     }

@@ -100,6 +100,9 @@
     <Compile Include="Storage\ConcreteCollection.cs" />
     <Compile Include="Storage\DatabaseMetadata.cs" />
     <Compile Include="Storage\DocumentHelper.cs" />
+    <Compile Include="Storage\InMemory\IndexedProviderQueryable.cs" />
+    <Compile Include="Storage\InMemory\IndexedProviderQueryExecutor.cs" />
+    <Compile Include="Storage\InMemory\IndexedProviderQueryVisitor.cs" />
     <Compile Include="Storage\InMemory\InMemoryCollection.cs" />
     <Compile Include="Storage\InMemory\InMemoryDatabase.cs" />
     <Compile Include="Documents\UserDocument.cs" />
@@ -121,12 +124,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\IndexedLinq\IndexedLinq.csproj">
-      <Project>{9F22356F-7B59-4E31-939B-0D8F352A4AB1}</Project>
-      <Name>IndexedLinq</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
