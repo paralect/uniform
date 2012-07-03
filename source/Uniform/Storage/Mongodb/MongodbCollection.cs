@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using IndexedLinq.IndexedProvider;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using MongoDB.Driver.Linq;
+using Remotion.Linq.Parsing.Structure;
 using Uniform.Documents;
 
 namespace Uniform.Storage.Mongodb
@@ -82,6 +85,11 @@ namespace Uniform.Storage.Mongodb
             _db.Helper.SetDocumentId(doc, key);
             _collection.Save(doc);
             UpdateDependentDocuments(key, doc);
+        }
+
+        public IQueryable<TDocument> AsQueryable()
+        {
+            return _collection.AsQueryable();
         }
 
         public void UpdateDependentDocuments(String key, TDocument doc)

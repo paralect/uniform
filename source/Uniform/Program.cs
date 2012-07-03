@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Practices.Unity;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using Uniform.Common.Dispatching;
 using Uniform.Documents;
@@ -16,6 +17,12 @@ namespace Uniform
 {
     public class Program
     {
+        public static object QU(IQueryable<BsonDocument> q)
+        {
+            return from i in q
+                     select i.GetElement(1);
+        }
+
         public static void Main(string[] args)
         {
             var metadata = new DatabaseMetadata(new List<Type> { typeof(UserDocument), typeof(QuestionDocument), typeof(CommentDocument)});
@@ -24,7 +31,18 @@ namespace Uniform
             
 
             var repo = new MongoRepository("mongodb://localhost:27017/local");
+            
+/*            var a = repo.Test.AsQueryable();
 
+            var n = (IQueryable<BsonDocument>) repo;
+            
+            var am = from i in a
+                     select i.GetElement(1);
+
+            var m = from i in a
+                select i.GetElement(1);
+            */
+            
 
             var events = new List<Object>
             {

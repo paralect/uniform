@@ -77,6 +77,9 @@
     <Reference Include="MongoDB.Driver">
       <HintPath>..\..\libs\MongoDB\MongoDB.Driver.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Linq">
+      <HintPath>..\..\libs\Remotion.Linq\Remotion.Linq.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -119,7 +122,12 @@
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\IndexedLinq\IndexedLinq.csproj">
+      <Project>{9F22356F-7B59-4E31-939B-0D8F352A4AB1}</Project>
+      <Name>IndexedLinq</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

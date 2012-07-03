@@ -1,4 +1,8 @@
 using System;
+using System.Linq;
+using IndexedLinq.IndexedProvider;
+using IndexedLinq.Tests;
+using Remotion.Linq.Parsing.Structure;
 
 namespace Uniform.Storage
 {
@@ -49,6 +53,13 @@ namespace Uniform.Storage
         public object GetById(string key)
         {
             return _collection.GetById(key);
+        }
+
+        public IQueryable<TDocument> AsQueryable()
+        {
+            var queryParser = QueryParser.CreateDefault();
+            var queryable = new IndexedProviderQueryable<TDocument>(queryParser, new IndexedProviderQueryExecutor());
+            return queryable;
         }
     }
 }
