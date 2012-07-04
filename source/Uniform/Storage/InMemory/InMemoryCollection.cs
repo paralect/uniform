@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Linq;
 using Uniform.Common;
 
 namespace Uniform.Storage.InMemory
@@ -74,7 +75,7 @@ namespace Uniform.Storage.InMemory
 
         public void InsureIndexes(String key, Entry obj)
         {
-            CheckForIndexes(key, obj);
+            CheckForIndexDefinitions(key, obj);
 
             foreach (var definition in _indexContext.Definitions)
             {
@@ -94,11 +95,27 @@ namespace Uniform.Storage.InMemory
                 if (!index.TryGetValue(hash, out list))
                     index[hash] = list = new List<object>();
 
-                list.Add(obj);
+                Int32 oldHash = 0;
+                var alreadyHaveIndex = obj.HashByIndex.TryGetValue(definition, out oldHash);
+
+                if (!alreadyHaveIndex)
+                {
+                    list.Add(obj);
+                } else
+                {
+                    if (oldHash != hash)
+                    {
+                        var entries = index[oldHash];
+                        entries.Remove(obj);
+                        list.Add(obj);
+                    }
+                }
+
+                obj.HashByIndex[definition] = hash;                
             }
         }
 
-        public void CheckForIndexes(String key, Entry entry)
+        public void CheckForIndexDefinitions(String key, Entry entry)
         {
             if (_indexContext != null)
                 return;

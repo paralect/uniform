@@ -48,6 +48,7 @@ namespace Uniform.Tests.Specs.queries.indexed
             users.Save("user1", user1);
             users.Save("user2", user2);
             users.Save("user3", user3);
+            users.Update("user2", user => user.UserName = "Updated Name");
         };
 
         public static Uniform.Storage.ICollection<User> users;
@@ -64,7 +65,7 @@ namespace Uniform.Tests.Specs.queries.indexed
 
         public void DefineIndexes(IndexContext<User> definition)
         {
-            definition.Define("first_index", u => u.UserId);
+            definition.Define("first_index", u => u.UserName);
             definition.Define("second_index", u => u.UserId, u => u.Student.Name);
         }
     }
