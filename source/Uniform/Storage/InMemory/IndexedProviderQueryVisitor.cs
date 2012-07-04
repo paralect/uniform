@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Linq.Expressions;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
@@ -26,9 +28,36 @@ namespace Uniform.Storage.InMemory
             _parameterExpression = parameterExpression;
         }
 
+        private static IEnumerable<MemberExpression> GetMemberExpressions(Expression e)
+        {
+            MemberExpression memberExpression;
+
+            while ((memberExpression = e as MemberExpression) != null)
+            {
+                yield return memberExpression;
+                e = memberExpression.Expression;
+            }
+        }
+
         public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index)
         {
+            /*
+            var exp = _indexContext.Definitions[0].Expressions[0];
+            var exp2 = whereClause.Predicate;
 
+            if (exp2.NodeType == ExpressionType.Equal)
+            {
+                BinaryExpression expression = (BinaryExpression)exp2;
+                MemberExpression left = expression.Left as MemberExpression;
+                var memberType = left.Member.MemberType;
+
+
+            }
+
+            var a = GetMemberExpressions(exp).ToList();
+            var b = GetMemberExpressions(exp2).ToList();
+
+            */
 
             var whereExpression = Expression.Lambda<Func<TDocument, Boolean>>(whereClause.Predicate, _parameterExpression);
             var compiledWhereExpression = whereExpression.Compile();

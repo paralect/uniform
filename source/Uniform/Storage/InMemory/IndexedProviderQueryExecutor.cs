@@ -18,7 +18,7 @@ namespace Uniform.Storage.InMemory
     public class IndexedProviderQueryExecutor<TDocument> : IQueryExecutor
     {
         private readonly ConcreteCollection<TDocument> _collection;
-        private readonly Dictionary<String, Object> _documents; 
+        private readonly Dictionary<String, Entry> _documents; 
 
         public InMemoryCollection InMemoryCollection
         {
@@ -37,6 +37,8 @@ namespace Uniform.Storage.InMemory
 
             // Create an expression that returns the current item when invoked.
             MemberExpression currentItemExpression = Expression.Property(Expression.Constant(state), "Current");
+            var currentItemProperty = Expression.Parameter(typeof(TDocument));
+
 
             // Now replace references like the "i" in "select i" that refers to the "i" in "from i in items"
             var mapping = new QuerySourceMapping();
@@ -45,12 +47,11 @@ namespace Uniform.Storage.InMemory
 
             // Create a lambda that takes our SampleDataSourceItem and passes it through the select clause
             // to produce a type of T.  (T may be SampleDataSourceItem, in which case this is an identity function.)
-            var currentItemProperty = Expression.Parameter(typeof(TDocument));
+            
             var projection = Expression.Lambda<Func<TDocument, T>>(queryModel.SelectClause.Selector, currentItemProperty);
             var projector = projection.Compile();
 
             var visitor = new IndexedProviderQueryVisitor<TDocument>(InMemoryCollection.IndexContext, currentItemExpression, currentItemProperty);
-            
             for (int i = 0; i < queryModel.BodyClauses.Count; i++)
             {
                 var bodyClause = queryModel.BodyClauses[i];
@@ -59,7 +60,7 @@ namespace Uniform.Storage.InMemory
 
             foreach (var document in _documents)
             {
-                var doc = (TDocument) document.Value;
+                var doc = (TDocument) document.Value.Document;
                 state.Current = doc;
 
                 if (visitor.CompiledWhereClauses.Count >= 0)

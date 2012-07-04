@@ -6,14 +6,25 @@ using Uniform.Common;
 
 namespace Uniform.Storage.InMemory
 {
+    public class Entry
+    {
+        public Object Document { get; set; }
+        public Dictionary<IndexDefinition, Int32> HashByIndex { get; set; }
+
+        public Entry()
+        {
+            HashByIndex = new Dictionary<IndexDefinition, int>();
+        }
+    }
+
     public class InMemoryCollection : ICollection
     {
-        private readonly Dictionary<string, object> _documents = new Dictionary<string, object>();
+        private readonly Dictionary<string, Entry> _documents = new Dictionary<string, Entry>();
 
         private readonly Dictionary<String, Dictionary<int, List<object>>> _indexes =
             new Dictionary<string, Dictionary<int, List<object>>>();
 
-        public Dictionary<string, object> Documents
+        public Dictionary<string, Entry> Documents
         {
             get { return _documents; }
         }
@@ -30,11 +41,11 @@ namespace Uniform.Storage.InMemory
 
         public Object GetById(String key)
         {
-            Object value;
+            Entry value;
             if (!_documents.TryGetValue(key, out value))
                 throw new Exception("Document not available");
 
-            return value;
+            return value.Document;
         }
 
         public void Update(String key, Action<Object> updater)
@@ -46,8 +57,12 @@ namespace Uniform.Storage.InMemory
 
         public void Save(String key, Object obj)
         {
-            _documents[key] = obj;
-            InsureIndexes(key, obj);
+            Entry entry;
+            if (!_documents.TryGetValue(key, out entry))
+                _documents[key] = entry = new Entry();
+
+            entry.Document = obj;
+            InsureIndexes(key, entry);
         }
 
         private IIndexContext _indexContext = null;
@@ -57,7 +72,7 @@ namespace Uniform.Storage.InMemory
             get { return _indexContext; }
         }
 
-        public void InsureIndexes(String key, Object obj)
+        public void InsureIndexes(String key, Entry obj)
         {
             CheckForIndexes(key, obj);
 
@@ -70,7 +85,7 @@ namespace Uniform.Storage.InMemory
                 {
                     var expression = definition.Expressions[i];
                     var linq = expression as LambdaExpression;
-                    values[i] = linq.Compile().DynamicInvoke(obj);
+                    values[i] = linq.Compile().DynamicInvoke(obj.Document);
                 }
 
                 var hash = HashCodeUtils.Compute(values);
@@ -83,12 +98,12 @@ namespace Uniform.Storage.InMemory
             }
         }
 
-        public void CheckForIndexes(String key, Object obj)
+        public void CheckForIndexes(String key, Entry entry)
         {
             if (_indexContext != null)
                 return;
 
-            var type = obj.GetType();
+            var type = entry.Document.GetType();
             var defType = typeof (IndexContext<>).MakeGenericType(type);
             var def = (IIndexContext) Activator.CreateInstance(defType);
 
@@ -96,7 +111,7 @@ namespace Uniform.Storage.InMemory
 
             if (mthd != null)
             {
-                mthd.Invoke(obj, new object[] { def });
+                mthd.Invoke(entry.Document, new object[] { def });
             }
 
             _indexContext = def;

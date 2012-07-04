@@ -32,14 +32,14 @@ namespace Uniform.Tests.Specs.queries.indexed
 
             var user2 = new User()
             {
-                UserId = "user1",
+                UserId = "user2",
                 UserName = "Pol",
                 Student = new Student(),
             };
 
             var user3 = new User()
             {
-                UserId = "user1",
+                UserId = "user3",
                 UserName = "John",
                 Student = new Student(),
             };
