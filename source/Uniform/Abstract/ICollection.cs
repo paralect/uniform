@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Uniform.Storage
+namespace Uniform
 {
     public interface ICollection<TDocument> : ICollection
     {

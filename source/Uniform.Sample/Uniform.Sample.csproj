@@ -34,7 +34,27 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\..\libs\Microsoft\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\..\libs\Microsoft\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\..\libs\MongoDB\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\..\libs\MongoDB\MongoDB.Driver.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,11 +64,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Dispatching\Dispatcher.cs" />
+    <Compile Include="Common\Dispatching\DispatcherConfiguration.cs" />
+    <Compile Include="Common\Dispatching\DispatcherConfigurationExtensions.cs" />
+    <Compile Include="Common\Dispatching\DispatcherHandlerRegistry.cs" />
+    <Compile Include="Common\Dispatching\DispatcherInvocationContext.cs" />
+    <Compile Include="Documents\CommentDocument.cs" />
+    <Compile Include="Documents\QuestionDocument.cs" />
+    <Compile Include="Documents\UserDocument.cs" />
+    <Compile Include="Events\UserCreated.cs" />
+    <Compile Include="Handlers\CommentHandlers.cs" />
+    <Compile Include="Handlers\QuestionHandlers.cs" />
+    <Compile Include="Handlers\UserHandlers.cs" />
+    <Compile Include="MongoServer.cs" />
+    <Compile Include="MyDatabase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Uniform\Uniform.csproj">
+      <Project>{166F6EB2-5143-43DE-B578-1F0E31A596D5}</Project>
+      <Name>Uniform</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

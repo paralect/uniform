@@ -1,6 +1,6 @@
 using System;
 using MongoDB.Bson.Serialization.Attributes;
-using Uniform.Storage.Attributes;
+using Uniform.Attributes;
 
 namespace Uniform.Documents
 {

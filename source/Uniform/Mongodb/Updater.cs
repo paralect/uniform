@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Uniform.Storage.Mongodb
+namespace Uniform.Mongodb
 {
     public class Updater
     {

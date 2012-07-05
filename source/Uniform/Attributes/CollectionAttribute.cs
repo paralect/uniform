@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Uniform.Storage.Attributes
+namespace Uniform.Attributes
 {
     public class CollectionAttribute : Attribute
     {

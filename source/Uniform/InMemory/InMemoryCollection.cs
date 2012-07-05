@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Linq;
-using Uniform.Common;
+using Uniform.Utils;
 
-namespace Uniform.Storage.InMemory
+namespace Uniform.InMemory
 {
     public class Entry
     {

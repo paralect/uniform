@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Uniform.Storage
+namespace Uniform
 {
     public class DocumentHelper
     {

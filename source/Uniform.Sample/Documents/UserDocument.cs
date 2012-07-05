@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson.Serialization.Attributes;
-using Uniform.Storage.Attributes;
+using Uniform.Attributes;
 
 namespace Uniform.Documents
 {

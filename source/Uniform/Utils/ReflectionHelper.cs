@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Uniform.Storage.Utils
+namespace Uniform.Utils
 {
     public static class ReflectionHelper
     {

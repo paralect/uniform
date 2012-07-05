@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Uniform.Storage.Attributes;
-using Uniform.Storage.Utils;
 
-namespace Uniform.Storage.InMemory
+namespace Uniform.InMemory
 {
     public class InMemoryDatabase : IDatabase
     {

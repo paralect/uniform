@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using Machine.Specifications;
 using MongoDB.Bson.Serialization.Attributes;
-using Uniform.Storage;
-using Uniform.Storage.Mongodb;
+using Uniform.Mongodb;
 
 namespace Uniform.Tests.Specs.updaters.lists
 {

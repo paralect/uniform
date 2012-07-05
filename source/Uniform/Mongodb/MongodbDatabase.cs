@@ -1,8 +1,7 @@
 ﻿using System;
 using MongoDB.Driver;
-using Uniform.Documents;
 
-namespace Uniform.Storage.Mongodb
+namespace Uniform.Mongodb
 {
     public class MongodbDatabase : IDatabase
     {

@@ -5,7 +5,7 @@ using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver.Builders;
 
-namespace Uniform.Storage.Mongodb
+namespace Uniform.Mongodb
 {
     public class MongodbDependencyBuilder
     {

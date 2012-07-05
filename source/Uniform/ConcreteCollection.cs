@@ -1,10 +1,9 @@
 using System;
 using System.Linq;
-using IndexedLinq.IndexedProvider;
 using Remotion.Linq.Parsing.Structure;
-using Uniform.Storage.InMemory;
+using Uniform.InMemory;
 
-namespace Uniform.Storage
+namespace Uniform
 {
     /// <summary>
     /// Wrapper around typeless ICollection
@@ -62,9 +61,12 @@ namespace Uniform.Storage
 
         public IQueryable<TDocument> AsQueryable()
         {
+/*
             var queryParser = QueryParser.CreateDefault();
             var queryable = new IndexedProviderQueryable<TDocument>(queryParser, new IndexedProviderQueryExecutor<TDocument>(this));
             return queryable;
+*/
+            return null;
         }
     }
 }

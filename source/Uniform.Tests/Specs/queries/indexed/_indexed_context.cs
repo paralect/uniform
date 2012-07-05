@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using Machine.Specifications;
 using MongoDB.Bson.Serialization.Attributes;
-using Uniform.Storage;
-using Uniform.Storage.InMemory;
+using Uniform.InMemory;
 
 namespace Uniform.Tests.Specs.queries.indexed
 {
@@ -51,7 +50,7 @@ namespace Uniform.Tests.Specs.queries.indexed
             users.Update("user2", user => user.UserName = "Updated Name");
         };
 
-        public static Uniform.Storage.ICollection<User> users;
+        public static ICollection<User> users;
         public static InMemoryDatabase db;
     }
 

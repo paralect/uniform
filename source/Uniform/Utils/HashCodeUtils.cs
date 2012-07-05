@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Uniform.Common
+namespace Uniform.Utils
 {
     public class HashCodeUtils
     {

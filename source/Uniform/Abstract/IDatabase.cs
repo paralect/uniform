@@ -1,6 +1,6 @@
 using System;
 
-namespace Uniform.Storage
+namespace Uniform
 {
     public interface IDatabase
     {

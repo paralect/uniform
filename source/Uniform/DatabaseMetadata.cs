@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Bson.Serialization.Attributes;
-using Uniform.Storage.Attributes;
-using Uniform.Storage.Utils;
+using Uniform.Attributes;
+using Uniform.Utils;
 
-namespace Uniform.Storage
+namespace Uniform
 {
     public class DatabaseMetadata
     {

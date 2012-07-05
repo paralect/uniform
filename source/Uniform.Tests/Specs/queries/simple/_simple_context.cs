@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using Machine.Specifications;
 using MongoDB.Bson.Serialization.Attributes;
-using Uniform.Storage;
-using Uniform.Storage.InMemory;
+using Uniform.InMemory;
 
 namespace Uniform.Tests.Specs.queries.simple
 {
@@ -50,7 +49,7 @@ namespace Uniform.Tests.Specs.queries.simple
             users.Save("user3", user3);
         };
 
-        public static Uniform.Storage.ICollection<User> users;
+        public static ICollection<User> users;
         public static InMemoryDatabase db;
     }
 
