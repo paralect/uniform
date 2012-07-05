@@ -83,9 +83,9 @@ namespace Uniform.Mongodb
             UpdateDependentDocuments(key, doc);
         }
 
-        public IQueryable<TDocument> AsQueryable()
+        public IUniformable<TDocument> AsQueryable()
         {
-            return _collection.AsQueryable();
+            return new MongodbSource<TDocument>(_collection.AsQueryable());
         }
 
         public void UpdateDependentDocuments(String key, TDocument doc)

@@ -76,17 +76,27 @@ namespace LivePlay
     {
         public static void Main(string[] args)
         {
+            Dictionary<Int32, Customer> _index = new Dictionary<Int32, Customer>();
+
             var customers = new IndexedCollection<Customer>();
-            customers.Indexes.Add(c => c.Name);
+            customers.Indexes.Add(c => c.Name, true, false);
             customers.Indexes.Add(c => c.Year);
             customers.Indexes.Add(c => c.Address.Street);
             customers.Indexes.Add(c => c.City);
 
             for (int i = 0; i < 10000; i++)
             {
-                customers.Add(new Customer { Name = "Hello" + i, Year = i, City = "Minsk", Address = new Address("Picadili" + i, i) });
-                customers.Add(new Customer { Name = "Bye" + i, Year = i, City = "Lviv", Address = new Address("Dingo" + i, i) });
-                customers.Add(new Customer { Name = "Greetings" + i, Year = i, City = "Moskow", Address = new Address("Bocasa" + i, i) });
+                var customer = new Customer { Name = "Hello" + i, Year = i, City = "Minsk", Address = new Address("Picadili" + i, i) };
+                customers.Add(customer);
+                _index.Add(customer.Name.GetHashCode(), customer);
+
+                customer = new Customer { Name = "Bye" + i, Year = i, City = "Lviv", Address = new Address("Dingo" + i, i) };
+                customers.Add(customer);
+                _index.Add(customer.Name.GetHashCode(), customer);
+
+                customer = new Customer { Name = "Greetings" + i, Year = i, City = "Moskow", Address = new Address("Bocasa" + i, i) };
+                customers.Add(customer);
+                _index.Add(customer.Name.GetHashCode(), customer);
             }
 
             var custurica = new Customer() { Name = "Custurica", Year = 34, City = "Hello", Address = new Address("Bogdana", 777) };
@@ -101,12 +111,22 @@ namespace LivePlay
 //            var list2 = query2.ToList();
 
             watch.Start();
+            Customer temp = null;
             for (int i = 0; i < 1000; i++)
             {
-                //var query = queryable.Where(c => c.Name == "Bye34"); //from c in customers where c.Name == "Bye34" select c;
-                var query = queryable.Where(c => c.Year == 34 && c.Address.Street == "Bogdana" && c.Name == "Custurica" /*"Bye15"*/); //from c in customers where c.Name == "Bye34" select c;
+//                queryable.Source.Indexes.
+
+                var query = queryable.Where(c => c.Name == "Hello95"); //from c in customers where c.Name == "Bye34" select c;
+                //var query = queryable.Where(c => c.Year == 34 && c.Address.Street == "Bogdana" && c.Name == "Custurica" /*"Bye15"*/); //from c in customers where c.Name == "Bye34" select c;
+//                foreach (var customer in query)
+  //              {
+                    
+    //            }
                 var list = query.ToList();
-                Console.Write(list.Count);
+                //Console.Write(list.Count);
+
+                //temp = _index["Hello95".GetHashCode()];
+//                Console.Write(res == null ? "0" : "1");
             }
             Console.WriteLine();
             watch.Stop(); Console.Write("Search ended after {0} ms", watch.ElapsedMilliseconds);

@@ -19,7 +19,7 @@ namespace Uniform.Tests.Specs.queries.simple
         It should_find_1_item = () =>
             result.ShouldEqual(1);
 
-        private static IQueryable<User> query;
+        private static IUniformable<User> query;
         private static Int32 result;
     }
 }

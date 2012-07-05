@@ -59,14 +59,10 @@ namespace Uniform
             return _collection.GetById(key);
         }
 
-        public IQueryable<TDocument> AsQueryable()
+        public IUniformable<TDocument> AsQueryable()
         {
-/*
-            var queryParser = QueryParser.CreateDefault();
-            var queryable = new IndexedProviderQueryable<TDocument>(queryParser, new IndexedProviderQueryExecutor<TDocument>(this));
-            return queryable;
-*/
             return null;
+            //return new InMemorySource<TDocument>();
         }
     }
 }

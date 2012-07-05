@@ -6,7 +6,7 @@ namespace Uniform.InMemory
     public class InMemoryDatabase : IDatabase
     {
         private readonly DatabaseMetadata _metadata;
-        private readonly Dictionary<String, InMemoryCollection> _collections = new Dictionary<string, InMemoryCollection>();
+        private readonly Dictionary<String, ICollection> _collections = new Dictionary<string, ICollection>();
 
         public InMemoryDatabase(DatabaseMetadata metadata)
         {
@@ -15,16 +15,20 @@ namespace Uniform.InMemory
 
         public ICollection GetCollection(String name)
         {
-            InMemoryCollection value;
+            ICollection value;
             if (!_collections.TryGetValue(name, out value))
-                _collections[name] = value = new InMemoryCollection();
+                throw new Exception("Collection not exists");
 
             return value;
         }
 
         public ICollection<TDocument> GetCollection<TDocument>(string name)
         {
-            return new ConcreteCollection<TDocument>(GetCollection(name));
+            ICollection value;
+            if (!_collections.TryGetValue(name, out value))
+                _collections[name] = value = new InMemoryCollection<TDocument>();
+
+            return (InMemoryCollection<TDocument>) value;
         }
 
         public ICollection<TDocument> GetCollection<TDocument>()

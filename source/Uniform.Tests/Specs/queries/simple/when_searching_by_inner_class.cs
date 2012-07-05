@@ -21,7 +21,7 @@ namespace Uniform.Tests.Specs.queries.simple
         It should_have_find_correct_item = () =>
             result[0].Student.Name.ShouldEqual("Super Student");
 
-        private static IQueryable<User> query;
+        private static IUniformable<User> query;
         private static List<User> result;
     }
 }
