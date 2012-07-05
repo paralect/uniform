@@ -25,13 +25,6 @@ namespace Uniform.InMemory
             return (TDocument) ((ICollection)this).GetById(key);
         }
 
-        public void Update(String key, Action<Object> updater)
-        {
-            var obj = GetById(key);
-            updater(obj);
-            Save(key, obj);
-        }
-
         public void Delete(string key)
         {
             var obj = GetById(key);
@@ -39,35 +32,48 @@ namespace Uniform.InMemory
             _indexed.Remove(obj);
         }
 
-        public void Save(string key, Action<TDocument> creator)
+        public void Update(String key, Action<Object> updater)
         {
-            var doc = Activator.CreateInstance<TDocument>();
-            creator(doc);
-            Save(key, doc);            
+            var obj = GetById(key);
+            updater(obj);
+            InternalSave(key, obj, true);
         }
 
         public void Update(string key, Action<TDocument> updater)
         {
             var obj = GetById(key);
             updater(obj);
-            Save(key, obj);
+            InternalSave(key, obj, true);
+        }
+
+        public void Save(String key, Object obj)
+        {
+            InternalSave(key, (TDocument) obj);
+        }
+
+        public void Save(string key, TDocument obj)
+        {
+            InternalSave(key, obj);
+        }
+
+        public void Save(string key, Action<TDocument> creator)
+        {
+            var doc = Activator.CreateInstance<TDocument>();
+            creator(doc);
+            InternalSave(key, doc);
+        }
+
+        private void InternalSave(String key, TDocument document, Boolean updated = false)
+        {
+            _documents[key] = document;
+
+            if (!updated)
+                _indexed.Add(document);
         }
 
         public IUniformable<TDocument> AsQueryable()
         {
             return new InMemorySource<TDocument>(_indexed);
-        }
-
-        public void Save(String key, Object obj)
-        {
-            _documents[key] = (TDocument) obj;
-            _indexed.Add((TDocument) obj);
-        }
-
-        public void Save(string key, TDocument obj)
-        {
-            _documents[key] = obj;
-            _indexed.Add(obj);
         }
     }
 }
