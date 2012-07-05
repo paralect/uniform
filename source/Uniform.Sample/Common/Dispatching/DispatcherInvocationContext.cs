@@ -32,7 +32,7 @@ namespace Uniform.Common.Dispatching
 
         public virtual void Invoke()
         {
-            _dispatcher.InvokeDynamic(_handler, _message);
+            _dispatcher.InvokeByReflection(_handler, _message);
         }
     }
 }

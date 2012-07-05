@@ -64,14 +64,18 @@ namespace Uniform
             return _documentTypes.Contains(type);
         }
 
+        private readonly Dictionary<Type, String> _cachedCollectionNames = new Dictionary<Type, string>();
         public String GetCollectionName(Type documentType)
         {
-            var collectionAttribute = ReflectionHelper.GetSingleAttribute<CollectionAttribute>(documentType);
-            if (collectionAttribute == null)
-                return documentType.ToString();
-                //throw new Exception(String.Format("Collection attribute for document {0} was not specified", documentType.FullName));
+            string name;
+            if (!_cachedCollectionNames.TryGetValue(documentType, out name))
+            {
+                var collectionAttribute = ReflectionHelper.GetSingleAttribute<CollectionAttribute>(documentType);
+                name = collectionAttribute == null ? documentType.ToString() : collectionAttribute.CollectionName;
+                _cachedCollectionNames[documentType] = name;
+            }
 
-            return collectionAttribute.CollectionName;
+            return name;
         }
 
         private readonly Dictionary<Type, PropertyInfo> _cache = new Dictionary<Type, PropertyInfo>();

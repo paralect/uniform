@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 
 namespace Uniform.Common.Dispatching
@@ -105,10 +107,58 @@ namespace Uniform.Common.Dispatching
             dynamicHandler.Handle(dynamicMessage);
         }
 
+        private readonly Dictionary<MethodDescriptor, MethodInfo> _methodCache = new Dictionary<MethodDescriptor, MethodInfo>();
+
         public void InvokeByReflection(Object handler, Object message)
         {
-            var methodInfo = handler.GetType().GetMethod("Handle", new[] { message.GetType() });
+            var methodDescriptor = new MethodDescriptor(handler.GetType(), message.GetType());
+            MethodInfo methodInfo = null;
+            if (!_methodCache.TryGetValue(methodDescriptor, out methodInfo))
+                _methodCache[methodDescriptor] = methodInfo = handler.GetType().GetMethod("Handle", new[] { message.GetType() });
+
+            if (methodInfo == null)
+                return;
+
+//            var methodInfo = handler.GetType().GetMethod("Handle", new[] { message.GetType() });
             methodInfo.Invoke(handler, new[] { message });
+        }
+    }
+
+    public struct MethodDescriptor
+    {
+        public Type HandlerType;
+        public Type MessageType;
+
+        public MethodDescriptor(Type handlerType, Type messageType) : this()
+        {
+            HandlerType = handlerType;
+            MessageType = messageType;
+        }
+
+        public bool Equals(MethodDescriptor other)
+        {
+            return Equals(other.HandlerType, HandlerType) && Equals(other.MessageType, MessageType);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (obj.GetType() != typeof (MethodDescriptor))
+            {
+                return false;
+            }
+            return Equals((MethodDescriptor) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((HandlerType != null ? HandlerType.GetHashCode() : 0)*397) ^ (MessageType != null ? MessageType.GetHashCode() : 0);
+            }
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Uniform.Sample
                 new UserNameChanged("user/2", "Fucking Tonny"),
             };*/
 
-            for (int i = 0; i < 30000; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 var userId = String.Format("user/{0}", i);
                 var question1 = String.Format("user/{0}/question/{1}", i, 1);
@@ -55,6 +55,8 @@ namespace Uniform.Sample
                 events.Add(new QuestionUpdated(question3, userId, "Updated question. How are you?"));
                 events.Add(new CommentAdded(commentId, userId, question3, "My first comment!"));
                 events.Add(new UserNameChanged(userId, "Upgraded Tonny"));
+                events.Add(new UserNameChanged(userId, "Another Tonny"));
+                events.Add(new UserNameChanged(userId, "Final Tonny"));
             }
 
             //var instance = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
@@ -70,8 +72,12 @@ namespace Uniform.Sample
             );
             Console.WriteLine("Started.");
             var stopwatch = Stopwatch.StartNew();
-            foreach (var evnt in events)
+            for (int i = 0; i < events.Count; i++)
             {
+                if (i % 100000 == 0)
+                    Console.WriteLine(i);
+
+                var evnt = events[i];
                 dispatcher.Dispatch(evnt);
             }
             stopwatch.Stop();

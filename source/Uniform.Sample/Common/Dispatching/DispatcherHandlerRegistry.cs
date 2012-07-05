@@ -127,16 +127,15 @@ namespace Uniform.Common.Dispatching
 
         public List<Type> GetHandlersType(Type messageType)
         {
-            String errorMessage = String.Format("Handler for type {0} doesn't found.", messageType.FullName);
-
-            if (!_subscription.ContainsKey(messageType))
-                return new List<Type>();
-            //                throw new Exception(errorMessage);
-
-            var handlers = _subscription[messageType];
+            List<Type> handlers;
+            if (!_subscription.TryGetValue(messageType, out handlers))
+                _subscription[messageType] = handlers = new List<Type>();
 
             if (handlers.Count < 1)
+            {
+                String errorMessage = String.Format("Handler for type {0} doesn't found.", messageType.FullName);
                 throw new Exception(errorMessage);
+            }
 
             return handlers;
         }
