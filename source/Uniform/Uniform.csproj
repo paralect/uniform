@@ -100,7 +100,6 @@
     <Compile Include="Abstract\IUniformable.cs" />
     <Compile Include="Abstract\IUniformableProvider.cs" />
     <Compile Include="Attributes\CollectionAttribute.cs" />
-    <Compile Include="ConcreteCollection.cs" />
     <Compile Include="DatabaseMetadata.cs" />
     <Compile Include="DocumentHelper.cs" />
     <Compile Include="InMemory\InMemoryCollection.cs" />

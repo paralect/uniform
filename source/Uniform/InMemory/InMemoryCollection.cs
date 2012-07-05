@@ -32,6 +32,13 @@ namespace Uniform.InMemory
             Save(key, obj);
         }
 
+        public void Delete(string key)
+        {
+            var obj = GetById(key);
+            _documents.Remove(key);
+            _indexed.Remove(obj);
+        }
+
         public void Save(string key, Action<TDocument> creator)
         {
             var doc = Activator.CreateInstance<TDocument>();

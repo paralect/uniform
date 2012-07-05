@@ -39,6 +39,11 @@ namespace Uniform.Mongodb
             updater(doc);
             Save(key, doc);
         }
+
+        public void Delete(string key)
+        {
+            _collection.Remove(Query.EQ("_id", key));
+        }
     }
 
     public class MongodbCollection<TDocument> : ICollection<TDocument>
@@ -126,6 +131,11 @@ namespace Uniform.Mongodb
         public void Update(String key, Action<Object> updater)
         {
             _typelessCollection.Update(key, updater);
+        }
+
+        public void Delete(string key)
+        {
+            _collection.Remove(Query.EQ("_id", key));
         }
     }
 }

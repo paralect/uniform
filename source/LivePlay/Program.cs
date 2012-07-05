@@ -84,7 +84,7 @@ namespace LivePlay
             customers.Indexes.Add(c => c.Address.Street);
             customers.Indexes.Add(c => c.City);
 
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 var customer = new Customer { Name = "Hello" + i, Year = i, City = "Minsk", Address = new Address("Picadili" + i, i) };
                 customers.Add(customer);
@@ -112,20 +112,25 @@ namespace LivePlay
 
             watch.Start();
             Customer temp = null;
-            for (int i = 0; i < 1000; i++)
+            for (int i = 9000; i < 10000; i++)
             {
 //                queryable.Source.Indexes.
 
-                var query = queryable.Where(c => c.Name == "Hello95"); //from c in customers where c.Name == "Bye34" select c;
+                var s = "Hello" + i;
+                //var query = queryable.Where(c => c.Name == s); //from c in customers where c.Name == "Bye34" select c;
                 //var query = queryable.Where(c => c.Year == 34 && c.Address.Street == "Bogdana" && c.Name == "Custurica" /*"Bye15"*/); //from c in customers where c.Name == "Bye34" select c;
 //                foreach (var customer in query)
   //              {
                     
     //            }
-                var list = query.ToList();
+                //var list = query.ToList();
+                //var item = list[0];
+
+                temp = _index[s.GetHashCode()];
+                customers.Remove(temp);
                 //Console.Write(list.Count);
 
-                //temp = _index["Hello95".GetHashCode()];
+                
 //                Console.Write(res == null ? "0" : "1");
             }
             Console.WriteLine();

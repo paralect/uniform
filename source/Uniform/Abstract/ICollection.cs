@@ -17,5 +17,6 @@ namespace Uniform
         Object GetById(String key);
         void Save(String key, Object obj);
         void Update(String key, Action<Object> updater);
+        void Delete(String key);
     }
 }
