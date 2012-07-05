@@ -32,8 +32,10 @@ namespace Uniform
 
             var repo = new MongoRepository("mongodb://localhost:27017/local");
             
-/*            var a = repo.Test.AsQueryable();
+            
+            var a = repo.Test.AsQueryable();
 
+            /*
             var n = (IQueryable<BsonDocument>) repo;
             
             var am = from i in a

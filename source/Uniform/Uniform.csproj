@@ -97,6 +97,7 @@
     <Compile Include="Common\HashCodeUtils.cs" />
     <Compile Include="Documents\CommentDocument.cs" />
     <Compile Include="Documents\QuestionDocument.cs" />
+    <Compile Include="Eloquera.cs" />
     <Compile Include="Storage\Abstract\IIndexable.cs" />
     <Compile Include="Storage\Attributes\CollectionAttribute.cs" />
     <Compile Include="Storage\ConcreteCollection.cs" />

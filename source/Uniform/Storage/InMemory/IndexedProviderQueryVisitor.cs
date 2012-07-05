@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 
@@ -41,23 +42,24 @@ namespace Uniform.Storage.InMemory
 
         public override void VisitWhereClause(WhereClause whereClause, QueryModel queryModel, int index)
         {
-            /*
             var exp = _indexContext.Definitions[0].Expressions[0];
             var exp2 = whereClause.Predicate;
 
             if (exp2.NodeType == ExpressionType.Equal)
             {
+                
                 BinaryExpression expression = (BinaryExpression)exp2;
                 MemberExpression left = expression.Left as MemberExpression;
-                var memberType = left.Member.MemberType;
 
+                var list = GetMemberExpressions(left);
+                var str = list.Reverse().Select(m => m.Member);
 
+                var list2 = GetMemberExpressions(((LambdaExpression) exp).Body);
+                var str2 = list2.Reverse().Select(m => m.Member);
             }
 
             var a = GetMemberExpressions(exp).ToList();
             var b = GetMemberExpressions(exp2).ToList();
-
-            */
 
             var whereExpression = Expression.Lambda<Func<TDocument, Boolean>>(whereClause.Predicate, _parameterExpression);
             var compiledWhereExpression = whereExpression.Compile();
