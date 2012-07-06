@@ -14,9 +14,24 @@ namespace Uniform
     /// </summary>
     public class DatabaseMetadata
     {
-        private readonly List<Type> _documentTypes = new List<Type>();
-        private readonly Dictionary<Type, List<DependentDocumentMetadata>> _map = new Dictionary<Type, List<DependentDocumentMetadata>>();
+        /// <summary>
+        /// All registered document types. 
+        /// </summary>
+        private readonly Dictionary<Type, DocumentInfo> _documentTypes = new Dictionary<Type, DocumentInfo>();
 
+        /// <summary>
+        /// Creates DatabaseMetadata with specified configuration
+        /// </summary>
+        /// <param name="configuration"></param>
+        public DatabaseMetadata(DatabaseMetadataConfiguration configuration)
+        {
+            foreach (var documentType in configuration.DocumentTypes)
+                _documentTypes[documentType] = new DocumentInfo(documentType);
+        }
+
+        /// <summary>
+        /// Factory method, that creates DatabaseMetadata
+        /// </summary>
         public static DatabaseMetadata Create(Action<DatabaseMetadataConfiguration> configurator)
         {
             var configuration = new DatabaseMetadataConfiguration();
@@ -26,17 +41,10 @@ namespace Uniform
             return metadata;
         }
 
-        public DatabaseMetadata(DatabaseMetadataConfiguration configuration)
+        private void Analyze()
         {
-            _documentTypes = configuration.DocumentTypes;
-        }
-
-        public void Analyze()
-        {
-            foreach (var type in _documentTypes)
-            {
-                AnalyzeType(type, new List<PropertyInfo>(),  type);
-            }
+            foreach (var documentInfo in _documentTypes.Values)
+                AnalyzeType(documentInfo.DocumentType, new List<PropertyInfo>(),  documentInfo.DocumentType);
         }
 
         private void AnalyzeType(Type originalType, List<PropertyInfo> path, Type type)
@@ -63,32 +71,42 @@ namespace Uniform
             }
         }
 
-        public List<DependentDocumentMetadata> GetDependents(Type type)
+        /// <summary>
+        /// Get list of all types, that depends on specified documentType
+        /// </summary>
+        public List<DependentDocumentMetadata> GetDependents(Type documentType)
         {
-            List<DependentDocumentMetadata> value;
-            if (!_map.TryGetValue(type, out value))
-                _map[type] = value = new List<DependentDocumentMetadata>();
+            DocumentInfo value;
+            if (!_documentTypes.TryGetValue(documentType, out value))
+                throw new Exception(String.Format("Document type '{0}' wasn't registered in metdata", documentType.FullName));
 
-            return value;
+            return value.Dependents;
         }
 
+        /// <summary>
+        /// Returns true, if type was registered as document type
+        /// </summary>
         public bool IsDocumentType(Type type)
         {
-            return _documentTypes.Contains(type);
+            return _documentTypes.ContainsKey(type);
         }
 
-        private readonly Dictionary<Type, String> _cachedCollectionNames = new Dictionary<Type, string>();
+        /// <summary>
+        /// Returns collection name for specified document type
+        /// </summary>
         public String GetCollectionName(Type documentType)
         {
-            string name;
-            if (!_cachedCollectionNames.TryGetValue(documentType, out name))
+            DocumentInfo info;
+            if (!_documentTypes.TryGetValue(documentType, out info))
+                throw new Exception(String.Format("Document type '{0}' wasn't registered in metdata", documentType.FullName));
+
+            if (info.CollectionName == null)
             {
                 var collectionAttribute = ReflectionHelper.GetSingleAttribute<CollectionAttribute>(documentType);
-                name = collectionAttribute == null ? documentType.ToString() : collectionAttribute.CollectionName;
-                _cachedCollectionNames[documentType] = name;
+                info.CollectionName = collectionAttribute == null ? documentType.Name : collectionAttribute.CollectionName;
             }
 
-            return name;
+            return info.CollectionName;
         }
 
         #region ID properties services
@@ -100,19 +118,19 @@ namespace Uniform
         /// <summary>
         /// Returns document id value. 
         /// </summary>
-        public Object GetDocumentId(Object document)
+        public String GetDocumentId(Object document)
         {
             if (document == null)
                 throw new ArgumentNullException("document");
 
             var info = GetDocumentIdPropertyInfo(document.GetType());
-            return info.GetValue(document, new object[0]);
+            return (String) info.GetValue(document, new object[0]);
         }
 
         /// <summary>
         /// Sets id property to specified value. 
         /// </summary>
-        public void SetDocumentId(Object obj, Object value)
+        public void SetDocumentId(Object obj, String value)
         {
             if (obj == null) throw new ArgumentNullException("obj");
 
@@ -154,6 +172,4 @@ namespace Uniform
             SourceDocumentPath = new List<PropertyInfo>();
         }
     }
-
-
 }

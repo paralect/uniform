@@ -95,6 +95,7 @@
     <Compile Include="InMemory\InMemoryDatabase.cs" />
     <Compile Include="Metadata\DatabaseMetadataConfiguration.cs" />
     <Compile Include="Metadata\DatabaseMetadataExtensions.cs" />
+    <Compile Include="Metadata\DocumentInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Abstract\ICollection.cs" />
     <Compile Include="Abstract\IDatabase.cs" />
