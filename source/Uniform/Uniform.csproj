@@ -68,10 +68,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="C1.LiveLinq, Version=4.0.20121.65, Culture=neutral, PublicKeyToken=28cd8b3517c57673, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\LiveLinq\C1.LiveLinq.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\..\libs\Microsoft\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
@@ -84,9 +80,6 @@
     <Reference Include="MongoDB.Driver">
       <HintPath>..\..\libs\MongoDB\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Linq">
-      <HintPath>..\..\libs\Remotion.Linq\Remotion.Linq.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -96,16 +89,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Abstract\IIndexable.cs" />
-    <Compile Include="Abstract\IUniformable.cs" />
-    <Compile Include="Abstract\IUniformableProvider.cs" />
     <Compile Include="Attributes\CollectionAttribute.cs" />
     <Compile Include="DatabaseMetadata.cs" />
     <Compile Include="DocumentHelper.cs" />
     <Compile Include="InMemory\InMemoryCollection.cs" />
     <Compile Include="InMemory\InMemoryDatabase.cs" />
-    <Compile Include="InMemory\InMemorySource.cs" />
-    <Compile Include="Mongodb\MongodbSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Abstract\ICollection.cs" />
     <Compile Include="Abstract\IDatabase.cs" />
@@ -113,7 +101,6 @@
     <Compile Include="Mongodb\MongodbDatabase.cs" />
     <Compile Include="Mongodb\MongodbDependencyBuilder.cs" />
     <Compile Include="Mongodb\Updater.cs" />
-    <Compile Include="UniformableExtensions.cs" />
     <Compile Include="Utils\HashCodeUtils.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />
   </ItemGroup>

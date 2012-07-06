@@ -9,7 +9,6 @@ namespace Uniform
         void Save(String key, TDocument obj);
         void Save(String key, Action<TDocument> creator);
         void Update(String key, Action<TDocument> updater);
-        IUniformable<TDocument> AsQueryable();
     }
 
     public interface ICollection

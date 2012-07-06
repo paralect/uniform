@@ -22,18 +22,28 @@ namespace Uniform.InMemory
             return value;
         }
 
-        public ICollection<TDocument> GetCollection<TDocument>(string name)
+        public InMemoryCollection<TDocument> GetCollection<TDocument>(string name)
         {
             ICollection value;
             if (!_collections.TryGetValue(name, out value))
                 _collections[name] = value = new InMemoryCollection<TDocument>();
 
-            return (InMemoryCollection<TDocument>) value;
+            return (InMemoryCollection<TDocument>)value;
         }
 
-        public ICollection<TDocument> GetCollection<TDocument>()
+        ICollection<TDocument> IDatabase.GetCollection<TDocument>(string name)
         {
-            return GetCollection<TDocument>(_metadata.GetCollectionName(typeof (TDocument)));
+            return GetCollection<TDocument>(name);
+        }
+
+        public InMemoryCollection<TDocument> GetCollection<TDocument>()
+        {
+            return GetCollection<TDocument>(_metadata.GetCollectionName(typeof(TDocument)));
+        }
+
+        ICollection<TDocument> IDatabase.GetCollection<TDocument>()
+        {
+            return GetCollection<TDocument>();
         }
     }
 }

@@ -50,16 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specs\queries\indexed\when_executing_simple_where_clause.cs" />
-    <Compile Include="Specs\queries\indexed\_indexed_context.cs" />
-    <Compile Include="Specs\queries\simple\when_executing_all_query.cs" />
-    <Compile Include="Specs\queries\simple\when_executing_count.cs" />
-    <Compile Include="Specs\queries\simple\when_executing_simple_where_clause.cs" />
-    <Compile Include="Specs\queries\simple\when_executing_two_where_clauses.cs" />
-    <Compile Include="Specs\queries\simple\when_executing_with_projection.cs" />
-    <Compile Include="Specs\queries\simple\when_executing_with_projection_in_functional_style.cs" />
-    <Compile Include="Specs\queries\simple\when_searching_by_inner_class.cs" />
-    <Compile Include="Specs\queries\simple\_simple_context.cs" />
     <Compile Include="Specs\updaters\simple\when_updating_school.cs" />
     <Compile Include="Specs\updaters\simple\when_updating_student.cs" />
     <Compile Include="Specs\updaters\simple\when_updating_student_with_invalid_key.cs" />

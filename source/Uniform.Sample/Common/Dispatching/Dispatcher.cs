@@ -86,7 +86,7 @@ namespace Uniform.Common.Dispatching
                             if (attempt == _maxRetries)
                             {
                                 throw new Exception(String.Format(
-                                    "Exception in the handler {0} for message {1}", handler.GetType().FullName, message.GetType().FullName));
+                                    "Exception in the handler {0} for message {1}", handler.GetType().FullName, message.GetType().FullName), exception);
 
                             }
                         }

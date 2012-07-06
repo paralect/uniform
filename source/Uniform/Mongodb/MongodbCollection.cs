@@ -88,11 +88,6 @@ namespace Uniform.Mongodb
             UpdateDependentDocuments(key, doc);
         }
 
-        public IUniformable<TDocument> AsQueryable()
-        {
-            return new MongodbSource<TDocument>(_collection.AsQueryable());
-        }
-
         public void UpdateDependentDocuments(String key, TDocument doc)
         {
             var builder = new MongodbDependencyBuilder(_db.Metadata);

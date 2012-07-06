@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using Uniform.Common.Dispatching;
 using Uniform.Events;
+using Uniform.InMemory;
+using Uniform.Sample.Documents;
 
 namespace Uniform.Handlers
 {
@@ -23,6 +28,9 @@ namespace Uniform.Handlers
                 comment.UserId = message.UserId;
                 comment.QuestionDocument = _db.Questions.GetById(message.QuestionId);
             });
+
+            var user = _db.Users.GetById(message.UserId);
+            user.About = "Hello";
         }
-    }
+   }
 }

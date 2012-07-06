@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uniform", "Uniform\Uniform.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uniform.Tests", "Uniform.Tests\Uniform.Tests.csproj", "{DE5B436A-DA39-42E3-A176-354B56E06BC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LivePlay", "LivePlay\LivePlay.csproj", "{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uniform.Sample", "Uniform.Sample\Uniform.Sample.csproj", "{89FEBBB5-8295-4201-964D-260102B50003}"
 EndProject
 Global
@@ -39,16 +37,6 @@ Global
 		{DE5B436A-DA39-42E3-A176-354B56E06BC8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{DE5B436A-DA39-42E3-A176-354B56E06BC8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{DE5B436A-DA39-42E3-A176-354B56E06BC8}.Release|x86.ActiveCfg = Release|Any CPU
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Debug|x86.ActiveCfg = Debug|x86
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Debug|x86.Build.0 = Debug|x86
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Release|Any CPU.ActiveCfg = Release|x86
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Release|Mixed Platforms.Build.0 = Release|x86
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Release|x86.ActiveCfg = Release|x86
-		{B1A04E0F-AAF7-48B9-8505-4982D9F2CD4B}.Release|x86.Build.0 = Release|x86
 		{89FEBBB5-8295-4201-964D-260102B50003}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{89FEBBB5-8295-4201-964D-260102B50003}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{89FEBBB5-8295-4201-964D-260102B50003}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU

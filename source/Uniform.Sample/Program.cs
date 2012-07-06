@@ -12,6 +12,7 @@ using Uniform.Documents;
 using Uniform.Events;
 using Uniform.InMemory;
 using Uniform.Mongodb;
+using Uniform.Sample.Documents;
 
 namespace Uniform.Sample
 {
@@ -39,7 +40,7 @@ namespace Uniform.Sample
                 new UserNameChanged("user/2", "Fucking Tonny"),
             };*/
 
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10000; i++)
             {
                 var userId = String.Format("user/{0}", i);
                 var question1 = String.Format("user/{0}/question/{1}", i, 1);
@@ -70,6 +71,7 @@ namespace Uniform.Sample
                 .SetServiceLocator(new UnityServiceLocator(container))
                 .AddHandlers(typeof(UserCreated).Assembly)
             );
+
             Console.WriteLine("Started.");
             var stopwatch = Stopwatch.StartNew();
             for (int i = 0; i < events.Count; i++)

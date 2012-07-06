@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using C1.LiveLinq.Collections;
 using Uniform.Utils;
 
 namespace Uniform.InMemory
 {
     public class InMemoryCollection<TDocument> : ICollection<TDocument>
     {
-        private readonly IndexedCollection<TDocument> _indexed = new IndexedCollection<TDocument>();
         private readonly Dictionary<string, TDocument> _documents = new Dictionary<string, TDocument>();
 
         Object ICollection.GetById(String key)
@@ -27,9 +25,7 @@ namespace Uniform.InMemory
 
         public void Delete(string key)
         {
-            var obj = GetById(key);
             _documents.Remove(key);
-            _indexed.Remove(obj);
         }
 
         public void Update(String key, Action<Object> updater)
@@ -66,14 +62,6 @@ namespace Uniform.InMemory
         private void InternalSave(String key, TDocument document, Boolean updated = false)
         {
             _documents[key] = document;
-
-            if (!updated)
-                _indexed.Add(document);
-        }
-
-        public IUniformable<TDocument> AsQueryable()
-        {
-            return new InMemorySource<TDocument>(_indexed);
         }
     }
 }
