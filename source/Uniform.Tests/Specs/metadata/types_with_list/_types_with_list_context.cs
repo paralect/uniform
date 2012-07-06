@@ -23,7 +23,7 @@ namespace Uniform.Tests.Specs.metadata.types_with_list
     {
         [BsonId]
         public String UserId { get; set; }
-        public List<Student> Students { get; set; }
+        public Student Student { get; set; }
     }
 
     [Collection("students_collection")]

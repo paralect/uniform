@@ -15,6 +15,11 @@ namespace Uniform
     public class DatabaseMetadata
     {
         /// <summary>
+        /// Configuration of DatabaseMetadata, used to create this type
+        /// </summary>
+        private readonly DatabaseMetadataConfiguration _configuration;
+
+        /// <summary>
         /// All registered document types. 
         /// </summary>
         private readonly Dictionary<Type, DocumentInfo> _documentTypes = new Dictionary<Type, DocumentInfo>();
@@ -25,6 +30,7 @@ namespace Uniform
         /// <param name="configuration"></param>
         public DatabaseMetadata(DatabaseMetadataConfiguration configuration)
         {
+            _configuration = configuration;
             foreach (var documentType in configuration.DocumentTypes)
                 _documentTypes[documentType] = new DocumentInfo(documentType);
         }
@@ -65,6 +71,9 @@ namespace Uniform
                 if (originalType == documentType)
                     throw new CircularDependencyNotSupportedException(documentType, type);
 
+                if (!_configuration.TwoLevelListSupported && isList && PathContainsLists(path))
+                    throw new TwoLevelListsNotSupported(documentType, type);
+
                 // Copy path to new list
                 var newPath = new List<PropertyInfo>(path);
 
@@ -79,6 +88,18 @@ namespace Uniform
                 if (!propertyInfo.PropertyType.IsPrimitive && propertyInfo.PropertyType != typeof(String))
                     AnalyzeType(originalType, newPath, documentType);
             }
+        }
+
+        private Boolean PathContainsLists(IEnumerable<PropertyInfo> path)
+        {
+            foreach (var info in path)
+            {
+                Type itemType;
+                if (IsList(info.PropertyType, out itemType))
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>

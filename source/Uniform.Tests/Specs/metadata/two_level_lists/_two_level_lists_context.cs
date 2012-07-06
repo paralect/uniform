@@ -3,22 +3,10 @@ using System.Collections.Generic;
 using Machine.Specifications;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Uniform.Tests.Specs.metadata.nested
+namespace Uniform.Tests.Specs.metadata.two_level_lists
 {
-    public class _nested_context
+    public class _two_level_lists_context
     {
-        Establish context = () =>
-        {
-            metadata = DatabaseMetadata.Create(config => config
-                .AddDocumentType<User>()
-                .AddDocumentType<Student>()
-                .AddDocumentType<School>()
-                .AddDocumentType<District>()
-                .SetTwoLevelListsSupport(true)
-            );
-        };
-
-        public static DatabaseMetadata metadata;
     }
 
     public class User
@@ -41,7 +29,7 @@ namespace Uniform.Tests.Specs.metadata.nested
         [BsonId]
         public String SchoolId { get; set; }
         public Int32 Year { get; set; }
-        public List<District> Districts { get; set; } 
+        public List<District> Districts { get; set; }
     }
 
     public class District

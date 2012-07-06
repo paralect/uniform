@@ -31,6 +31,13 @@ namespace Uniform
             return configuration;
         }
 
+        public static DatabaseMetadataConfiguration SetTwoLevelListsSupport(this DatabaseMetadataConfiguration configuration, Boolean supported)
+        {
+            configuration.TwoLevelListSupported = supported;
+            return configuration;
+        }
+
+
         private static IEnumerable<Type> GetTypesWithAttribute<TAttribute>(params Assembly[] assemblies)
         {
             var typesWithAttribute =

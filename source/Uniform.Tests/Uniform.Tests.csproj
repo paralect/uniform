@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Specs\metadata\circular\when_metadata_created_for_circular_types.cs" />
+    <Compile Include="Specs\metadata\circular\when_metadata_created_for_two_types_with_circular_dependency.cs" />
     <Compile Include="Specs\metadata\circular\when_metadata_created_for_three_types_with_circular_dependency.cs" />
     <Compile Include="Specs\metadata\circular\when_metadata_created_for_three_types_with_circular_dependency_regestered_in_different_order.cs" />
     <Compile Include="Specs\metadata\circular\_circular_context.cs" />
@@ -69,6 +69,8 @@
     <Compile Include="Specs\metadata\simple_types\when_searching_for_dependents_of_user.cs" />
     <Compile Include="Specs\metadata\simple_types\when_setting_id_value.cs" />
     <Compile Include="Specs\metadata\simple_types\_simple_types_context.cs" />
+    <Compile Include="Specs\metadata\two_level_lists\when_metadata_created_for_types_that_have_two_level_lists_in_dependency_path.cs" />
+    <Compile Include="Specs\metadata\two_level_lists\_two_level_lists_context.cs" />
     <Compile Include="Specs\metadata\types_with_list\when_searching_for_dependents_of_school.cs" />
     <Compile Include="Specs\metadata\types_with_list\when_searching_for_dependents_of_student.cs" />
     <Compile Include="Specs\metadata\types_with_list\_types_with_list_context.cs" />

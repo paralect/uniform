@@ -14,6 +14,7 @@ namespace Uniform.Tests.Specs.updaters.inner_lists
                 .AddDocumentType<User>()
                 .AddDocumentType<Student>()
                 .AddDocumentType<School>()
+                .SetTwoLevelListsSupport(true)
             );
             
             updater = new Updater(metadata);

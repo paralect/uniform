@@ -19,7 +19,7 @@ namespace Uniform.Tests.Specs.metadata.types_with_list
             dependences[0].SourceDocumentPath.Count.ShouldEqual(1);
 
         It should_have_correct_path = () =>
-            dependences[0].SourceDocumentPath[0].ShouldEqual(typeof(User).GetProperty("Students"));
+            dependences[0].SourceDocumentPath[0].ShouldEqual(typeof(User).GetProperty("Student"));
 
         private static List<DependentDocumentMetadata> dependences;
     }

@@ -4,7 +4,7 @@ using Uniform.Exceptions;
 
 namespace Uniform.Tests.Specs.metadata.circular
 {
-    public class when_metadata_created_for_circular_types : _circular_context
+    public class when_metadata_created_for_two_types_with_circular_dependency : _circular_context
     {
         Because of = () =>
         {

@@ -90,7 +90,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\CollectionAttribute.cs" />
-    <Compile Include="Exceptions\CircularReferenceDetected.cs" />
+    <Compile Include="Exceptions\CircularDependencyNotSupportedException.cs" />
+    <Compile Include="Exceptions\TwoLevelListsNotSupported.cs" />
     <Compile Include="Metadata\DatabaseMetadata.cs" />
     <Compile Include="InMemory\InMemoryCollection.cs" />
     <Compile Include="InMemory\InMemoryDatabase.cs" />

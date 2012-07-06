@@ -23,7 +23,7 @@ namespace Uniform.Tests.Specs.metadata.types_with_list
 
         It should_have_correct_path_for_user = () =>
         {
-            dependences[0].SourceDocumentPath[0].ShouldEqual(typeof(User).GetProperty("Students"));
+            dependences[0].SourceDocumentPath[0].ShouldEqual(typeof(User).GetProperty("Student"));
             dependences[0].SourceDocumentPath[1].ShouldEqual(typeof(Student).GetProperty("Schools"));
         };
 
