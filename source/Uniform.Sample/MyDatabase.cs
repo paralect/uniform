@@ -30,7 +30,5 @@ namespace Uniform.Sample
         {
             get { return _database.GetCollection<VoteDocument>(); }
         }
-
-
     }
 }

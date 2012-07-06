@@ -78,7 +78,6 @@
     <Compile Include="Handlers\QuestionHandlers.cs" />
     <Compile Include="Handlers\UserHandlers.cs" />
     <Compile Include="Handlers\VoteHandlers.cs" />
-    <Compile Include="MongoServer.cs" />
     <Compile Include="MyDatabase.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,6 +90,9 @@
       <Project>{166F6EB2-5143-43DE-B578-1F0E31A596D5}</Project>
       <Name>Uniform</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Temp\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

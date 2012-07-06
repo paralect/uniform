@@ -19,6 +19,7 @@ namespace Uniform.Sample
     {
         public static void Main(string[] args)
         {
+            // 1. Create database metadata
             var metadata = DatabaseMetadata.Create(config => config
                 .AddDocumentType<UserDocument>()
                 .AddDocumentType<QuestionDocument>()
@@ -26,10 +27,20 @@ namespace Uniform.Sample
                 .AddDocumentType<VoteDocument>()
             );
 
-            var repo = new MongoRepository("mongodb://localhost:27017/local");
+            // 2. Create database. Choose euther in-memory or mongodb.
+            //var database = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
+            var database = new InMemoryDatabase(metadata);
+
+            // 3. Optional.
+            RunViewModelRegeneration(database);
+        }
+
+        public static void RunViewModelRegeneration(IDatabase database)
+        {
+            Console.Write("Creating list of events in memory... ");
 
             var events = new List<Object>();
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 var userId = String.Format("user/{0}", i);
                 var question1 = String.Format("user/{0}/question/{1}", i, 1);
@@ -50,31 +61,30 @@ namespace Uniform.Sample
                 events.Add(new UserNameChanged(userId, "Final Tonny"));
             }
 
-            var instance = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
-//            var instance = new InMemoryDatabase(metadata);
+            Console.WriteLine("Done. Managed memory used: {0:n0} mb.", GC.GetTotalMemory(false) / 1024 / 1024);
 
             var container = new UnityContainer();
-            container.RegisterInstance(repo);
-            container.RegisterInstance<IDatabase>(instance);
+            container.RegisterInstance<IDatabase>(database);
 
             var dispatcher = Dispatcher.Create(builder => builder
                 .SetServiceLocator(new UnityServiceLocator(container))
                 .AddHandlers(typeof(UserCreated).Assembly)
             );
 
-            Console.WriteLine("Started.");
+            Console.WriteLine("Regeneration started...");
             var stopwatch = Stopwatch.StartNew();
             for (int i = 0; i < events.Count; i++)
             {
-                if (i % 100000 == 0)
-                    Console.WriteLine(i);
+                if (i % 100000 == 0 && i != 0)
+                    Console.WriteLine("{0:n0} events processed.", i);
 
                 var evnt = events[i];
                 dispatcher.Dispatch(evnt);
             }
             stopwatch.Stop();
-            Console.WriteLine("Done in {0} ms", stopwatch.ElapsedMilliseconds);
-            Console.ReadKey();
+
+            Console.WriteLine("Done in {0:n0} ms. {1:n0} events processed.", stopwatch.ElapsedMilliseconds, events.Count);
+            Console.ReadKey();            
         }
     }
 }
