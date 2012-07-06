@@ -7,12 +7,11 @@ using Microsoft.Practices.Unity;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
-using Uniform.Common.Dispatching;
-using Uniform.Documents;
-using Uniform.Events;
 using Uniform.InMemory;
 using Uniform.Mongodb;
+using Uniform.Sample.Common.Dispatching;
 using Uniform.Sample.Documents;
+using Uniform.Sample.Events;
 
 namespace Uniform.Sample
 {
@@ -20,9 +19,12 @@ namespace Uniform.Sample
     {
         public static void Main(string[] args)
         {
-            var metadata = new DatabaseMetadata(new List<Type> { typeof(UserDocument), typeof(QuestionDocument), typeof(CommentDocument)});
-            metadata.Analyze();
-            
+            var metadata = DatabaseMetadata.Create(config => config
+                .AddDocumentType<UserDocument>()
+                .AddDocumentType<QuestionDocument>()
+                .AddDocumentType<CommentDocument>()
+            );
+
             var repo = new MongoRepository("mongodb://localhost:27017/local");
 
             var events = new List<Object>();

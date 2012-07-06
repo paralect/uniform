@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 
-namespace Uniform.Common.Dispatching
+namespace Uniform.Sample.Common.Dispatching
 {
     public class DispatcherConfiguration
     {

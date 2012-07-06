@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Uniform.Common.Dispatching
+namespace Uniform.Sample.Common.Dispatching
 {
     public class DispatcherInvocationContext
     {

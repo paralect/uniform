@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 
-namespace Uniform.Common.Dispatching
+namespace Uniform.Sample.Common.Dispatching
 {
     public static class DispatcherConfigurationExtensions
     {

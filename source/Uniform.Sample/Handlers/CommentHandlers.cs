@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using Uniform.Common.Dispatching;
-using Uniform.Events;
-using Uniform.InMemory;
-using Uniform.Sample.Documents;
+﻿using Uniform.Sample.Common.Dispatching;
+using Uniform.Sample.Events;
 
-namespace Uniform.Handlers
+namespace Uniform.Sample.Handlers
 {
     public class CommentHandlers : IMessageHandler<CommentAdded>
     {

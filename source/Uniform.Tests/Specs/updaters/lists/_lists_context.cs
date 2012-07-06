@@ -10,7 +10,12 @@ namespace Uniform.Tests.Specs.updaters.lists
     {
         Establish context = () =>
         {
-            var metadata = new DatabaseMetadata(new List<Type>() { typeof(User), typeof(Student), typeof(School) });
+            var metadata = DatabaseMetadata.Create(config => config
+                .AddDocumentType<User>()
+                .AddDocumentType<Student>()
+                .AddDocumentType<School>()
+            );
+
             updater = new Updater(metadata);
 
             user = new User()

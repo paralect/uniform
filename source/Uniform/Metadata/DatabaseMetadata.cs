@@ -17,9 +17,18 @@ namespace Uniform
         private readonly List<Type> _documentTypes = new List<Type>();
         private readonly Dictionary<Type, List<DependentDocumentMetadata>> _map = new Dictionary<Type, List<DependentDocumentMetadata>>();
 
-        public DatabaseMetadata(List<Type> documentTypes)
+        public static DatabaseMetadata Create(Action<DatabaseMetadataConfiguration> configurator)
         {
-            _documentTypes = documentTypes;
+            var configuration = new DatabaseMetadataConfiguration();
+            configurator(configuration);
+            var metadata = new DatabaseMetadata(configuration);
+            metadata.Analyze();
+            return metadata;
+        }
+
+        public DatabaseMetadata(DatabaseMetadataConfiguration configuration)
+        {
+            _documentTypes = configuration.DocumentTypes;
         }
 
         public void Analyze()

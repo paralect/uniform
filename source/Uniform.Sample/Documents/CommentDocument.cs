@@ -2,7 +2,7 @@ using System;
 using MongoDB.Bson.Serialization.Attributes;
 using Uniform.Attributes;
 
-namespace Uniform.Documents
+namespace Uniform.Sample.Documents
 {
     [Collection("comments")]
     public class CommentDocument

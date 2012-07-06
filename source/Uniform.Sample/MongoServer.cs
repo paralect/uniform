@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Uniform
+namespace Uniform.Sample
 {
     public class MongoRepository
     {

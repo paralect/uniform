@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Uniform.Common.Dispatching
+namespace Uniform.Sample.Common.Dispatching
 {
     public class DispatcherHandlerRegistry
     {

@@ -1,9 +1,7 @@
-﻿using System;
-using Uniform.Common.Dispatching;
-using Uniform.Documents;
-using Uniform.Events;
+﻿using Uniform.Sample.Common.Dispatching;
+using Uniform.Sample.Events;
 
-namespace Uniform.Handlers
+namespace Uniform.Sample.Handlers
 {
     public class QuestionHandlers : IMessageHandler<QuestionCreated>, IMessageHandler<QuestionUpdated>
     {

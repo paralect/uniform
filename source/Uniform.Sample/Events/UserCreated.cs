@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Uniform.Events
+namespace Uniform.Sample.Events
 {
     public class UserCreated
     {

@@ -1,9 +1,8 @@
 using System;
 using MongoDB.Bson.Serialization.Attributes;
 using Uniform.Attributes;
-using Uniform.Sample.Documents;
 
-namespace Uniform.Documents
+namespace Uniform.Sample.Documents
 {
     [Collection("questions")]
     public class QuestionDocument

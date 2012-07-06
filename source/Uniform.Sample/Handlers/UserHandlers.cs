@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq.Expressions;
-using Uniform.Common.Dispatching;
-using Uniform.Documents;
-using Uniform.Events;
+﻿using Uniform.Sample.Common.Dispatching;
+using Uniform.Sample.Events;
 
-namespace Uniform.Handlers
+namespace Uniform.Sample.Handlers
 {
     public class UserHandlers : IMessageHandler<UserCreated>, IMessageHandler<UserNameChanged>
     {
