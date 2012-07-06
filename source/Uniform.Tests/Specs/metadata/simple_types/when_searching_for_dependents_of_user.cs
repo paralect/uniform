@@ -8,7 +8,7 @@ namespace Uniform.Tests.Specs.metadata.simple_types
         Because of = () =>
             dependences = metadata.GetDependents(typeof (User));
 
-        It should_have_only_one_type_that_depends_on_student = () =>
+        It should_not_have_types_that_depends_on_user = () =>
             dependences.Count.ShouldEqual(0);
 
         private static List<DependentDocumentMetadata> dependences;

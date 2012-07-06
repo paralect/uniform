@@ -58,17 +58,38 @@ namespace Uniform
                 // add current propertyInfo to path
                 newPath.Add(propertyInfo);
 
-                if (IsDocumentType(propertyInfo.PropertyType))
+                Type documentType;
+                Boolean isList = IsList(propertyInfo.PropertyType, out documentType);
+
+                if (!isList)
+                     documentType = propertyInfo.PropertyType;
+
+                if (IsDocumentType(documentType))
                 {
                     var dep = new DependentDocumentMetadata(originalType, new List<PropertyInfo>(newPath));
 
-                    var list = GetDependents(propertyInfo.PropertyType);
+                    var list = GetDependents(documentType);
                     list.Add(dep);
                 }
 
                 if (!propertyInfo.PropertyType.IsPrimitive && propertyInfo.PropertyType != typeof(String))
-                    AnalyzeType(originalType, newPath, propertyInfo.PropertyType);
+                    AnalyzeType(originalType, newPath, documentType);
             }
+        }
+
+        /// <summary>
+        /// Only List(T) supported for now
+        /// </summary>
+        private Boolean IsList(Type type, out Type itemType)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                itemType = type.GetGenericArguments()[0];
+                return true;
+            }
+
+            itemType = null;
+            return false;
         }
 
         /// <summary>
