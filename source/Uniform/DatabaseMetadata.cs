@@ -8,6 +8,10 @@ using Uniform.Utils;
 
 namespace Uniform
 {
+    /// <summary>
+    /// Database metadata, contains all document types and provides some
+    /// metadata related services.
+    /// </summary>
     public class DatabaseMetadata
     {
         private readonly List<Type> _documentTypes = new List<Type>();

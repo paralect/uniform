@@ -3,19 +3,12 @@ using System.Linq;
 
 namespace Uniform
 {
-    public interface ICollection<TDocument> : ICollection
+    public interface ICollection<TDocument>
     {
         new TDocument GetById(String key);
         void Save(String key, TDocument obj);
         void Save(String key, Action<TDocument> creator);
         void Update(String key, Action<TDocument> updater);
-    }
-
-    public interface ICollection
-    {
-        Object GetById(String key);
-        void Save(String key, Object obj);
-        void Update(String key, Action<Object> updater);
         void Delete(String key);
     }
 }
