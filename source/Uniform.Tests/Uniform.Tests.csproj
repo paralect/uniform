@@ -50,6 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Specs\metadata\circular\when_metadata_created_for_circular_types.cs" />
+    <Compile Include="Specs\metadata\circular\when_metadata_created_for_three_types_with_circular_dependency.cs" />
+    <Compile Include="Specs\metadata\circular\when_metadata_created_for_three_types_with_circular_dependency_regestered_in_different_order.cs" />
+    <Compile Include="Specs\metadata\circular\_circular_context.cs" />
     <Compile Include="Specs\metadata\many\when_searching_for_dependents_of_school.cs" />
     <Compile Include="Specs\metadata\many\when_searching_for_dependents_of_student.cs" />
     <Compile Include="Specs\metadata\many\_many_context.cs" />

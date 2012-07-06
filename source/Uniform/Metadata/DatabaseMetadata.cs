@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Bson.Serialization.Attributes;
+using Uniform.Exceptions;
 using Uniform.Utils;
 
 namespace Uniform
@@ -52,25 +53,28 @@ namespace Uniform
 
             foreach (var propertyInfo in infos)
             {
+                Type documentType;
+                Boolean isList = IsList(propertyInfo.PropertyType, out documentType);
+
+                if (!isList)
+                    documentType = propertyInfo.PropertyType;
+
+                if (!IsDocumentType(documentType))
+                    continue;
+
+                if (originalType == documentType)
+                    throw new CircularDependencyNotSupportedException(documentType, type);
+
                 // Copy path to new list
                 var newPath = new List<PropertyInfo>(path);
 
                 // add current propertyInfo to path
                 newPath.Add(propertyInfo);
 
-                Type documentType;
-                Boolean isList = IsList(propertyInfo.PropertyType, out documentType);
+                var dep = new DependentDocumentMetadata(originalType, new List<PropertyInfo>(newPath));
 
-                if (!isList)
-                     documentType = propertyInfo.PropertyType;
-
-                if (IsDocumentType(documentType))
-                {
-                    var dep = new DependentDocumentMetadata(originalType, new List<PropertyInfo>(newPath));
-
-                    var list = GetDependents(documentType);
-                    list.Add(dep);
-                }
+                var list = GetDependents(documentType);
+                list.Add(dep);
 
                 if (!propertyInfo.PropertyType.IsPrimitive && propertyInfo.PropertyType != typeof(String))
                     AnalyzeType(originalType, newPath, documentType);
