@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using MongoDB.Bson.Serialization.Attributes;
-using Uniform.Attributes;
 using Uniform.Utils;
 
 namespace Uniform
@@ -53,14 +52,15 @@ namespace Uniform
 
             foreach (var propertyInfo in infos)
             {
+                // Copy path to new list
                 var newPath = new List<PropertyInfo>(path);
+
+                // add current propertyInfo to path
                 newPath.Add(propertyInfo);
 
                 if (IsDocumentType(propertyInfo.PropertyType))
                 {
-                    var dep = new DependentDocumentMetadata();
-                    dep.DependentDocumentType = originalType;
-                    dep.SourceDocumentPath = new List<PropertyInfo>(newPath);
+                    var dep = new DependentDocumentMetadata(originalType, new List<PropertyInfo>(newPath));
 
                     var list = GetDependents(propertyInfo.PropertyType);
                     list.Add(dep);
@@ -166,6 +166,12 @@ namespace Uniform
     {
         public Type DependentDocumentType { get; set; }
         public List<PropertyInfo> SourceDocumentPath { get; set; }
+
+        public DependentDocumentMetadata(Type dependentDocumentType, List<PropertyInfo> sourceDocumentPath)
+        {
+            DependentDocumentType = dependentDocumentType;
+            SourceDocumentPath = sourceDocumentPath;
+        }
 
         public DependentDocumentMetadata()
         {

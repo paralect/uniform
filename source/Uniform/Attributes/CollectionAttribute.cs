@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Uniform.Attributes
+namespace Uniform
 {
     public class CollectionAttribute : Attribute
     {

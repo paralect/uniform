@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Uniform.Utils
 {
@@ -7,7 +8,7 @@ namespace Uniform.Utils
         /// <summary>
         /// Returns attribute instance for specified type. Will return default type value if not found or not single.
         /// </summary>
-        public static TAttribute GetSingleAttribute<TAttribute>(Type type)
+        public static TAttribute GetSingleAttribute<TAttribute>(MemberInfo type)
         {
             var identities = type.GetCustomAttributes(typeof(TAttribute), false);
 

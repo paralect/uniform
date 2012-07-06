@@ -1,7 +1,6 @@
 ﻿using System;
 using Machine.Specifications;
 using MongoDB.Bson.Serialization.Attributes;
-using Uniform.Attributes;
 
 namespace Uniform.Tests.Specs.metadata.simple_types
 {
