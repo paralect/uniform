@@ -4,8 +4,9 @@ using System.Collections.Generic;
 namespace Uniform.InMemory
 {
     /// <summary>
-    /// In-memory simple database, that organized to collections. 
+    /// In-memory simple database, that contains documents, organized in collections. 
     /// Each collection can contains only one type of documents.
+    /// Not thread-safe.
     /// </summary>
     public class InMemoryDatabase : IDatabase
     {

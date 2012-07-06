@@ -5,61 +5,99 @@ using Uniform.Utils;
 
 namespace Uniform.InMemory
 {
+    /// <summary>
+    /// In-memory simple typed collection of documents.
+    /// Collection always consists only of one type of documents.
+    /// Not thread-safe.
+    /// </summary>
     public class InMemoryCollection<TDocument> : ICollection<TDocument>
     {
-        private readonly Dictionary<string, TDocument> _documents = new Dictionary<string, TDocument>();
+        /// <summary>
+        /// Main data structure that contains all documents of type TDocument, hashed by key
+        /// </summary>
+        private readonly Dictionary<String, TDocument> _documents = new Dictionary<String, TDocument>();
 
-        Object ICollection.GetById(String key)
+        /// <summary>
+        /// Returns document by it's key. 
+        /// If document doesn't exists - default(TDocument) will be returned.
+        /// </summary>
+        public TDocument GetById(String key)
         {
-            TDocument value;
-            if (!_documents.TryGetValue(key, out value))
-                throw new Exception("Document not available");
+            TDocument document;
+            if (!_documents.TryGetValue(key, out document))
+                return default(TDocument);
 
-            return value;
+            return document;
         }
 
-        public TDocument GetById(string key)
+        /// <summary>
+        /// Saves document to collection using specified key.
+        /// If document with such key already exists, it will be silently overwritten.
+        /// </summary>
+        public void Save(String key, TDocument obj)
         {
-            return (TDocument) ((ICollection)this).GetById(key);
+            SaveInternal(key, obj);
         }
 
-        public void Delete(string key)
+        /// <summary>
+        /// Saves document to collection using specified key. 
+        /// 'Creator' function will be applied to automatically created document of type TDocument.
+        /// If document with such key already exists, it will be silently overwritten.
+        /// </summary>
+        public void Save(String key, Action<TDocument> creator)
+        {
+            var document = Activator.CreateInstance<TDocument>();
+            creator(document);
+            SaveInternal(key, document);
+        }
+
+        /// <summary>
+        /// Updates document with specified key.
+        /// If document with such key doesn't exist, update will be discarded - i.e. no changes  to collection will be made. 
+        /// See UpdateOrSave() method, if you need a kind of "upsert" behaviour.
+        /// </summary>
+        public void Update(String key, Action<TDocument> updater)
+        {
+            var document = GetById(key);
+
+            // if document doesn't exists (i.e. equal to default(TDocument)), stop
+            if (EqualityComparer<TDocument>.Default.Equals(document, default(TDocument)))
+                return;
+
+            updater(document);
+            SaveInternal(key, document);
+        }
+
+        /// <summary>
+        /// Updates document with specified key.
+        /// If document with such key doesn't exists, new document will be created and 'updater' function will be applied to 
+        /// this newly created document.
+        /// </summary>
+        public void UpdateOrSave(String key, Action<TDocument> updater)
+        {
+            var document = GetById(key);
+
+            // if document doesn't exists (i.e. equal to default(TDocument)), stop
+            if (EqualityComparer<TDocument>.Default.Equals(document, default(TDocument)))
+                document = Activator.CreateInstance<TDocument>();
+
+            updater(document);
+            SaveInternal(key, document);
+        }
+
+        /// <summary>
+        /// Deletes document with specified key.
+        /// If document with such key doesn't exists - no changes to collection will be made.
+        /// </summary>
+        public void Delete(String key)
         {
             _documents.Remove(key);
         }
 
-        public void Update(String key, Action<Object> updater)
-        {
-            var obj = GetById(key);
-            updater(obj);
-            InternalSave(key, obj, true);
-        }
-
-        public void Update(string key, Action<TDocument> updater)
-        {
-            var obj = GetById(key);
-            updater(obj);
-            InternalSave(key, obj, true);
-        }
-
-        public void Save(String key, Object obj)
-        {
-            InternalSave(key, (TDocument) obj);
-        }
-
-        public void Save(string key, TDocument obj)
-        {
-            InternalSave(key, obj);
-        }
-
-        public void Save(string key, Action<TDocument> creator)
-        {
-            var doc = Activator.CreateInstance<TDocument>();
-            creator(doc);
-            InternalSave(key, doc);
-        }
-
-        private void InternalSave(String key, TDocument document, Boolean updated = false)
+        /// <summary>
+        /// Saves document, by ovewriting possible existed document.
+        /// </summary>
+        private void SaveInternal(String key, TDocument document)
         {
             _documents[key] = document;
         }

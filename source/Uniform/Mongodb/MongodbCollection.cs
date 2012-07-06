@@ -9,69 +9,41 @@ using MongoDB.Driver.Linq;
 
 namespace Uniform.Mongodb
 {
-    public class MongodbCollection : ICollection
+    public class MongodbCollection<TDocument> : ICollection<TDocument>
     {
-        private readonly string _name;
         private readonly MongodbDatabase _db;
-        private MongoCollection _collection;
+        private readonly MongoCollection<TDocument> _collection;
 
         public MongodbCollection(String name, MongodbDatabase db)
         {
-            _name = name;
             _db = db;
-            _collection = _db.Database.GetCollection(name);
-        }
-
-        public object GetById(string key)
-        {
-            return _collection.FindOneAs<BsonDocument>(Query.EQ("_id", key));
-        }
-
-        public void Save(string key, object obj)
-        {
-            _db.Helper.SetDocumentId(obj, key);
-            _collection.Save(obj);
-        }
-
-        public void Update(string key, Action<object> updater)
-        {
-            var doc = _collection.FindOneByIdAs<BsonDocument>(key);
-            updater(doc);
-            Save(key, doc);
-        }
-
-        public void Delete(string key)
-        {
-            _collection.Remove(Query.EQ("_id", key));
-        }
-    }
-
-    public class MongodbCollection<TDocument> : ICollection<TDocument>
-    {
-        private readonly string _name;
-        private readonly MongodbDatabase _db;
-        private readonly MongodbCollection _typelessCollection;
-        private readonly MongoCollection<TDocument> _collection;
-
-        public MongodbCollection(String name, MongodbDatabase db, MongodbCollection typelessCollection)
-        {
-            _name = name;
-            _db = db;
-            _typelessCollection = typelessCollection;
             _collection = _db.Database.GetCollection<TDocument>(name);
         }
 
-        object ICollection.GetById(string key)
+        /// <summary>
+        /// Returns document by it's key. 
+        /// If document doesn't exists - default(TDocument) will be returned.
+        /// </summary>
+        public TDocument GetById(String key)
         {
-            return _typelessCollection.GetById(key);
+            return _collection.FindOneById(key);
         }
 
-        public void Save(string key, TDocument obj)
+        /// <summary>
+        /// Saves document to collection using specified key.
+        /// If document with such key already exists, it will be silently overwritten.
+        /// </summary>
+        public void Save(String key, TDocument obj)
         {
             _db.Helper.SetDocumentId(obj, key);
             _collection.Save(obj);
         }
 
+        /// <summary>
+        /// Saves document to collection using specified key. 
+        /// 'Creator' function will be applied to automatically created document of type TDocument.
+        /// If document with such key already exists, it will be silently overwritten.
+        /// </summary>
         public void Save(String key, Action<TDocument> creator)
         {
             var doc = Activator.CreateInstance<TDocument>();
@@ -79,13 +51,51 @@ namespace Uniform.Mongodb
             Save(key, doc);
         }
 
+        /// <summary>
+        /// Updates document with specified key.
+        /// If document with such key doesn't exist, update will be discarded - i.e. no changes  to collection will be made. 
+        /// See UpdateOrSave() method, if you need a kind of "upsert" behaviour.
+        /// </summary>
         public void Update(String key, Action<TDocument> updater)
         {
-            var doc = _collection.FindOneById(key);
-            updater(doc);
-            _db.Helper.SetDocumentId(doc, key);
-            _collection.Save(doc);
-            UpdateDependentDocuments(key, doc);
+            var document = GetById(key);
+
+            // if document doesn't exists (i.e. equal to default(TDocument)), stop
+            if (EqualityComparer<TDocument>.Default.Equals(document, default(TDocument)))
+                return;
+
+            updater(document);
+            _db.Helper.SetDocumentId(document, key);
+            Save(key, document);
+            UpdateDependentDocuments(key, document);
+        }
+
+        /// <summary>
+        /// Updates document with specified key.
+        /// If document with such key doesn't exists, new document will be created and 'updater' function will be applied to 
+        /// this newly created document.
+        /// </summary>
+        public void UpdateOrSave(String key, Action<TDocument> updater)
+        {
+            var document = GetById(key);
+
+            // if document doesn't exists (i.e. equal to default(TDocument)), stop
+            if (EqualityComparer<TDocument>.Default.Equals(document, default(TDocument)))
+                document = Activator.CreateInstance<TDocument>();
+
+            updater(document);
+            _db.Helper.SetDocumentId(document, key);
+            Save(key, document);
+            UpdateDependentDocuments(key, document);
+        }
+
+        /// <summary>
+        /// Deletes document with specified key.
+        /// If document with such key doesn't exists - no changes to collection will be made.
+        /// </summary>
+        public void Delete(string key)
+        {
+            _collection.Remove(Query.EQ("_id", key));
         }
 
         public void UpdateDependentDocuments(String key, TDocument doc)
@@ -99,11 +109,6 @@ namespace Uniform.Mongodb
             }            
         }
 
-        public Dictionary<Type, List<PropertyInfo>> Distill()
-        {
-            return null;
-        }
-
         public void UpdateCollection(String key, Object doc, Type documentType, MongodbDependencyBuilder builder, List<PropertyInfo> infos)
         {
             var collectionName = _db.Metadata.GetCollectionName(documentType);
@@ -111,26 +116,6 @@ namespace Uniform.Mongodb
             var pathToQuery = builder.PathToQuery(infos, key);
             var pathToUpdate = builder.PathToUpdate(infos, BsonDocumentWrapper.Create(doc));
             col.Update(pathToQuery, pathToUpdate, UpdateFlags.Multi);
-        }
-
-        public TDocument GetById(String key)
-        {
-            return _collection.FindOneById(key);
-        }
-
-        public void Save(String key, Object obj)
-        {
-            _typelessCollection.Save(key, obj);
-        }
-
-        public void Update(String key, Action<Object> updater)
-        {
-            _typelessCollection.Update(key, updater);
-        }
-
-        public void Delete(string key)
-        {
-            _collection.Remove(Query.EQ("_id", key));
         }
     }
 }

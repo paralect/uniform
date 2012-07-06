@@ -54,14 +54,9 @@ namespace Uniform.Mongodb
             get { return _server.GetDatabase(_databaseName); }
         }
 
-        public ICollection GetCollection(string name)
-        {
-            return new MongodbCollection(name, this);
-        }
-
         public ICollection<TDocument> GetCollection<TDocument>(string name)
         {
-            return new MongodbCollection<TDocument>(name, this, new MongodbCollection(name, this));
+            return new MongodbCollection<TDocument>(name, this);
         }
 
         public ICollection<TDocument> GetCollection<TDocument>()
