@@ -37,6 +37,9 @@ namespace Uniform.Mongodb
                 var propertyInfo = infos[i];
                 builder.Append(propertyInfo.Name);
 
+                if (IsList(propertyInfo.PropertyType))
+                    builder.Append(".$");
+
                 if (i != infos.Count - 1)
                     builder.Append(".");
             }
@@ -53,6 +56,18 @@ namespace Uniform.Mongodb
         {
             return Update.Set(BuildUpdateString(infos), value);
         }
+
+        /// <summary>
+        /// Only List(T) supported for now
+        /// </summary>
+        private Boolean IsList(Type type)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                return true;
+
+            return false;
+        }
+
 
     }
 }

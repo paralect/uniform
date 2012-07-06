@@ -134,13 +134,7 @@ namespace Uniform.Mongodb
             var col = _database.Database.GetCollection(collectionName);
             var pathToQuery = builder.PathToQuery(infos, key);
             var pathToUpdate = builder.PathToUpdate(infos, BsonDocumentWrapper.Create(doc));
-            col.Update(pathToQuery, pathToUpdate, UpdateFlags.Multi);
+            col.Update(pathToQuery, pathToUpdate, UpdateFlags.Multi, SafeMode.False);
         }
     }
 }
-
-
-
-
-// var pathToUpdate = builder.PathToUpdate(dependent.SourceDocumentPath, BsonDocumentWrapper.Create(doc));
-// col.Update(pathToQuery, pathToUpdate);

@@ -72,5 +72,23 @@ namespace Uniform.Sample.Events
         }
     }
 
+    public class VoteAdded
+    {
+        public String VoteId { get; set; }
+        public String CommentId { get; set; }
+        public String UserId { get; set; }
+        public String Content { get; set; }
+
+        public VoteAdded(string voteId, string commentId, string userId, string content)
+        {
+            VoteId = voteId;
+            CommentId = commentId;
+            UserId = userId;
+            Content = content;
+        }
+    }
+
+
+
 
 }

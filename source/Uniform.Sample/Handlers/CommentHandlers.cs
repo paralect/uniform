@@ -1,9 +1,10 @@
 ﻿using Uniform.Sample.Common.Dispatching;
+using Uniform.Sample.Documents;
 using Uniform.Sample.Events;
 
 namespace Uniform.Sample.Handlers
 {
-    public class CommentHandlers : IMessageHandler<CommentAdded>
+    public class CommentHandlers : IMessageHandler<CommentAdded>, IMessageHandler<VoteAdded>
     {
         private readonly MyDatabase _db;
 
@@ -26,5 +27,19 @@ namespace Uniform.Sample.Handlers
             var user = _db.Users.GetById(message.UserId);
             user.About = "Hello";
         }
-   }
+
+        public void Handle(VoteAdded message)
+        {
+            _db.Comments.Update(message.CommentId, comment =>
+            {
+                comment.Votes.Add(new VoteDocument()
+                {
+                    Content = message.Content,
+                    UserId = message.UserId,
+                    VoteId = message.VoteId,
+                    UserDocument = _db.Users.GetById(message.UserId)
+                });
+            });
+        }
+    }
 }

@@ -69,6 +69,7 @@
     <Compile Include="Common\Dispatching\DispatcherConfigurationExtensions.cs" />
     <Compile Include="Common\Dispatching\DispatcherHandlerRegistry.cs" />
     <Compile Include="Common\Dispatching\DispatcherInvocationContext.cs" />
+    <Compile Include="Documents\VoteDocument.cs" />
     <Compile Include="Documents\CommentDocument.cs" />
     <Compile Include="Documents\QuestionDocument.cs" />
     <Compile Include="Documents\UserDocument.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Handlers\CommentHandlers.cs" />
     <Compile Include="Handlers\QuestionHandlers.cs" />
     <Compile Include="Handlers\UserHandlers.cs" />
+    <Compile Include="Handlers\VoteHandlers.cs" />
     <Compile Include="MongoServer.cs" />
     <Compile Include="MyDatabase.cs" />
     <Compile Include="Program.cs" />

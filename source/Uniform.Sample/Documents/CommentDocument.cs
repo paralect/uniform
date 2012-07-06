@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Uniform.Sample.Documents
@@ -13,5 +14,12 @@ namespace Uniform.Sample.Documents
         public String Content { get; set; }
 
         public QuestionDocument QuestionDocument { get; set; }
+
+        public List<VoteDocument> Votes { get; set; }
+
+        public CommentDocument()
+        {
+            Votes = new List<VoteDocument>();
+        }
     }
 }

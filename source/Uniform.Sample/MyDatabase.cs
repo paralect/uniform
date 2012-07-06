@@ -26,6 +26,11 @@ namespace Uniform.Sample
             get { return _database.GetCollection<CommentDocument>(); }
         }
 
+        public ICollection<VoteDocument> Votes
+        {
+            get { return _database.GetCollection<VoteDocument>(); }
+        }
+
 
     }
 }
