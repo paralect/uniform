@@ -9,6 +9,12 @@ namespace Uniform
     public interface IDatabase
     {
         /// <summary>
+        /// Database metadata, contains all document types and provides some
+        /// metadata related services.
+        /// </summary>
+        DatabaseMetadata Metadata { get; }
+
+        /// <summary>
         /// Gets collection with specifed name that contains documents of specified type (TDocument)
         /// Will be created, if not already exists.
         /// </summary>

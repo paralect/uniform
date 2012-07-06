@@ -82,24 +82,41 @@ namespace Uniform
             return name;
         }
 
-        private readonly Dictionary<Type, PropertyInfo> _cache = new Dictionary<Type, PropertyInfo>();
+        #region ID properties services
+        /// <summary>
+        /// Cache for ID properties. (DocumentType -> Id PropertyInfo)
+        /// </summary>
+        private readonly Dictionary<Type, PropertyInfo> _idPropertiesCache = new Dictionary<Type, PropertyInfo>();
 
-        public Object GetDocumentId(Object obj)
+        /// <summary>
+        /// Returns document id value. 
+        /// </summary>
+        public Object GetDocumentId(Object document)
         {
-            var info = GetDocumentIdPropertyInfo(obj.GetType());
-            return info.GetValue(obj, new object[0]);
+            if (document == null)
+                throw new ArgumentNullException("document");
+
+            var info = GetDocumentIdPropertyInfo(document.GetType());
+            return info.GetValue(document, new object[0]);
         }
 
+        /// <summary>
+        /// Sets id property to specified value. 
+        /// </summary>
         public void SetDocumentId(Object obj, Object value)
         {
+            if (obj == null) throw new ArgumentNullException("obj");
+
             var info = GetDocumentIdPropertyInfo(obj.GetType());
             info.SetValue(obj, value, new object[0]);
         }
 
         private PropertyInfo GetDocumentIdPropertyInfo(Type type)
         {
+            if (type == null) throw new ArgumentNullException("type");
+
             PropertyInfo info;
-            if (!_cache.TryGetValue(type, out info))
+            if (!_idPropertiesCache.TryGetValue(type, out info))
             {
                 PropertyInfo[] propertyInfos = type.GetProperties()
                     .Where(x => Attribute.IsDefined(x, typeof(BsonIdAttribute), false))
@@ -109,12 +126,13 @@ namespace Uniform
                     throw new Exception(String.Format(
                         "Document of type '{0}' does not have id property, marked with [BsonId] attribute. Please mark it :)'", type.FullName));
 
-                _cache[type] = info = propertyInfos[0];
+                _idPropertiesCache[type] = info = propertyInfos[0];
             }
 
             return info;
         }
 
+        #endregion
     }
 
     public class DependentDocumentMetadata

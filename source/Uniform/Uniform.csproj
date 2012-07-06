@@ -91,7 +91,6 @@
   <ItemGroup>
     <Compile Include="Attributes\CollectionAttribute.cs" />
     <Compile Include="DatabaseMetadata.cs" />
-    <Compile Include="DocumentHelper.cs" />
     <Compile Include="InMemory\InMemoryCollection.cs" />
     <Compile Include="InMemory\InMemoryDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

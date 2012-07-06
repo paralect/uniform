@@ -22,6 +22,15 @@ namespace Uniform.InMemory
         private readonly Dictionary<String, Object> _collections = new Dictionary<String, Object>();
 
         /// <summary>
+        /// Database metadata, contains all document types and provides some
+        /// metadata related services.
+        /// </summary>
+        public DatabaseMetadata Metadata
+        {
+            get { return _metadata; }
+        }
+
+        /// <summary>
         /// Creates in-memory database with specified metadata
         /// </summary>
         public InMemoryDatabase(DatabaseMetadata metadata)
@@ -35,6 +44,8 @@ namespace Uniform.InMemory
         /// </summary>
         public ICollection<TDocument> GetCollection<TDocument>(string name)
         {
+            if (name == null) throw new ArgumentNullException("name");
+
             Object collection;
             if (!_collections.TryGetValue(name, out collection))
                 _collections[name] = collection = new InMemoryCollection<TDocument>();

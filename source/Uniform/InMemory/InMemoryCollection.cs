@@ -23,6 +23,8 @@ namespace Uniform.InMemory
         /// </summary>
         public TDocument GetById(String key)
         {
+            if (key == null) throw new ArgumentNullException("key");
+
             TDocument document;
             if (!_documents.TryGetValue(key, out document))
                 return default(TDocument);
@@ -34,9 +36,13 @@ namespace Uniform.InMemory
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
-        public void Save(String key, TDocument obj)
+        public void Save(String key, TDocument document)
         {
-            SaveInternal(key, obj);
+            if (key == null) throw new ArgumentNullException("key");
+            if (EqualityComparer<TDocument>.Default.Equals(document, default(TDocument)))
+                throw new ArgumentNullException("document");
+
+            SaveInternal(key, document);
         }
 
         /// <summary>
@@ -46,6 +52,9 @@ namespace Uniform.InMemory
         /// </summary>
         public void Save(String key, Action<TDocument> creator)
         {
+            if (key == null) throw new ArgumentNullException("key");
+            if (creator == null) throw new ArgumentNullException("creator");
+
             var document = Activator.CreateInstance<TDocument>();
             creator(document);
             SaveInternal(key, document);
@@ -58,6 +67,9 @@ namespace Uniform.InMemory
         /// </summary>
         public void Update(String key, Action<TDocument> updater)
         {
+            if (key == null) throw new ArgumentNullException("key");
+            if (updater == null) throw new ArgumentNullException("updater");
+
             var document = GetById(key);
 
             // if document doesn't exists (i.e. equal to default(TDocument)), stop
@@ -75,6 +87,9 @@ namespace Uniform.InMemory
         /// </summary>
         public void UpdateOrSave(String key, Action<TDocument> updater)
         {
+            if (key == null) throw new ArgumentNullException("key");
+            if (updater == null) throw new ArgumentNullException("updater");
+
             var document = GetById(key);
 
             // if document doesn't exists (i.e. equal to default(TDocument)), stop
@@ -91,6 +106,7 @@ namespace Uniform.InMemory
         /// </summary>
         public void Delete(String key)
         {
+            if (key == null) throw new ArgumentNullException("key");
             _documents.Remove(key);
         }
 

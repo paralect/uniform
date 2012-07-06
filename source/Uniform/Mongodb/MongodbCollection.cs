@@ -11,13 +11,15 @@ namespace Uniform.Mongodb
 {
     public class MongodbCollection<TDocument> : ICollection<TDocument>
     {
-        private readonly MongodbDatabase _db;
+        private readonly MongodbDatabase _database;
         private readonly MongoCollection<TDocument> _collection;
 
-        public MongodbCollection(String name, MongodbDatabase db)
+        public MongodbCollection(MongodbDatabase database, String name)
         {
-            _db = db;
-            _collection = _db.Database.GetCollection<TDocument>(name);
+            if (name == null) throw new ArgumentNullException("name");
+
+            _database = database;
+            _collection = _database.Database.GetCollection<TDocument>(name);
         }
 
         /// <summary>
@@ -26,6 +28,8 @@ namespace Uniform.Mongodb
         /// </summary>
         public TDocument GetById(String key)
         {
+            if (key == null) throw new ArgumentNullException("key");
+
             return _collection.FindOneById(key);
         }
 
@@ -33,10 +37,14 @@ namespace Uniform.Mongodb
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
-        public void Save(String key, TDocument obj)
+        public void Save(String key, TDocument document)
         {
-            _db.Helper.SetDocumentId(obj, key);
-            _collection.Save(obj);
+            if (key == null) throw new ArgumentNullException("key");
+            if (EqualityComparer<TDocument>.Default.Equals(document, default(TDocument)))
+                throw new ArgumentNullException("document");
+
+            _database.Metadata.SetDocumentId(document, key);
+            _collection.Save(document);
         }
 
         /// <summary>
@@ -46,6 +54,9 @@ namespace Uniform.Mongodb
         /// </summary>
         public void Save(String key, Action<TDocument> creator)
         {
+            if (key == null) throw new ArgumentNullException("key");
+            if (creator == null) throw new ArgumentNullException("creator");
+
             var doc = Activator.CreateInstance<TDocument>();
             creator(doc);
             Save(key, doc);
@@ -58,6 +69,9 @@ namespace Uniform.Mongodb
         /// </summary>
         public void Update(String key, Action<TDocument> updater)
         {
+            if (key == null) throw new ArgumentNullException("key");
+            if (updater == null) throw new ArgumentNullException("updater");
+
             var document = GetById(key);
 
             // if document doesn't exists (i.e. equal to default(TDocument)), stop
@@ -65,7 +79,7 @@ namespace Uniform.Mongodb
                 return;
 
             updater(document);
-            _db.Helper.SetDocumentId(document, key);
+            _database.Metadata.SetDocumentId(document, key);
             Save(key, document);
             UpdateDependentDocuments(key, document);
         }
@@ -77,6 +91,9 @@ namespace Uniform.Mongodb
         /// </summary>
         public void UpdateOrSave(String key, Action<TDocument> updater)
         {
+            if (key == null) throw new ArgumentNullException("key");
+            if (updater == null) throw new ArgumentNullException("updater");
+
             var document = GetById(key);
 
             // if document doesn't exists (i.e. equal to default(TDocument)), stop
@@ -84,7 +101,7 @@ namespace Uniform.Mongodb
                 document = Activator.CreateInstance<TDocument>();
 
             updater(document);
-            _db.Helper.SetDocumentId(document, key);
+            _database.Metadata.SetDocumentId(document, key);
             Save(key, document);
             UpdateDependentDocuments(key, document);
         }
@@ -93,15 +110,17 @@ namespace Uniform.Mongodb
         /// Deletes document with specified key.
         /// If document with such key doesn't exists - no changes to collection will be made.
         /// </summary>
-        public void Delete(string key)
+        public void Delete(String key)
         {
+            if (key == null) throw new ArgumentNullException("key");
+
             _collection.Remove(Query.EQ("_id", key));
         }
 
         public void UpdateDependentDocuments(String key, TDocument doc)
         {
-            var builder = new MongodbDependencyBuilder(_db.Metadata);
-            var deps = _db.Metadata.GetDependents(typeof(TDocument));
+            var builder = new MongodbDependencyBuilder(_database.Metadata);
+            var deps = _database.Metadata.GetDependents(typeof(TDocument));
 
             foreach (var dependent in deps)
             {
@@ -111,8 +130,8 @@ namespace Uniform.Mongodb
 
         public void UpdateCollection(String key, Object doc, Type documentType, MongodbDependencyBuilder builder, List<PropertyInfo> infos)
         {
-            var collectionName = _db.Metadata.GetCollectionName(documentType);
-            var col = _db.Database.GetCollection(collectionName);
+            var collectionName = _database.Metadata.GetCollectionName(documentType);
+            var col = _database.Database.GetCollection(collectionName);
             var pathToQuery = builder.PathToQuery(infos, key);
             var pathToUpdate = builder.PathToUpdate(infos, BsonDocumentWrapper.Create(doc));
             col.Update(pathToQuery, pathToUpdate, UpdateFlags.Multi);
