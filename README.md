@@ -5,6 +5,8 @@ Uniform defines simple abstraction for key-value database. Two implementations a
 and MongodbDatabase. By using one abstraction, you are able to run your database entirely in-memory or using MongoDB
 as a storage.
 
+  * [Collection-Operations](/paralect/uniform/wiki/Collection-Operations)
+
 
 ## Uniform Database
 
