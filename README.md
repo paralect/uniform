@@ -6,4 +6,4 @@ and MongodbDatabase. By using one abstraction, you are able to run your database
 as a storage.
 
   * [Collection Operations](/paralect/uniform/wiki/Collection-Operations) - lists all possible operations that 
-                                                                          - you can do with `Uniform.ICollections` collections.
+     you can do with `Uniform.ICollections` collections.
