@@ -5,8 +5,8 @@ Uniform defines simple abstraction for key-value database. Two implementations a
 and MongodbDatabase. By using one abstraction, you are able to run your code in-memory or using MongoDB.
 
 
-Uniform Database
-=========
+## Uniform Database
+
 
 Abstraction for document database. Here is an interface:
 
@@ -39,8 +39,8 @@ public interface IDatabase
 ```
 
 
-Uniform Collection
-==================
+## Uniform Collection
+
 
 Abstraction for document collection. Collection can contains only documents of one type.
 
