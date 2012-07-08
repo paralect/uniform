@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
 namespace Uniform.Mongodb
@@ -47,7 +48,7 @@ namespace Uniform.Mongodb
             return builder.ToString();
         }
 
-        public QueryComplete PathToQuery(List<PropertyInfo> infos, String key)
+        public IMongoQuery PathToQuery(List<PropertyInfo> infos, String key)
         {
             return Query.EQ(BuildQueryString(infos), key);
         }
