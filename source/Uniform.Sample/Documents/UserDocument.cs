@@ -8,8 +8,7 @@ namespace Uniform.Sample.Documents
     {
         [BsonId]
         public String UserId { get; set; }
-
-        public string UserName { get; set; }
+        public String UserName { get; set; }
         public String About { get; set; }
     }
 }

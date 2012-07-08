@@ -19,13 +19,13 @@ namespace Uniform
             return configuration;
         }
 
-        public static DatabaseMetadataConfiguration AddDocumentTypes(this DatabaseMetadataConfiguration configuration, Assembly assembly, String fullNameStartsFrom = null)
+        public static DatabaseMetadataConfiguration AddDocumentTypes(this DatabaseMetadataConfiguration configuration, Assembly assembly, String fullNamePrefix = null)
         {
             var result = GetTypesWithAttribute<CollectionAttribute>(new[] { assembly });
 
-            if (fullNameStartsFrom != null)
+            if (fullNamePrefix != null)
                 result = result
-                    .Where(t => t.FullName != null && t.FullName.StartsWith(fullNameStartsFrom));
+                    .Where(t => t.FullName != null && t.FullName.StartsWith(fullNamePrefix));
 
             configuration.DocumentTypes.AddRange(result);
             return configuration;
