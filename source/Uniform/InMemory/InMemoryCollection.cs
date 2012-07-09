@@ -10,12 +10,20 @@ namespace Uniform.InMemory
     /// Collection always consists only of one type of documents.
     /// Not thread-safe.
     /// </summary>
-    public class InMemoryCollection<TDocument> : ICollection<TDocument>
+    public class InMemoryCollection<TDocument> : ICollection<TDocument>, IInMemoryCollection
     {
         /// <summary>
         /// Main data structure that contains all documents of type TDocument, hashed by key
         /// </summary>
-        private readonly Dictionary<String, TDocument> _documents = new Dictionary<String, TDocument>();
+        private readonly Dictionary<String, Object> _documents = new Dictionary<String, Object>();
+
+        /// <summary>
+        /// Main data structure that contains all documents of type TDocument, hashed by key
+        /// </summary>
+        public Dictionary<String, Object> Documents
+        {
+            get { return _documents; }
+        }
 
         /// <summary>
         /// Returns document by it's key. 
@@ -25,11 +33,20 @@ namespace Uniform.InMemory
         {
             if (key == null) throw new ArgumentNullException("key");
 
-            TDocument document;
+            Object document;
             if (!_documents.TryGetValue(key, out document))
                 return default(TDocument);
 
-            return document;
+            return (TDocument) document;
+        }
+
+        /// <summary>
+        /// Returns document by it's key. 
+        /// If document doesn't exists - default(TDocument) will be returned.
+        /// </summary>
+        Object ICollection.GetById(string key)
+        {
+            return GetById(key);
         }
 
         /// <summary>

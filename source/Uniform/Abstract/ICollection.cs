@@ -7,13 +7,13 @@ namespace Uniform
     /// Simple abstraction that represents typed collection of documents.
     /// Collection always consists only of one type of documents.
     /// </summary>
-    public interface ICollection<TDocument>
+    public interface ICollection<TDocument> : ICollection
     {
         /// <summary>
         /// Returns document by it's key. 
         /// If document doesn't exists - default(TDocument) will be returned.
         /// </summary>
-        TDocument GetById(String key);
+        new TDocument GetById(String key);
 
         /// <summary>
         /// Saves document to collection using specified key.
@@ -47,5 +47,14 @@ namespace Uniform
         /// If document with such key doesn't exists - no changes to collection will be made.
         /// </summary>
         void Delete(String key);
+    }
+
+    public interface ICollection
+    {
+        /// <summary>
+        /// Returns document by it's key. 
+        /// If document doesn't exists - default(TDocument) will be returned.
+        /// </summary>
+        Object GetById(String key);        
     }
 }

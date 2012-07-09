@@ -34,6 +34,15 @@ namespace Uniform.Mongodb
         }
 
         /// <summary>
+        /// Returns document by it's key. 
+        /// If document doesn't exists - default(TDocument) will be returned.
+        /// </summary>
+        Object ICollection.GetById(String key)
+        {
+            return GetById(key);
+        }
+
+        /// <summary>
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>

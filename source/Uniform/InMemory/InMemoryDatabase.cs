@@ -19,7 +19,15 @@ namespace Uniform.InMemory
         /// <summary>
         /// Contains database collections, hashed by collection name
         /// </summary>
-        private readonly Dictionary<String, Object> _collections = new Dictionary<String, Object>();
+        private readonly Dictionary<String, ICollection> _collections = new Dictionary<String, ICollection>();
+
+        /// <summary>
+        /// Contains database collections, hashed by collection name
+        /// </summary>
+        public Dictionary<String, ICollection> Collections
+        {
+            get { return _collections; }
+        }
 
         /// <summary>
         /// Database metadata, contains all document types and provides some
@@ -46,7 +54,7 @@ namespace Uniform.InMemory
         {
             if (name == null) throw new ArgumentNullException("name");
 
-            Object collection;
+            ICollection collection;
             if (!_collections.TryGetValue(name, out collection))
                 _collections[name] = collection = new InMemoryCollection<TDocument>();
 

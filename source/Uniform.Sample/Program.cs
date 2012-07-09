@@ -12,6 +12,7 @@ using Uniform.Mongodb;
 using Uniform.Sample.Common.Dispatching;
 using Uniform.Sample.Documents;
 using Uniform.Sample.Events;
+using Uniform.Sample.Handlers;
 
 namespace Uniform.Sample
 {
@@ -28,11 +29,15 @@ namespace Uniform.Sample
             );
 
             // 2. Create database. Choose euther in-memory or mongodb.
-            //var database = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
-            var database = new InMemoryDatabase(metadata);
+            var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
+            var inMemoryDatabase = new InMemoryDatabase(metadata);
 
             // 3. Optional.
-            RunViewModelRegeneration(database);
+            RunViewModelRegeneration(inMemoryDatabase);
+
+            // 4. Flush to MongoDB
+            FlushToMongoDb(inMemoryDatabase, "mongodb://localhost:27017/local");
+
         }
 
         public static void RunViewModelRegeneration(IDatabase database)
@@ -84,6 +89,19 @@ namespace Uniform.Sample
             stopwatch.Stop();
 
             Console.WriteLine("Done in {0:n0} ms. {1:n0} events processed.", stopwatch.ElapsedMilliseconds, events.Count);
+            Console.ReadKey();            
+        }
+
+        public static void FlushToMongoDb(InMemoryDatabase inMemoryDatabase, String connectionString)
+        {
+            Console.WriteLine("Flushing started...");
+            var stopwatch = Stopwatch.StartNew();
+            
+            new MongodbFlusher(inMemoryDatabase, connectionString)
+                .Flush();
+
+            stopwatch.Stop();
+            Console.WriteLine("Done in {0:n0} ms.", stopwatch.ElapsedMilliseconds);
             Console.ReadKey();            
         }
     }
