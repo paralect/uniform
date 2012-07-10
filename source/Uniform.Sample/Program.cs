@@ -16,6 +16,7 @@ using Uniform.Sample.Common.Dispatching;
 using Uniform.Sample.Documents;
 using Uniform.Sample.Events;
 using Uniform.Sample.Handlers;
+using Uniform.Sql;
 
 namespace Uniform.Sample
 {
@@ -34,12 +35,18 @@ namespace Uniform.Sample
             // 2. Create database. Choose euther in-memory or mongodb.
             var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
             var inMemoryDatabase = new InMemoryDatabase(metadata);
+            var mysqlDatabase = new MySqlDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", metadata);
+            ((MySqlCollection<UserDocument>) mysqlDatabase.GetCollection<UserDocument>()).CreateTable();
+            ((MySqlCollection<QuestionDocument>)mysqlDatabase.GetCollection<QuestionDocument>()).CreateTable();
+            ((MySqlCollection<CommentDocument>)mysqlDatabase.GetCollection<CommentDocument>()).CreateTable();
+            ((MySqlCollection<VoteDocument>)mysqlDatabase.GetCollection<VoteDocument>()).CreateTable();
+            
 
             // 3. Optional.
-            RunViewModelRegeneration(inMemoryDatabase);
+            RunViewModelRegeneration(mysqlDatabase);
 
             // 4. Flush to MongoDB
-            FlushToMongoDb(inMemoryDatabase, "mongodb://localhost:27017/local");
+            //FlushToMongoDb(inMemoryDatabase, "mongodb://localhost:27017/local");
 
         }
 
@@ -48,7 +55,7 @@ namespace Uniform.Sample
             Console.Write("Creating list of events in memory... ");
 
             var events = new List<Object>();
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var userId = String.Format("user/{0}", i);
                 var question1 = String.Format("user/{0}/question/{1}", i, 1);
@@ -71,8 +78,6 @@ namespace Uniform.Sample
 
 //            SaveEventsToFile(events);
 //            var result = LoadEventsFromFile();
-
-            Console.ReadKey();
 
             Console.WriteLine("Done. Managed memory used: {0:n0} mb.", GC.GetTotalMemory(false) / 1024 / 1024);
 

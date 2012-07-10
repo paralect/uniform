@@ -14,7 +14,6 @@ namespace Uniform.Sample.Handlers
 
         public void Handle(UserCreated message)
         {
-
             _db.Users.Save(message.UserId, user =>
             {
                 user.UserId = message.UserId;

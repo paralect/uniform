@@ -80,6 +80,10 @@
     <Reference Include="MongoDB.Driver">
       <HintPath>..\..\libs\MongoDB\MongoDB.Driver.dll</HintPath>
     </Reference>
+    <Reference Include="MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\libs\MySql\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -107,6 +111,8 @@
     <Compile Include="Mongodb\MongodbDatabase.cs" />
     <Compile Include="Mongodb\MongodbDependencyBuilder.cs" />
     <Compile Include="Mongodb\Updater.cs" />
+    <Compile Include="Sql\MySqlCollection.cs" />
+    <Compile Include="Sql\MySqlDatabase.cs" />
     <Compile Include="Utils\HashCodeUtils.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />
   </ItemGroup>

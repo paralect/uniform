@@ -24,6 +24,11 @@ namespace Uniform
         /// </summary>
         private readonly Dictionary<Type, DocumentInfo> _documentTypes = new Dictionary<Type, DocumentInfo>();
 
+        public IEnumerable<Type> DocumentTypes
+        {
+            get { return _documentTypes.Keys; }
+        }
+
         /// <summary>
         /// Creates DatabaseMetadata with specified configuration
         /// </summary>
@@ -184,7 +189,7 @@ namespace Uniform
             info.SetValue(obj, value, new object[0]);
         }
 
-        private PropertyInfo GetDocumentIdPropertyInfo(Type type)
+        public PropertyInfo GetDocumentIdPropertyInfo(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
 
