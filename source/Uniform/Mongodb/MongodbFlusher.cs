@@ -65,18 +65,10 @@ namespace Uniform.Mongodb
                 var mongoCollection = Database.GetCollection(mongoSettings);
                 var inMemoryCollection = (IInMemoryCollection) pair.Value;
 
-
-/*
-                foreach (var docPair in inMemoryCollection.Documents)
-                {
-                    var doc = BsonDocumentWrapper.Create(docPair.Value.GetType(), docPair.Value);
-                    mongoCollection.Insert(doc);
-                }
-*/
                 var stopwatch = Stopwatch.StartNew();
                 var docs = BsonDocumentWrapper.CreateMultiple(inMemoryCollection.Documents.Values);
                 stopwatch.Stop();
-                Console.WriteLine("Collection {0} serialized to bson in {1:n0} ms", pair.Key, stopwatch.ElapsedMilliseconds);
+                //Console.WriteLine("Collection {0} serialized to bson in {1:n0} ms", pair.Key, stopwatch.ElapsedMilliseconds);
                 tobson += stopwatch.ElapsedMilliseconds;
 
                 stopwatch.Start();
@@ -91,14 +83,14 @@ namespace Uniform.Mongodb
 
                 
                 stopwatch.Stop();
-                Console.WriteLine("Collection {0} inserted to MongoDB in {1:n0} ms", pair.Key, stopwatch.ElapsedMilliseconds);
+                //Console.WriteLine("Collection {0} inserted to MongoDB in {1:n0} ms", pair.Key, stopwatch.ElapsedMilliseconds);
 
                 index++;
             }
 
             Task.WaitAll(tasks);
 
-            Console.WriteLine("Total time for serialization: {0:n0} ms", tobson);
+            //Console.WriteLine("Total time for serialization: {0:n0} ms", tobson);
         }
     }
 }

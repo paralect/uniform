@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.Practices.Unity;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using ProtoBuf;
 using Uniform.InMemory;
 using Uniform.Mongodb;
+using Uniform.Sample.Common;
 using Uniform.Sample.Common.Dispatching;
 using Uniform.Sample.Documents;
 using Uniform.Sample.Events;
@@ -66,6 +69,11 @@ namespace Uniform.Sample
                 events.Add(new UserNameChanged(userId, "Final Tonny"));
             }
 
+//            SaveEventsToFile(events);
+//            var result = LoadEventsFromFile();
+
+            Console.ReadKey();
+
             Console.WriteLine("Done. Managed memory used: {0:n0} mb.", GC.GetTotalMemory(false) / 1024 / 1024);
 
             var container = new UnityContainer();
@@ -104,5 +112,105 @@ namespace Uniform.Sample
             Console.WriteLine("Done in {0:n0} ms.", stopwatch.ElapsedMilliseconds);
             Console.ReadKey();            
         }
+
+        public static void SaveEventsToFile(List<Object> events)
+        {
+            Console.WriteLine();
+            var dir = @"c:\tmp\uniform";
+            var file = @"data.proto";
+            var path = Path.Combine(dir, file);
+
+            Console.WriteLine("Storing {0:n0} events to file {1}", events.Count, path);
+            
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            if (File.Exists(path))
+                File.Delete(path);
+
+            var serializer = new ProtobufSerializer();
+
+            var stopwatch = Stopwatch.StartNew();
+            using(var writeStream = File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read))
+            using(var binaryWriter = new BinaryWriter(writeStream))
+            {
+                foreach (object evnt in events)
+                {
+                    binaryWriter.Write(_typeToTag[evnt.GetType()]);
+                    serializer.Model.SerializeWithLengthPrefix(writeStream, evnt, evnt.GetType(), PrefixStyle.Base128, 0);
+                }
+                    
+            }
+            stopwatch.Stop();
+            Console.WriteLine("All events stored in {0:n0} ms", stopwatch.ElapsedMilliseconds);
+        }
+
+        public static List<Object> LoadEventsFromFile()
+        {
+            Console.ReadKey();
+            List<Object> result = new List<object>();
+
+            var dir = @"c:\tmp\uniform";
+            var file = @"data.proto";
+            var path = Path.Combine(dir, file);
+            Console.WriteLine("Loading events from file {0}...", path);
+
+            var serializer = new ProtobufSerializer();
+
+            var stopwatch = Stopwatch.StartNew();
+            using (var writeStream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (var binaryReader = new BinaryReader(writeStream))
+            {
+                while (true)
+                {
+                    try
+                    {
+                        var tag = binaryReader.ReadInt32();
+                        var obj = serializer.Model.DeserializeWithLengthPrefix(writeStream, null, _tagToType[tag], PrefixStyle.Base128, 0);
+
+                        if (obj == null)
+                            break;
+
+                        result.Add(obj);
+                    }
+                    catch (EndOfStreamException exception)
+                    {
+                        // planned exception, better performance than checking for the end of stream
+                        break;
+                    }
+                    
+                }
+                
+                
+            }
+            stopwatch.Stop();
+            Console.WriteLine("{0:n0} events loaded and deserialized in {1:n0} ms", result.Count, stopwatch.ElapsedMilliseconds);
+
+            return result;
+        }
+
+        #region Plumbing (not important)
+
+        public static Dictionary<Type, Int32> _typeToTag = new Dictionary<Type, int>
+        {
+            {typeof(UserCreated), 1},
+            {typeof(UserNameChanged), 2},
+            {typeof(QuestionCreated), 3},
+            {typeof(QuestionUpdated), 4},
+            {typeof(CommentAdded), 5},
+            {typeof(VoteAdded), 6},
+        };
+
+        public static Dictionary<Int32, Type> _tagToType = new Dictionary<int, Type>
+        {
+            {1, typeof(UserCreated)},
+            {2, typeof(UserNameChanged)},
+            {3, typeof(QuestionCreated)},
+            {4, typeof(QuestionUpdated)},
+            {5, typeof(CommentAdded)},
+            {6, typeof(VoteAdded)},
+        };
+
+        #endregion
     }
 }
