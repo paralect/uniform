@@ -7,7 +7,7 @@ namespace Uniform
     /// Simple abstraction that represents typed collection of documents.
     /// Collection always consists only of one type of documents.
     /// </summary>
-    public interface ICollection<TDocument> : ICollection
+    public interface ICollection<TDocument> : ICollection where TDocument : new()
     {
         /// <summary>
         /// Returns document by it's key. 

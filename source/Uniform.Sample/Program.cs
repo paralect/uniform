@@ -9,6 +9,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using ProtoBuf;
+using Uniform.AdoNet;
 using Uniform.InMemory;
 using Uniform.Mongodb;
 using Uniform.Sample.Common;
@@ -24,6 +25,12 @@ namespace Uniform.Sample
     {
         public static void Main(string[] args)
         {
+/*
+            var mysqlFlusher = new MySqlFlusher(null, "server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test");
+            mysqlFlusher.Flush();*/
+
+
+
             // 1. Create database metadata
             var metadata = DatabaseMetadata.Create(config => config
                 .AddDocumentType<UserDocument>()
@@ -35,15 +42,21 @@ namespace Uniform.Sample
             // 2. Create database. Choose euther in-memory or mongodb.
             var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
             var inMemoryDatabase = new InMemoryDatabase(metadata);
-            var mysqlDatabase = new MySqlDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", metadata);
-            ((MySqlCollection<UserDocument>) mysqlDatabase.GetCollection<UserDocument>()).CreateTable();
-            ((MySqlCollection<QuestionDocument>)mysqlDatabase.GetCollection<QuestionDocument>()).CreateTable();
-            ((MySqlCollection<CommentDocument>)mysqlDatabase.GetCollection<CommentDocument>()).CreateTable();
-            ((MySqlCollection<VoteDocument>)mysqlDatabase.GetCollection<VoteDocument>()).CreateTable();
+            //var mysqlDatabase = new MySqlDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", metadata);
+            var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", metadata);
+            ((AdoNetCollection<UserDocument>) mysqlDatabase.GetCollection<UserDocument>()).CreateTable();
+            ((AdoNetCollection<QuestionDocument>)mysqlDatabase.GetCollection<QuestionDocument>()).CreateTable();
+            ((AdoNetCollection<CommentDocument>)mysqlDatabase.GetCollection<CommentDocument>()).CreateTable();
+            ((AdoNetCollection<VoteDocument>)mysqlDatabase.GetCollection<VoteDocument>()).CreateTable();
             
 
             // 3. Optional.
-            RunViewModelRegeneration(mysqlDatabase);
+            RunViewModelRegeneration(inMemoryDatabase);
+
+            var adoFlusher = new AdoNetFlusher(inMemoryDatabase, "server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
+            adoFlusher.Flush<UserDocument>();
+            Console.ReadKey();
+
 
             // 4. Flush to MongoDB
             //FlushToMongoDb(inMemoryDatabase, "mongodb://localhost:27017/local");
@@ -55,7 +68,7 @@ namespace Uniform.Sample
             Console.Write("Creating list of events in memory... ");
 
             var events = new List<Object>();
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 25000; i++)
             {
                 var userId = String.Format("user/{0}", i);
                 var question1 = String.Format("user/{0}/question/{1}", i, 1);

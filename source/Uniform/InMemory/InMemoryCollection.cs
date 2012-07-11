@@ -10,7 +10,7 @@ namespace Uniform.InMemory
     /// Collection always consists only of one type of documents.
     /// Not thread-safe.
     /// </summary>
-    public class InMemoryCollection<TDocument> : ICollection<TDocument>, IInMemoryCollection
+    public class InMemoryCollection<TDocument> : ICollection<TDocument>, IInMemoryCollection where TDocument : new()
     {
         /// <summary>
         /// Main data structure that contains all documents of type TDocument, hashed by key

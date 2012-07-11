@@ -1,15 +1,20 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson.Serialization.Attributes;
+using ServiceStack.DataAnnotations;
 
 namespace Uniform.Sample.Documents
 {
     [Collection("users")]
+    [Alias("users")]
     public class UserDocument
     {
         [BsonId]
         public String UserId { get; set; }
         public String UserName { get; set; }
         public String About { get; set; }
+
+        [StringLength(6000)]
         public String Aga { get; set; }
 
         private static Random _random = new Random();

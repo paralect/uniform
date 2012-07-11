@@ -9,7 +9,7 @@ using MongoDB.Driver.Linq;
 
 namespace Uniform.Mongodb
 {
-    public class MongodbCollection<TDocument> : ICollection<TDocument>
+    public class MongodbCollection<TDocument> : ICollection<TDocument> where TDocument : new()
     {
         private readonly MongodbDatabase _database;
         private readonly MongoCollection<TDocument> _collection;

@@ -27,12 +27,12 @@ namespace Uniform.Sql
             get { return _metadata; }
         }
 
-        public ICollection<TDocument> GetCollection<TDocument>(string name)
+        public ICollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
         {
             return new MySqlCollection<TDocument>(this);
         }
 
-        public ICollection<TDocument> GetCollection<TDocument>()
+        public ICollection<TDocument> GetCollection<TDocument>() where TDocument : new()
         {
             return GetCollection<TDocument>(_metadata.GetCollectionName(typeof(TDocument)));
         }

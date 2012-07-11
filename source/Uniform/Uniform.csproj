@@ -84,6 +84,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\MySql\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="ServiceStack.OrmLite">
+      <HintPath>..\..\libs\ServiceStack.OrmLite\MySql\ServiceStack.OrmLite.dll</HintPath>
+    </Reference>
+    <Reference Include="ServiceStack.OrmLite.MySql">
+      <HintPath>..\..\libs\ServiceStack.OrmLite\MySql\ServiceStack.OrmLite.MySql.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -93,6 +99,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdoNet\AdoNetCollection.cs" />
+    <Compile Include="AdoNet\AdoNetDatabase.cs" />
+    <Compile Include="AdoNet\AdoNetFlusher.cs" />
     <Compile Include="Attributes\CollectionAttribute.cs" />
     <Compile Include="Exceptions\CircularDependencyNotSupportedException.cs" />
     <Compile Include="Exceptions\TwoLevelListsNotSupported.cs" />
@@ -113,6 +122,7 @@
     <Compile Include="Mongodb\Updater.cs" />
     <Compile Include="Sql\MySqlCollection.cs" />
     <Compile Include="Sql\MySqlDatabase.cs" />
+    <Compile Include="Sql\MySqlFlusher.cs" />
     <Compile Include="Utils\HashCodeUtils.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />
   </ItemGroup>

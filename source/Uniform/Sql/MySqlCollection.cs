@@ -6,7 +6,7 @@ using MySql.Data.MySqlClient;
 
 namespace Uniform.Sql
 {
-    public class MySqlCollection<TDocument> : ICollection<TDocument>
+    public class MySqlCollection<TDocument> : ICollection<TDocument> where TDocument : new()
     {
         private readonly MySqlDatabase _database;
         private readonly Dictionary<String, Type> _metadata = new Dictionary<String, Type>();

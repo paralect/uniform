@@ -18,13 +18,13 @@ namespace Uniform
         /// Gets collection with specifed name that contains documents of specified type (TDocument)
         /// Will be created, if not already exists.
         /// </summary>
-        ICollection<TDocument> GetCollection<TDocument>(String name);
+        ICollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new();
 
         /// <summary>
         /// Gets collection that contains documents of specified type (TDocument). Will be created, if not already exists.
         /// Name of collection will be taken from [Collection] attribute, that you can put on document class.
         /// If no [Collection] attribute found - type(TDocument).Name will be used for name.
         /// </summary>
-        ICollection<TDocument> GetCollection<TDocument>();
+        ICollection<TDocument> GetCollection<TDocument>() where TDocument : new();
     }
 }

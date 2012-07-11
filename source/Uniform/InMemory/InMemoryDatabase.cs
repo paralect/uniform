@@ -50,7 +50,7 @@ namespace Uniform.InMemory
         /// Gets collection with specifed name that contains documents of specified type (TDocument)
         /// Will be created, if not already exists.
         /// </summary>
-        public ICollection<TDocument> GetCollection<TDocument>(string name)
+        public ICollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
         {
             if (name == null) throw new ArgumentNullException("name");
 
@@ -66,7 +66,7 @@ namespace Uniform.InMemory
         /// Name of collection will be taken from [Collection] attribute, that you can put on document class.
         /// If no [Collection] attribute found - type(TDocument).Name will be used for name.
         /// </summary>
-        public ICollection<TDocument> GetCollection<TDocument>()
+        public ICollection<TDocument> GetCollection<TDocument>() where TDocument : new()
         {
             return GetCollection<TDocument>(_metadata.GetCollectionName(typeof(TDocument)));
         }
