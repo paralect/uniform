@@ -112,6 +112,7 @@
     <Compile Include="Metadata\DatabaseMetadataConfiguration.cs" />
     <Compile Include="Metadata\DatabaseMetadataExtensions.cs" />
     <Compile Include="Metadata\DocumentInfo.cs" />
+    <Compile Include="Mongodb\MongodbBulkLoader.cs" />
     <Compile Include="Mongodb\MongodbFlusher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Abstract\ICollection.cs" />

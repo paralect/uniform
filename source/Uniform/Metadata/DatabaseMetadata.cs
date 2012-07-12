@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -164,7 +165,7 @@ namespace Uniform
         /// <summary>
         /// Cache for ID properties. (DocumentType -> Id PropertyInfo)
         /// </summary>
-        private readonly Dictionary<Type, PropertyInfo> _idPropertiesCache = new Dictionary<Type, PropertyInfo>();
+        private readonly ConcurrentDictionary<Type, PropertyInfo> _idPropertiesCache = new ConcurrentDictionary<Type, PropertyInfo>();
 
         /// <summary>
         /// Returns document id value. 

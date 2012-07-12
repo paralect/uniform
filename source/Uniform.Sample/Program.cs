@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -17,7 +20,10 @@ using Uniform.Sample.Common.Dispatching;
 using Uniform.Sample.Documents;
 using Uniform.Sample.Events;
 using Uniform.Sample.Handlers;
+using Uniform.Sample.Temp;
 using Uniform.Sql;
+using ServiceStack.OrmLite;
+using ServiceStack.OrmLite.MySql;
 
 namespace Uniform.Sample
 {
@@ -25,6 +31,10 @@ namespace Uniform.Sample
     {
         public static void Main(string[] args)
         {
+            TestUnbielivable();
+            Console.WriteLine("Done!");
+            Console.ReadKey();
+
 /*
             var mysqlFlusher = new MySqlFlusher(null, "server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test");
             mysqlFlusher.Flush();*/
@@ -205,6 +215,139 @@ namespace Uniform.Sample
             Console.WriteLine("{0:n0} events loaded and deserialized in {1:n0} ms", result.Count, stopwatch.ElapsedMilliseconds);
 
             return result;
+        }
+
+        public static void FillDb(Int32 count)
+        {
+            List<AverageDocument> averages = new List<AverageDocument>();
+            List<AnotherDocument> anothers = new List<AnotherDocument>();
+            for (int i = 0; i < count; i++)
+            {
+                var average = new AverageDocument()
+                {
+                    Id = "average/" + i,
+                    Name = "asdfasdf asdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsfasdfasd fadsf adsfadsf ",
+                    Year = 4545,
+                    Additional = "asdfasdfasdfasdf asdf adfasdf asd f",
+                    AnotherId = "another/" + 5
+                };
+                averages.Add(average);
+            }
+
+            var another = new AnotherDocument()
+            {
+                Id = "another/" + 5,
+                Name = "asdfasdf asdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsfasdfasd fadsf adsfadsf ",
+                Year = 4545,
+                Additional = "asdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdfasdfasdfasdfasdf asdf adfasdf asd f"
+            };
+            anothers.Add(another);
+
+            var mdatabase = new MongodbDatabase("mongodb://localhost:27017/local", null);
+            mdatabase.Database.GetCollection("averages").Drop();
+            mdatabase.Database.GetCollection("anothers").Drop();
+            mdatabase.Database.GetCollection("averages").InsertBatch(averages);
+            mdatabase.Database.GetCollection("anothers").InsertBatch(anothers);
+
+            var dbFactory = new OrmLiteConnectionFactory("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", MySqlDialectProvider.Instance);
+            var connection = dbFactory.OpenDbConnection();
+            var command = connection.CreateCommand();
+            command.DropTable<AnotherDocument>();
+            command.DropTable<AverageDocument>();
+            command.CreateTable<AnotherDocument>();
+            command.CreateTable<AverageDocument>();
+
+            var transaction = connection.BeginTransaction();
+            command.InsertAll(averages);
+            command.InsertAll(anothers);
+            transaction.Commit();
+        }
+
+        public static List<AllTogether> LoadAllTogether(IDbConnectionFactory factory)
+        {
+            using(var connection = factory.OpenDbConnection())
+            {
+                var cmd = connection.CreateCommand();
+                var result = cmd.Select<AllTogether>("SELECT a.Id as AID, a.Name as AName, a.Hello as AHello, a.Year as AYear, " +
+                    "a.Comments as AComments, a.Additional as AAdditional, a.AnotherId as AAnotherId, " +
+                    "b.Id as BId, b.Name as BName, b.Hello as BHello, b.Year as BYear, " +
+                    " b.Comments as BComments, b.Additional as BAdditional FROM test.averages a, test.anothers b where a.AnotherId = b.Id limit 50 ");
+
+                return result;
+            }
+        }
+
+        public static List<Selected> LoadSelected(IDbConnectionFactory factory)
+        {
+            using(var connection = factory.OpenDbConnection())
+            {
+                var cmd = connection.CreateCommand();
+                var result = cmd.Select<Selected>("SELECT a.Id as AverageId, b.Id as AnotherId FROM test.averages a, test.anothers b where a.AnotherId = b.Id limit 50");
+                return result;                
+            }
+        }
+
+        public static BulkLoad SelectedToBulkLoad(List<Selected> selected)
+        {
+            var bulk = new BulkLoad();
+            var av = bulk.Collections["averages"] = new BulkLoadCollection(typeof(AverageDocument));
+            var an = bulk.Collections["anothers"] = new BulkLoadCollection(typeof(AnotherDocument));
+
+            foreach (var one in selected)
+            {
+                av.Documents.TryAdd(one.AverageId, null);
+                an.Documents.TryAdd(one.AnotherId, null);
+            }
+
+            return bulk;
+        }
+
+        public static void LoadTwoStep(IDbConnectionFactory factory, MongodbDatabase database)
+        {
+            var selected = LoadSelected(factory);
+            var bulk = SelectedToBulkLoad(selected);
+            var loader = new MongodbBulkLoader(database.Database, database.Metadata);
+            loader.Load(bulk);
+        }
+
+        public static void TestUnbielivable()
+        {
+            var metadata = DatabaseMetadata.Create(config => config
+                .AddDocumentType<AverageDocument>()
+            );
+
+            var mdatabase = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
+            var dbFactory = new OrmLiteConnectionFactory("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", MySqlDialectProvider.Instance);
+            var connection = dbFactory.OpenDbConnection();
+
+
+            //FillDb(997);
+
+            //var res = LoadAllTogether(connection);
+
+
+            Console.ReadKey();
+            var stopwatch = Stopwatch.StartNew();
+            var count = 1000;
+            var tasksCount = 10;
+
+            var tasks = new Task[tasksCount];
+            var half = count/tasksCount;
+            for (int i = 0; i < half; i ++)
+            {
+                //LoadAllTogether(connection);
+                //LoadSelected(connection);
+
+                for (int j = 0; j < tasks.Length; j++)
+                    tasks[j] = Task.Factory.StartNew(() => { LoadTwoStep(dbFactory, mdatabase); });
+                    //tasks[j] = Task.Factory.StartNew(() => { LoadAllTogether(dbFactory); });
+
+                Task.WaitAll(tasks);
+            }
+            stopwatch.Stop();
+            Console.WriteLine("Loaded {0} times in {1}. Performing {2:0.00} requests/second", count,
+                stopwatch.ElapsedMilliseconds, count / (stopwatch.ElapsedMilliseconds / (double) 1000));
+
         }
 
         #region Plumbing (not important)
