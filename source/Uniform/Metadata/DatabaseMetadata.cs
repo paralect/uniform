@@ -72,7 +72,7 @@ namespace Uniform
 
             if (info.CollectionName == null)
             {
-                var collectionAttribute = ReflectionHelper.GetSingleAttribute<CollectionAttribute>(documentType);
+                var collectionAttribute = ReflectionHelper.GetSingleAttribute<DocumentAttribute>(documentType);
                 info.CollectionName = collectionAttribute == null ? documentType.Name : collectionAttribute.CollectionName;
             }
 

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson.Serialization.Attributes;
 using ServiceStack.DataAnnotations;
+using Uniform.Mongodb;
 
 namespace Uniform.Sample.Documents
 {
-    [Collection("comments")]
+    [Document(SampleDatabases.Mongodb, "comments")] 
     [Alias("comments")]
     public class CommentDocument
     {

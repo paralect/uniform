@@ -5,7 +5,7 @@ using ServiceStack.DataAnnotations;
 
 namespace Uniform.Sample.Documents
 {
-    [Collection("questions")]
+    [Document(SampleDatabases.Mongodb, "questions")]
     [Alias("questions")]
     public class QuestionDocument
     {

@@ -1,7 +1,13 @@
-﻿using Uniform.Sample.Documents;
+﻿using System;
+using Uniform.Sample.Documents;
 
 namespace Uniform.Sample
 {
+    public static class SampleDatabases
+    {
+        public const String Mongodb = "mongodb";
+    }
+
     public class MyDatabase
     {
         private readonly IDatabase _database;

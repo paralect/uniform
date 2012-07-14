@@ -104,7 +104,10 @@
     <Compile Include="AdoNet\AdoNetDatabase.cs" />
     <Compile Include="AdoNet\AdoNetFlusher.cs" />
     <Compile Include="AdoNet\AdoNetQuery.cs" />
-    <Compile Include="Attributes\CollectionAttribute.cs" />
+    <Compile Include="Attributes\DocumentAttribute.cs" />
+    <Compile Include="Configuration\DocumentConfiguration.cs" />
+    <Compile Include="Configuration\DatabaseConfiguration.cs" />
+    <Compile Include="Configuration\DatabaseConfigurationExtensions.cs" />
     <Compile Include="Exceptions\CircularDependencyNotSupportedException.cs" />
     <Compile Include="Exceptions\TwoLevelListsNotSupported.cs" />
     <Compile Include="InMemory\Abstract\IInMemoryCollection.cs" />

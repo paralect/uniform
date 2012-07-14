@@ -21,7 +21,7 @@ namespace Uniform
 
         public static DatabaseMetadataConfiguration AddDocumentTypes(this DatabaseMetadataConfiguration configuration, Assembly assembly, String fullNamePrefix = null)
         {
-            var result = GetTypesWithAttribute<CollectionAttribute>(new[] { assembly });
+            var result = GetTypesWithAttribute<DocumentAttribute>(new[] { assembly });
 
             if (fullNamePrefix != null)
                 result = result
