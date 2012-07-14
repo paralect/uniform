@@ -31,7 +31,7 @@ namespace Uniform.Sample
     {
         public static void Main(string[] args)
         {
-            TestUnbielivable();
+            TestLoading();
             Console.WriteLine("Done!");
             Console.ReadKey();
 
@@ -310,7 +310,7 @@ namespace Uniform.Sample
             loader.Load(bulk);
         }
 
-        public static void TestUnbielivable()
+        public static void TestLoading()
         {
             var metadata = DatabaseMetadata.Create(config => config
                 .AddDocumentType<AverageDocument>()
