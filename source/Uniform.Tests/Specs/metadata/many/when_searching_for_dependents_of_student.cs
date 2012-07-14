@@ -21,5 +21,5 @@ namespace Uniform.Tests.Specs.metadata.many
         It should_have_correct_path = () =>
             dependences[0].SourceDocumentPath[0].ShouldEqual(typeof(User).GetProperty("Student"));
 
-        private static List<DependentDocumentMetadata> dependences;
+        private static List<Uniform.Temp.Metadata.DependentDocumentMetadata> dependences;
     }}

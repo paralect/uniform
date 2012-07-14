@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Machine.Specifications;
+using Uniform.Temp.Metadata;
 
 namespace Uniform.Tests.Specs.metadata.types_with_list
 {
@@ -33,6 +34,6 @@ namespace Uniform.Tests.Specs.metadata.types_with_list
         It should_have_correct_path_for_student = () =>
             dependences[1].SourceDocumentPath[0].ShouldEqual(typeof(Student).GetProperty("Schools"));
 
-        private static List<DependentDocumentMetadata> dependences;
+        private static List<Uniform.Temp.Metadata.DependentDocumentMetadata> dependences;
     }
 }

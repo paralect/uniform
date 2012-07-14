@@ -1,6 +1,7 @@
 ﻿using System;
 using Machine.Specifications;
 using MongoDB.Bson.Serialization.Attributes;
+using Uniform.Temp.Metadata;
 
 namespace Uniform.Tests.Specs.metadata.many
 {
@@ -8,7 +9,7 @@ namespace Uniform.Tests.Specs.metadata.many
     {
         Establish context = () =>
         {
-            metadata = DatabaseMetadata.Create(config => config
+            metadata = Uniform.Temp.Metadata.DatabaseMetadata.Create(config => config
                 .AddDocumentType<User>()
                 .AddDocumentType<Student>()
                 .AddDocumentType<School>()
@@ -16,7 +17,7 @@ namespace Uniform.Tests.Specs.metadata.many
             );
         };
 
-        public static DatabaseMetadata metadata;
+        public static Uniform.Temp.Metadata.DatabaseMetadata metadata;
     }
 
     public class User

@@ -32,6 +32,6 @@ namespace Uniform.Tests.Specs.metadata.simple_types
         It should_have_correct_path_for_student = () =>
             dependences[1].SourceDocumentPath[0].ShouldEqual(typeof(Student).GetProperty("School"));
 
-        private static List<DependentDocumentMetadata> dependences;
+        private static List<Uniform.Temp.Metadata.DependentDocumentMetadata> dependences;
     }
 }

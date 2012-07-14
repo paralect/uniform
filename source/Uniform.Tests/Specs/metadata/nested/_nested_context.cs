@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Machine.Specifications;
 using MongoDB.Bson.Serialization.Attributes;
+using Uniform.Temp.Metadata;
 
 namespace Uniform.Tests.Specs.metadata.nested
 {
@@ -9,7 +10,7 @@ namespace Uniform.Tests.Specs.metadata.nested
     {
         Establish context = () =>
         {
-            metadata = DatabaseMetadata.Create(config => config
+            metadata = Uniform.Temp.Metadata.DatabaseMetadata.Create(config => config
                 .AddDocumentType<User>()
                 .AddDocumentType<Student>()
                 .AddDocumentType<School>()
@@ -18,7 +19,7 @@ namespace Uniform.Tests.Specs.metadata.nested
             );
         };
 
-        public static DatabaseMetadata metadata;
+        public static Uniform.Temp.Metadata.DatabaseMetadata metadata;
     }
 
     public class User

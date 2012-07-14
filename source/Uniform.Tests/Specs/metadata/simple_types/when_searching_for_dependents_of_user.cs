@@ -11,6 +11,6 @@ namespace Uniform.Tests.Specs.metadata.simple_types
         It should_not_have_types_that_depends_on_user = () =>
             dependences.Count.ShouldEqual(0);
 
-        private static List<DependentDocumentMetadata> dependences;
+        private static List<Uniform.Temp.Metadata.DependentDocumentMetadata> dependences;
     }
 }

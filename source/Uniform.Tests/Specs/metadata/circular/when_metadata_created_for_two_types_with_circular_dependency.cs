@@ -1,6 +1,7 @@
 ﻿using System;
 using Machine.Specifications;
 using Uniform.Exceptions;
+using Uniform.Temp.Metadata;
 
 namespace Uniform.Tests.Specs.metadata.circular
 {
@@ -10,7 +11,7 @@ namespace Uniform.Tests.Specs.metadata.circular
         {
             circularException = Catch.Exception(() =>
             {
-                DatabaseMetadata.Create(config => config
+                Uniform.Temp.Metadata.DatabaseMetadata.Create(config => config
                     .AddDocumentType<User>()
                     .AddDocumentType<Student>()
                 );

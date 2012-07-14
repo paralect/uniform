@@ -45,7 +45,7 @@ namespace Uniform.Tests.Specs.metadata.nested
         {
             dependences[2].SourceDocumentPath[0].ShouldEqual(typeof(School).GetProperty("Districts"));
         };
-            
 
-        private static List<DependentDocumentMetadata> dependences;
+
+        private static List<Uniform.Temp.Metadata.DependentDocumentMetadata> dependences;
     }}
