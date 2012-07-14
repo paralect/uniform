@@ -121,19 +121,11 @@
     <Compile Include="Abstract\IDatabase.cs" />
     <Compile Include="Mongodb\MongodbCollection.cs" />
     <Compile Include="Mongodb\MongodbDatabase.cs" />
-    <Compile Include="Temp\Metadata\Updater.cs" />
     <Compile Include="Sql\MySqlCollection.cs" />
     <Compile Include="Sql\MySqlDatabase.cs" />
     <Compile Include="Sql\MySqlFlusher.cs" />
-    <Compile Include="Temp\Metadata\DatabaseMetadata.cs" />
-    <Compile Include="Temp\Metadata\DatabaseMetadataConfiguration.cs" />
-    <Compile Include="Temp\Metadata\DatabaseMetadataExtensions.cs" />
-    <Compile Include="Temp\Metadata\DocumentInfo.cs" />
     <Compile Include="Utils\HashCodeUtils.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Temp\Metadata\_README.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
