@@ -90,7 +90,6 @@ namespace Uniform.Mongodb
             updater(document);
             _database.Metadata.SetDocumentId(document, key);
             Save(key, document);
-            UpdateDependentDocuments(key, document);
         }
 
         /// <summary>
@@ -112,7 +111,6 @@ namespace Uniform.Mongodb
             updater(document);
             _database.Metadata.SetDocumentId(document, key);
             Save(key, document);
-            UpdateDependentDocuments(key, document);
         }
 
         /// <summary>
@@ -124,26 +122,6 @@ namespace Uniform.Mongodb
             if (key == null) throw new ArgumentNullException("key");
 
             _collection.Remove(Query.EQ("_id", key));
-        }
-
-        public void UpdateDependentDocuments(String key, TDocument doc)
-        {
-            var builder = new MongodbDependencyBuilder(_database.Metadata);
-            var deps = _database.Metadata.GetDependents(typeof(TDocument));
-
-            foreach (var dependent in deps)
-            {
-                UpdateCollection(key, doc, dependent.DependentDocumentType, builder, dependent.SourceDocumentPath);
-            }            
-        }
-
-        public void UpdateCollection(String key, Object doc, Type documentType, MongodbDependencyBuilder builder, List<PropertyInfo> infos)
-        {
-            var collectionName = _database.Metadata.GetCollectionName(documentType);
-            var col = _database.Database.GetCollection(collectionName);
-            var pathToQuery = builder.PathToQuery(infos, key);
-            var pathToUpdate = builder.PathToUpdate(infos, BsonDocumentWrapper.Create(doc));
-            col.Update(pathToQuery, pathToUpdate, UpdateFlags.Multi, SafeMode.False);
         }
     }
 }

@@ -49,91 +49,9 @@ namespace Uniform
             var configuration = new DatabaseMetadataConfiguration();
             configurator(configuration);
             var metadata = new DatabaseMetadata(configuration);
-            metadata.Analyze();
             return metadata;
         }
 
-        private void Analyze()
-        {
-            foreach (var documentInfo in _documentTypes.Values)
-                AnalyzeType(documentInfo.DocumentType, new List<PropertyInfo>(),  documentInfo.DocumentType);
-        }
-
-        private void AnalyzeType(Type originalType, List<PropertyInfo> path, Type type)
-        {
-            var infos = type.GetProperties();
-
-            foreach (var propertyInfo in infos)
-            {
-                Type documentType;
-                Boolean isList = IsList(propertyInfo.PropertyType, out documentType);
-
-                if (!isList)
-                    documentType = propertyInfo.PropertyType;
-
-                if (!IsDocumentType(documentType))
-                    continue;
-
-                if (originalType == documentType)
-                    throw new CircularDependencyNotSupportedException(documentType, type);
-
-                if (!_configuration.TwoLevelListSupported && isList && PathContainsLists(path))
-                    throw new TwoLevelListsNotSupported(documentType, type);
-
-                // Copy path to new list
-                var newPath = new List<PropertyInfo>(path);
-
-                // add current propertyInfo to path
-                newPath.Add(propertyInfo);
-
-                var dep = new DependentDocumentMetadata(originalType, new List<PropertyInfo>(newPath));
-
-                var list = GetDependents(documentType);
-                list.Add(dep);
-
-                if (!propertyInfo.PropertyType.IsPrimitive && propertyInfo.PropertyType != typeof(String))
-                    AnalyzeType(originalType, newPath, documentType);
-            }
-        }
-
-        private Boolean PathContainsLists(IEnumerable<PropertyInfo> path)
-        {
-            foreach (var info in path)
-            {
-                Type itemType;
-                if (IsList(info.PropertyType, out itemType))
-                    return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Only List(T) supported for now
-        /// </summary>
-        private Boolean IsList(Type type, out Type itemType)
-        {
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
-            {
-                itemType = type.GetGenericArguments()[0];
-                return true;
-            }
-
-            itemType = null;
-            return false;
-        }
-
-        /// <summary>
-        /// Get list of all types, that depends on specified documentType
-        /// </summary>
-        public List<DependentDocumentMetadata> GetDependents(Type documentType)
-        {
-            DocumentInfo value;
-            if (!_documentTypes.TryGetValue(documentType, out value))
-                throw new Exception(String.Format("Document type '{0}' wasn't registered in metdata", documentType.FullName));
-
-            return value.Dependents;
-        }
 
         /// <summary>
         /// Returns true, if type was registered as document type
@@ -212,22 +130,5 @@ namespace Uniform
         }
 
         #endregion
-    }
-
-    public class DependentDocumentMetadata
-    {
-        public Type DependentDocumentType { get; set; }
-        public List<PropertyInfo> SourceDocumentPath { get; set; }
-
-        public DependentDocumentMetadata(Type dependentDocumentType, List<PropertyInfo> sourceDocumentPath)
-        {
-            DependentDocumentType = dependentDocumentType;
-            SourceDocumentPath = sourceDocumentPath;
-        }
-
-        public DependentDocumentMetadata()
-        {
-            SourceDocumentPath = new List<PropertyInfo>();
-        }
     }
 }
