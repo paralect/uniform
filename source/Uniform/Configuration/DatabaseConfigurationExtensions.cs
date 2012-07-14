@@ -4,12 +4,12 @@ using System.Reflection;
 using Uniform.Utils;
 using System.Linq;
 
-namespace Uniform.Configuration
+namespace Uniform
 {
     public static class DatabaseConfigurationExtensions
     {
         /// <summary>
-        /// Registers collection for specified document type and with specified name 
+        /// Registers single document that belong to specified database and collection
         /// </summary>
         public static DatabaseConfiguration RegisterDocument<TDocument>(this DatabaseConfiguration configuration, String databaseName, String collectionName)
         {
@@ -18,24 +18,30 @@ namespace Uniform.Configuration
         }
 
         /// <summary>
-        /// Registers collection for specified document type. 
-        /// Name of collection will be discovered by looking to [Collection] attribute of TDocument type.
+        /// Registers single document. 
+        /// Name of database and collection will be discovered by looking to [Document] attribute of TDocument type.
         /// </summary>
         public static DatabaseConfiguration RegisterDocument<TDocument>(this DatabaseConfiguration configuration)
         {
-            var collectionAttribute = ReflectionHelper.GetSingleAttribute<DocumentAttribute>(typeof (TDocument));
-            var collectionName = collectionAttribute.CollectionName;
-            var databaseName = collectionAttribute.DatabaseName;
-            configuration.RegisterDocument(databaseName, collectionName, typeof(TDocument));
+            var collectionAttributes = ReflectionHelper.GetAllAttributes<DocumentAttribute>(typeof (TDocument));
+
+            foreach (var documentAttribute in collectionAttributes)
+            {
+                string databaseName = documentAttribute.DatabaseName;
+                string collectionName = documentAttribute.CollectionName;
+                configuration.RegisterDocument(databaseName, collectionName, typeof(TDocument));
+            }
+
             return configuration;
         }
 
         /// <summary>
-        /// Registers many collections by scanning specified assembly for types that decorated with [Collection] attribute. 
+        /// Registers documents by scanning specified assembly for types that decorated with [Document] attribute. 
         /// You can optionaly specify fullNamePrefix parameter to register types only with this prefix.
-        /// Name of each collection will be discovered by looking to [Collection] attribute of TDocument type.
+        /// Name of database and collection for particular document will be discovered by looking to [Document] attribute 
+        /// of TDocument type.
         /// </summary>
-        public static DatabaseConfiguration RegisterCollections(this DatabaseConfiguration configuration, Assembly assembly, String fullNamePrefix = null)
+        public static DatabaseConfiguration RegisterDocuments(this DatabaseConfiguration configuration, Assembly assembly, String fullNamePrefix = null)
         {
             var result = GetTypesWithAttribute<DocumentAttribute>(new[] { assembly });
 
@@ -43,19 +49,33 @@ namespace Uniform.Configuration
                 result = result.Where(t => t.Item1.FullName != null && t.Item1.FullName.StartsWith(fullNamePrefix));
 
             foreach (var tuple in result)
-                configuration.RegisterDocument(tuple.Item2.DatabaseName, tuple.Item2.CollectionName, tuple.Item1);
+                foreach (var documentAttribute in tuple.Item2)
+                    configuration.RegisterDocument(documentAttribute.DatabaseName, documentAttribute.CollectionName, tuple.Item1);
             
             return configuration;
         }
 
-        private static IEnumerable<Tuple<Type, TAttribute>> GetTypesWithAttribute<TAttribute>(params Assembly[] assemblies)
+        public static DatabaseConfiguration RegisterDatabase(this DatabaseConfiguration configuration, String databaseName, IDatabase database)
+        {
+            if (databaseName == null) throw new ArgumentNullException("databaseName");
+            if (database == null) throw new ArgumentNullException("database");
+
+            configuration.Databases[databaseName] = database;
+            return configuration;
+        }
+
+        /// <summary>
+        /// Helper method to find types that decorated with specified attribute
+        /// Returns (type, attribute[]) tuples.
+        /// </summary>
+        private static IEnumerable<Tuple<Type, TAttribute[]>> GetTypesWithAttribute<TAttribute>(params Assembly[] assemblies)
         {
             var typesWithAttribute =
                 from a in assemblies
                 from t in a.GetTypes()
                 let attributes = t.GetCustomAttributes(typeof (TAttribute), true)
                 where attributes != null && attributes.Length > 0
-                select new Tuple<Type, TAttribute>(t, (TAttribute) attributes[0]);
+                select new Tuple<Type, TAttribute[]>(t, attributes.Cast<TAttribute>().ToArray());
 
             return typesWithAttribute;
         }        

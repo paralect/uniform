@@ -6,6 +6,7 @@ namespace Uniform.Sample
     public static class SampleDatabases
     {
         public const String Mongodb = "mongodb";
+        public const String Sql = "sql";
     }
 
     public class MyDatabase

@@ -127,6 +127,7 @@
     <Compile Include="Sql\MySqlCollection.cs" />
     <Compile Include="Sql\MySqlDatabase.cs" />
     <Compile Include="Sql\MySqlFlusher.cs" />
+    <Compile Include="UniformDatabase.cs" />
     <Compile Include="Utils\HashCodeUtils.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />
   </ItemGroup>

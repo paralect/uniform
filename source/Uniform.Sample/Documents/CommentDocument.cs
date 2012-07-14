@@ -8,6 +8,7 @@ using Uniform.Mongodb;
 namespace Uniform.Sample.Documents
 {
     [Document(SampleDatabases.Mongodb, "comments")] 
+    [Document(SampleDatabases.Sql, "comments")] 
     [Alias("comments")]
     public class CommentDocument
     {
