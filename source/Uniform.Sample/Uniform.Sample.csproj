@@ -68,10 +68,6 @@
     <Reference Include="ServiceStack.Interfaces">
       <HintPath>..\..\libs\ServiceStack.OrmLite\ServiceStack.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite, Version=3.7.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\libs\ServiceStack.OrmLite\MySql\ServiceStack.OrmLite.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack.OrmLite.MySql, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\ServiceStack.OrmLite\MySql\ServiceStack.OrmLite.MySql.dll</HintPath>
@@ -111,6 +107,10 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ServiceStack.OrmLite\ServiceStack.OrmLite.csproj">
+      <Project>{96179AC6-F6F1-40C3-9FDD-4F6582F54C5C}</Project>
+      <Name>ServiceStack.OrmLite</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Uniform\Uniform.csproj">
       <Project>{166F6EB2-5143-43DE-B578-1F0E31A596D5}</Project>
       <Name>Uniform</Name>

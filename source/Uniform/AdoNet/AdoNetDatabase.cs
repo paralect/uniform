@@ -39,7 +39,13 @@ namespace Uniform.AdoNet
 
         public ICollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
         {
-            return new AdoNetCollection<TDocument>(this);
+            return new GenericCollection<TDocument>(
+                new AdoNetCollection(typeof(TDocument), this));
+        }
+
+        public ICollection GetCollection(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

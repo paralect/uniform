@@ -29,6 +29,9 @@ namespace Uniform
         /// </summary>
         void Save(String key, Action<TDocument> creator);
 
+        /// <summary>
+        /// Bulk save
+        /// </summary>
         void Save(IEnumerable<TDocument> docs);
 
         /// <summary>
@@ -44,12 +47,6 @@ namespace Uniform
         /// this newly created document.
         /// </summary>
         void UpdateOrSave(String key, Action<TDocument> updater);
-
-        /// <summary>
-        /// Deletes document with specified key.
-        /// If document with such key doesn't exists - no changes to collection will be made.
-        /// </summary>
-        void Delete(String key);
     }
 
     public interface ICollection
@@ -58,6 +55,23 @@ namespace Uniform
         /// Returns document by it's key. 
         /// If document doesn't exists - default(TDocument) will be returned.
         /// </summary>
-        Object GetById(String key);        
+        Object GetById(String key);
+
+        /// <summary>
+        /// Saves document to collection using specified key.
+        /// If document with such key already exists, it will be silently overwritten.
+        /// </summary>
+        void Save(String key, Object obj);
+
+        /// <summary>
+        /// Bulk save
+        /// </summary>
+        void Save(IEnumerable<Object> docs);
+
+        /// <summary>
+        /// Deletes document with specified key.
+        /// If document with such key doesn't exists - no changes to collection will be made.
+        /// </summary>
+        void Delete(String key);
     }
 }

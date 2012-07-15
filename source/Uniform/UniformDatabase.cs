@@ -56,16 +56,29 @@ namespace Uniform
 
         public void LeaveInMemoryMode(bool flush = false)
         {
+            if (!_inMemory)
+                return;
+
             _inMemory = false;
+            var inmemoryDB = _metadata.Databases;
             _metadata.Databases = _databases;
 
             if (flush)
-                Flush();
+                Flush(inmemoryDB, _databases);
         }
 
-        private void Flush()
+        private void Flush(Dictionary<String, IDatabase> from, Dictionary<String, IDatabase> to)
         {
-            
+            foreach (var pair in from)
+            {
+                var inMemory = (InMemoryDatabase) pair.Value;
+                var normal = to[pair.Key];
+
+                foreach (KeyValuePair<string, ICollection> collectionPair in inMemory.Collections)
+                {
+                    var collection = (IInMemoryCollection) collectionPair.Value;
+                }
+            }
         }
     }
 }

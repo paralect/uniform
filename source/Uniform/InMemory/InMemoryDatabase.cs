@@ -53,9 +53,14 @@ namespace Uniform.InMemory
 
             ICollection collection;
             if (!_collections.TryGetValue(name, out collection))
-                _collections[name] = collection = new InMemoryCollection<TDocument>(_uniformDatabase.Metadata);
+                _collections[name] = collection = new InMemoryCollection(_uniformDatabase.Metadata);
 
-            return (InMemoryCollection<TDocument>) collection;
+            return new GenericCollection<TDocument>(collection);
+        }
+
+        public ICollection GetCollection(string name)
+        {
+            return null;
         }
     }
 }

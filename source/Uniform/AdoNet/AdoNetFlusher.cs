@@ -17,16 +17,16 @@ namespace Uniform.AdoNet
 
         public AdoNetFlusher(InMemoryDatabase inMemoryDatabase, String connectionString)
         {
-            _inMemoryDatabase = inMemoryDatabase;
+/*            _inMemoryDatabase = inMemoryDatabase;
             _connectionString = connectionString;
 
             _dbFactory = new OrmLiteConnectionFactory(connectionString, MySqlDialectProvider.Instance);
-            _connection = _dbFactory.OpenDbConnection();
+            _connection = _dbFactory.OpenDbConnection();*/
         }
 
         public void Flush<TDocument>() where TDocument : new()
         {
-            var stopwatch = Stopwatch.StartNew();
+/*            var stopwatch = Stopwatch.StartNew();
 
             var cmd = _connection.CreateCommand();
             cmd.DropTable<TDocument>();
@@ -43,7 +43,7 @@ namespace Uniform.AdoNet
 
             stopwatch.Stop();
 
-            Console.WriteLine("Done in {0:n0} ms", stopwatch.ElapsedMilliseconds);            
+            Console.WriteLine("Done in {0:n0} ms", stopwatch.ElapsedMilliseconds);  */          
         }
     }
 }

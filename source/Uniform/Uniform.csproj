@@ -84,9 +84,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\MySql\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="ServiceStack.OrmLite">
-      <HintPath>..\..\libs\ServiceStack.OrmLite\MySql\ServiceStack.OrmLite.dll</HintPath>
-    </Reference>
     <Reference Include="ServiceStack.OrmLite.MySql">
       <HintPath>..\..\libs\ServiceStack.OrmLite\MySql\ServiceStack.OrmLite.MySql.dll</HintPath>
     </Reference>
@@ -106,6 +103,7 @@
     <Compile Include="AdoNet\AdoNetQuery.cs" />
     <Compile Include="Attributes\DocumentAttribute.cs" />
     <Compile Include="Attributes\DocumentIdAttribute.cs" />
+    <Compile Include="CollectionWrapper.cs" />
     <Compile Include="Configuration\DocumentConfiguration.cs" />
     <Compile Include="Configuration\DatabaseConfiguration.cs" />
     <Compile Include="Configuration\DatabaseConfigurationExtensions.cs" />
@@ -127,6 +125,12 @@
     <Compile Include="UniformDatabase.cs" />
     <Compile Include="Utils\HashCodeUtils.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceStack.OrmLite\ServiceStack.OrmLite.csproj">
+      <Project>{96179AC6-F6F1-40C3-9FDD-4F6582F54C5C}</Project>
+      <Name>ServiceStack.OrmLite</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

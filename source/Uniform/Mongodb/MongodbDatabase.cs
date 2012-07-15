@@ -63,7 +63,13 @@ namespace Uniform.Mongodb
         /// </summary>
         public ICollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new()
         {
-            return new MongodbCollection<TDocument>(this, name);
+            return new GenericCollection<TDocument>(
+                new MongodbCollection(this, typeof(TDocument), name));
+        }
+
+        public ICollection GetCollection(string name)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -15,5 +15,7 @@ namespace Uniform
         /// Will be created, if not already exists.
         /// </summary>
         ICollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new();
+
+        ICollection GetCollection(String name);
     }
 }
