@@ -11,15 +11,16 @@ namespace Uniform.InMemory
     public class InMemoryDatabase : IDatabase
     {
         /// <summary>
-        /// Database metadata, contains all document types and provides some
-        /// metadata related services.
-        /// </summary>
-        private readonly DatabaseMetadata _metadata;
-
-        /// <summary>
         /// Contains database collections, hashed by collection name
         /// </summary>
         private readonly Dictionary<String, ICollection> _collections = new Dictionary<String, ICollection>();
+
+        private UniformDatabase _uniformDatabase;
+
+        public UniformDatabase UniformDatabase
+        {
+            get { return _uniformDatabase; }
+        }
 
         /// <summary>
         /// Contains database collections, hashed by collection name
@@ -29,21 +30,17 @@ namespace Uniform.InMemory
             get { return _collections; }
         }
 
-        /// <summary>
-        /// Database metadata, contains all document types and provides some
-        /// metadata related services.
-        /// </summary>
-        public DatabaseMetadata Metadata
-        {
-            get { return _metadata; }
-        }
 
         /// <summary>
         /// Creates in-memory database with specified metadata
         /// </summary>
-        public InMemoryDatabase(DatabaseMetadata metadata)
+        public InMemoryDatabase()
         {
-            _metadata = metadata;
+        }
+
+        public void Initialize(UniformDatabase database)
+        {
+            _uniformDatabase = database;
         }
 
         /// <summary>
@@ -59,16 +56,6 @@ namespace Uniform.InMemory
                 _collections[name] = collection = new InMemoryCollection<TDocument>();
 
             return (InMemoryCollection<TDocument>) collection;
-        }
-
-        /// <summary>
-        /// Gets collection that contains documents of specified type (TDocument). Will be created, if not already exists.
-        /// Name of collection will be taken from [Collection] attribute, that you can put on document class.
-        /// If no [Collection] attribute found - type(TDocument).Name will be used for name.
-        /// </summary>
-        public ICollection<TDocument> GetCollection<TDocument>() where TDocument : new()
-        {
-            return GetCollection<TDocument>(_metadata.GetCollectionName(typeof(TDocument)));
         }
     }
 }

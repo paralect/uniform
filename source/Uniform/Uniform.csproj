@@ -116,7 +116,6 @@
     <Compile Include="InMemory\InMemoryDatabase.cs" />
     <Compile Include="Metadata\DatabaseMetadataConfiguration.cs" />
     <Compile Include="Metadata\DatabaseMetadataExtensions.cs" />
-    <Compile Include="Metadata\DocumentInfo.cs" />
     <Compile Include="Mongodb\MongodbBulkLoader.cs" />
     <Compile Include="Mongodb\MongodbFlusher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -124,9 +123,6 @@
     <Compile Include="Abstract\IDatabase.cs" />
     <Compile Include="Mongodb\MongodbCollection.cs" />
     <Compile Include="Mongodb\MongodbDatabase.cs" />
-    <Compile Include="Sql\MySqlCollection.cs" />
-    <Compile Include="Sql\MySqlDatabase.cs" />
-    <Compile Include="Sql\MySqlFlusher.cs" />
     <Compile Include="UniformDatabase.cs" />
     <Compile Include="Utils\HashCodeUtils.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />

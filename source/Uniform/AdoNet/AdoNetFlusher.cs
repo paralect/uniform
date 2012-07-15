@@ -34,7 +34,7 @@ namespace Uniform.AdoNet
 
             var transaction = _connection.BeginTransaction();
 
-            var collection = (InMemoryCollection<TDocument>) _inMemoryDatabase.GetCollection<TDocument>();
+            var collection = (InMemoryCollection<TDocument>) _inMemoryDatabase.GetCollection<TDocument>("test");
 
             
             cmd.InsertAll(collection.Documents.Values);

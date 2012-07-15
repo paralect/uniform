@@ -20,19 +20,11 @@ namespace Uniform.Mongodb
         /// </summary>
         private readonly string _databaseName;
 
-        /// <summary>
-        /// Database metadata, contains all document types and provides some
-        /// metadata related services.
-        /// </summary>
-        private readonly DatabaseMetadata _metadata;
+        private UniformDatabase _uniformDatabase;
 
-        /// <summary>
-        /// Database metadata, contains all document types and provides some
-        /// metadata related services.
-        /// </summary>
-        public DatabaseMetadata Metadata
+        public UniformDatabase UniformDatabase
         {
-            get { return _metadata; }
+            get { return _uniformDatabase; }
         }
 
         /// <summary>
@@ -54,11 +46,15 @@ namespace Uniform.Mongodb
         /// <summary>
         /// Opens connection to MongoDB Server
         /// </summary>
-        public MongodbDatabase(String connectionString, DatabaseMetadata metadata)
+        public MongodbDatabase(String connectionString)
         {
-            _metadata = metadata;
             _databaseName = MongoUrl.Create(connectionString).DatabaseName;
             _server = MongoServer.Create(connectionString);
+        }
+
+        public void Initialize(UniformDatabase database)
+        {
+            _uniformDatabase = database;
         }
 
         /// <summary>
@@ -68,16 +64,6 @@ namespace Uniform.Mongodb
         public ICollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new()
         {
             return new MongodbCollection<TDocument>(this, name);
-        }
-
-        /// <summary>
-        /// Gets collection that contains documents of specified type (TDocument). Will be created, if not already exists.
-        /// Name of collection will be taken from [Collection] attribute, that you can put on document class.
-        /// If no [Collection] attribute found - type(TDocument).Name will be used for name.
-        /// </summary>
-        public ICollection<TDocument> GetCollection<TDocument>() where TDocument : new()
-        {
-            return GetCollection<TDocument>(_metadata.GetCollectionName(typeof (TDocument)));
         }
     }
 }

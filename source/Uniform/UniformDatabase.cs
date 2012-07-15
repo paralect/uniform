@@ -4,11 +4,16 @@ namespace Uniform
 {
     public class UniformDatabase
     {
-        private readonly DatabaseConfiguration _configuration;
+        private readonly DatabaseMetadata _metadata;
+
+        public DatabaseMetadata Metadata
+        {
+            get { return _metadata; }
+        }
 
         private UniformDatabase(DatabaseConfiguration configuration)
         {
-            _configuration = configuration;
+            _metadata = new DatabaseMetadata(configuration);
         }
 
         /// <summary>

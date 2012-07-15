@@ -18,65 +18,35 @@ namespace Uniform
         /// <summary>
         /// Configuration of DatabaseMetadata, used to create this type
         /// </summary>
-        private readonly DatabaseMetadataConfiguration _configuration;
+        private readonly DatabaseConfiguration _configuration;
 
         /// <summary>
         /// All registered document types. 
         /// </summary>
-        private readonly Dictionary<Type, DocumentInfo> _documentTypes = new Dictionary<Type, DocumentInfo>();
+        private readonly Dictionary<Type, DocumentConfiguration> _documentConfigurations = new Dictionary<Type, DocumentConfiguration>();
 
         public IEnumerable<Type> DocumentTypes
         {
-            get { return _documentTypes.Keys; }
+            get { return _documentConfigurations.Keys; }
         }
 
         /// <summary>
         /// Creates DatabaseMetadata with specified configuration
         /// </summary>
         /// <param name="configuration"></param>
-        public DatabaseMetadata(DatabaseMetadataConfiguration configuration)
+        public DatabaseMetadata(DatabaseConfiguration configuration)
         {
             _configuration = configuration;
-            foreach (var documentType in configuration.DocumentTypes)
-                _documentTypes[documentType] = new DocumentInfo(documentType);
+            foreach (var documentConfiguration in configuration.DocumentConfigurations)
+                _documentConfigurations[documentConfiguration.DocumentType] = documentConfiguration;
         }
-
-        /// <summary>
-        /// Factory method, that creates DatabaseMetadata
-        /// </summary>
-        public static DatabaseMetadata Create(Action<DatabaseMetadataConfiguration> configurator)
-        {
-            var configuration = new DatabaseMetadataConfiguration();
-            configurator(configuration);
-            var metadata = new DatabaseMetadata(configuration);
-            return metadata;
-        }
-
 
         /// <summary>
         /// Returns true, if type was registered as document type
         /// </summary>
         public bool IsDocumentType(Type type)
         {
-            return _documentTypes.ContainsKey(type);
-        }
-
-        /// <summary>
-        /// Returns collection name for specified document type
-        /// </summary>
-        public String GetCollectionName(Type documentType)
-        {
-            DocumentInfo info;
-            if (!_documentTypes.TryGetValue(documentType, out info))
-                throw new Exception(String.Format("Document type '{0}' wasn't registered in metdata", documentType.FullName));
-
-            if (info.CollectionName == null)
-            {
-                var collectionAttribute = ReflectionHelper.GetSingleAttribute<DocumentAttribute>(documentType);
-                info.CollectionName = collectionAttribute == null ? documentType.Name : collectionAttribute.CollectionName;
-            }
-
-            return info.CollectionName;
+            return _documentConfigurations.ContainsKey(type);
         }
 
         #region ID properties services

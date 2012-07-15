@@ -8,23 +8,12 @@ namespace Uniform
     /// </summary>
     public interface IDatabase
     {
-        /// <summary>
-        /// Database metadata, contains all document types and provides some
-        /// metadata related services.
-        /// </summary>
-        DatabaseMetadata Metadata { get; }
+        void Initialize(UniformDatabase database);
 
         /// <summary>
         /// Gets collection with specifed name that contains documents of specified type (TDocument)
         /// Will be created, if not already exists.
         /// </summary>
         ICollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new();
-
-        /// <summary>
-        /// Gets collection that contains documents of specified type (TDocument). Will be created, if not already exists.
-        /// Name of collection will be taken from [Collection] attribute, that you can put on document class.
-        /// If no [Collection] attribute found - type(TDocument).Name will be used for name.
-        /// </summary>
-        ICollection<TDocument> GetCollection<TDocument>() where TDocument : new();
     }
 }

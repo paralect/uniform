@@ -7,35 +7,34 @@ namespace Uniform.AdoNet
 {
     public class AdoNetDatabase : IDatabase
     {
-        private readonly DatabaseMetadata _metadata;
         private readonly OrmLiteConnectionFactory _dbFactory;
         private IDbConnection _connection;
+        private UniformDatabase _uniformDatabase;
+
+        public UniformDatabase UniformDatabase
+        {
+            get { return _uniformDatabase; }
+        }
 
         public IDbConnection Connection
         {
             get { return _connection; }
         }
 
-        public AdoNetDatabase(String connectionString, DatabaseMetadata metadata)
+        public AdoNetDatabase(String connectionString)
         {
-            _metadata = metadata;
             _dbFactory = new OrmLiteConnectionFactory(connectionString, MySqlDialectProvider.Instance);
             _connection = _dbFactory.OpenDbConnection();
         }
 
-        public DatabaseMetadata Metadata
+        public void Initialize(UniformDatabase database)
         {
-            get { return _metadata; }
+            _uniformDatabase = database;
         }
 
         public ICollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
         {
             return new AdoNetCollection<TDocument>(this);
-        }
-
-        public ICollection<TDocument> GetCollection<TDocument>() where TDocument : new()
-        {
-            return GetCollection<TDocument>("");
         }
     }
 }

@@ -21,7 +21,6 @@ using Uniform.Sample.Documents;
 using Uniform.Sample.Events;
 using Uniform.Sample.Handlers;
 using Uniform.Sample.Temp;
-using Uniform.Sql;
 using ServiceStack.OrmLite;
 using ServiceStack.OrmLite.MySql;
 
@@ -42,23 +41,18 @@ namespace Uniform.Sample
 
 
             // 1. Create database metadata
-            var metadata = DatabaseMetadata.Create(config => config
-                .AddDocumentType<UserDocument>()
-                .AddDocumentType<QuestionDocument>()
-                .AddDocumentType<CommentDocument>()
-                .AddDocumentType<VoteDocument>()
+            var database = UniformDatabase.Create(config => config
+                .RegisterDocument<UserDocument>()
+                .RegisterDocument<QuestionDocument>()
+                .RegisterDocument<CommentDocument>()
+                .RegisterDocument<VoteDocument>()
             );
 
             // 2. Create database. Choose euther in-memory or mongodb.
-            var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
-            var inMemoryDatabase = new InMemoryDatabase(metadata);
+            var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local");
+            var inMemoryDatabase = new InMemoryDatabase();
             //var mysqlDatabase = new MySqlDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", metadata);
-            var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", metadata);
-            ((AdoNetCollection<UserDocument>) mysqlDatabase.GetCollection<UserDocument>()).CreateTable();
-            ((AdoNetCollection<QuestionDocument>)mysqlDatabase.GetCollection<QuestionDocument>()).CreateTable();
-            ((AdoNetCollection<CommentDocument>)mysqlDatabase.GetCollection<CommentDocument>()).CreateTable();
-            ((AdoNetCollection<VoteDocument>)mysqlDatabase.GetCollection<VoteDocument>()).CreateTable();
-            
+            var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
 
             // 3. Optional.
             RunViewModelRegeneration(inMemoryDatabase);
@@ -201,7 +195,7 @@ namespace Uniform.Sample
 
                         result.Add(obj);
                     }
-                    catch (EndOfStreamException exception)
+                    catch (EndOfStreamException)
                     {
                         // planned exception, better performance than checking for the end of stream
                         break;
@@ -243,7 +237,7 @@ namespace Uniform.Sample
             };
             anothers.Add(another);
 
-            var mdatabase = new MongodbDatabase("mongodb://localhost:27017/local", null);
+            var mdatabase = new MongodbDatabase("mongodb://localhost:27017/local");
             mdatabase.Database.GetCollection("averages").Drop();
             mdatabase.Database.GetCollection("anothers").Drop();
             mdatabase.Database.GetCollection("averages").InsertBatch(averages);
@@ -306,17 +300,19 @@ namespace Uniform.Sample
         {
             var selected = LoadSelected(factory);
             var bulk = SelectedToBulkLoad(selected);
-            var loader = new MongodbBulkLoader(database.Database, database.Metadata);
+            var loader = new MongodbBulkLoader(database.Database, database.UniformDatabase.Metadata);
             loader.Load(bulk);
         }
 
         public static void TestLoading()
         {
+/*
             var metadata = DatabaseMetadata.Create(config => config
                 .AddDocumentType<AverageDocument>()
             );
 
-            var mdatabase = new MongodbDatabase("mongodb://localhost:27017/local", metadata);
+*/
+            var mdatabase = new MongodbDatabase("mongodb://localhost:27017/local");
             var dbFactory = new OrmLiteConnectionFactory("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", MySqlDialectProvider.Instance);
             var connection = dbFactory.OpenDbConnection();
 

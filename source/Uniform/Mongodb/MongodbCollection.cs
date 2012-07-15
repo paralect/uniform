@@ -52,7 +52,7 @@ namespace Uniform.Mongodb
             if (EqualityComparer<TDocument>.Default.Equals(document, default(TDocument)))
                 throw new ArgumentNullException("document");
 
-            _database.Metadata.SetDocumentId(document, key);
+            _database.UniformDatabase.Metadata.SetDocumentId(document, key);
             _collection.Save(document);
         }
 
@@ -88,7 +88,7 @@ namespace Uniform.Mongodb
                 return;
 
             updater(document);
-            _database.Metadata.SetDocumentId(document, key);
+            _database.UniformDatabase.Metadata.SetDocumentId(document, key);
             Save(key, document);
         }
 
@@ -109,7 +109,7 @@ namespace Uniform.Mongodb
                 document = Activator.CreateInstance<TDocument>();
 
             updater(document);
-            _database.Metadata.SetDocumentId(document, key);
+            _database.UniformDatabase.Metadata.SetDocumentId(document, key);
             Save(key, document);
         }
 
