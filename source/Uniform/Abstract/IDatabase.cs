@@ -16,6 +16,6 @@ namespace Uniform
         /// </summary>
         ICollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new();
 
-        ICollection GetCollection(String name);
+        ICollection GetCollection(Type documentType, String name);
     }
 }

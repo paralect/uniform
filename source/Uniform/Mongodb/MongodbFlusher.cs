@@ -58,7 +58,7 @@ namespace Uniform.Mongodb
 
             foreach (var pair in _inMemoryDatabase.Collections)
             {
-                var mongoSettings = Database.CreateCollectionSettings(typeof (BsonDocument), pair.Key);
+                var mongoSettings = Database.CreateCollectionSettings(typeof (BsonDocument), pair.Key.CollectionName);
                 mongoSettings.AssignIdOnInsert = false;
                 //mongoSettings.SafeMode = SafeMode.False;
 

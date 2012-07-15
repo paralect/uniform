@@ -13,7 +13,7 @@ namespace Uniform.InMemory
         /// <summary>
         /// Contains database collections, hashed by collection name
         /// </summary>
-        private readonly Dictionary<String, ICollection> _collections = new Dictionary<String, ICollection>();
+        private readonly Dictionary<CollectionInfo, ICollection> _collections = new Dictionary<CollectionInfo, ICollection>();
 
         private UniformDatabase _uniformDatabase;
 
@@ -25,7 +25,7 @@ namespace Uniform.InMemory
         /// <summary>
         /// Contains database collections, hashed by collection name
         /// </summary>
-        public Dictionary<String, ICollection> Collections
+        public Dictionary<CollectionInfo, ICollection> Collections
         {
             get { return _collections; }
         }
@@ -49,18 +49,19 @@ namespace Uniform.InMemory
         /// </summary>
         public ICollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
         {
-            if (name == null) throw new ArgumentNullException("name");
-
-            ICollection collection;
-            if (!_collections.TryGetValue(name, out collection))
-                _collections[name] = collection = new InMemoryCollection(_uniformDatabase.Metadata);
-
-            return new GenericCollection<TDocument>(collection);
+            return new GenericCollection<TDocument>(GetCollection(typeof (TDocument), name));
         }
 
-        public ICollection GetCollection(string name)
+        public ICollection GetCollection(Type documentType, string name)
         {
-            return null;
+            if (name == null) throw new ArgumentNullException("name");
+            var info = new CollectionInfo(documentType, name);
+
+            ICollection collection;
+            if (!_collections.TryGetValue(info, out collection))
+                _collections[info] = collection = new InMemoryCollection(_uniformDatabase.Metadata);
+
+            return collection;            
         }
     }
 }

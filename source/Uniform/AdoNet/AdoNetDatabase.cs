@@ -40,12 +40,12 @@ namespace Uniform.AdoNet
         public ICollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
         {
             return new GenericCollection<TDocument>(
-                new AdoNetCollection(typeof(TDocument), this));
+                GetCollection(typeof(TDocument), name));
         }
 
-        public ICollection GetCollection(string name)
+        public ICollection GetCollection(Type documentType, string name)
         {
-            throw new NotImplementedException();
+            return new AdoNetCollection(documentType, this);
         }
     }
 }

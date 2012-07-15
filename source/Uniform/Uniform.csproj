@@ -103,6 +103,7 @@
     <Compile Include="AdoNet\AdoNetQuery.cs" />
     <Compile Include="Attributes\DocumentAttribute.cs" />
     <Compile Include="Attributes\DocumentIdAttribute.cs" />
+    <Compile Include="CollectionInfo.cs" />
     <Compile Include="CollectionWrapper.cs" />
     <Compile Include="Configuration\DocumentConfiguration.cs" />
     <Compile Include="Configuration\DatabaseConfiguration.cs" />

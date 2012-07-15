@@ -74,7 +74,7 @@ namespace Uniform
                 var inMemory = (InMemoryDatabase) pair.Value;
                 var normal = to[pair.Key];
 
-                foreach (KeyValuePair<string, ICollection> collectionPair in inMemory.Collections)
+                foreach (KeyValuePair<CollectionInfo, ICollection> collectionPair in inMemory.Collections)
                 {
                     var collection = (IInMemoryCollection) collectionPair.Value;
                 }
