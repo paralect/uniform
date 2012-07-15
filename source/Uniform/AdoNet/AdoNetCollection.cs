@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using ServiceStack.OrmLite;
 
@@ -61,6 +62,18 @@ namespace Uniform.AdoNet
         {
             _command.DropTable<TDocument>();
             _command.CreateTable<TDocument>();
+        }
+
+        public void Save(IEnumerable<TDocument> docs)
+        {
+            using (var connection = _database.DbFactory.OpenDbConnection())
+            {
+                using(var transaction = _database.Connection.BeginTransaction())
+                {
+                    _command.InsertAll(docs);
+                    transaction.Commit();
+                }
+            }
         }
     }
 }

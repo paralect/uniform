@@ -7,12 +7,11 @@ using Uniform.Mongodb;
 
 namespace Uniform.Sample.Documents
 {
-    [Document(SampleDatabases.Mongodb, "comments")] 
-    [Document(SampleDatabases.Sql, "comments")] 
+    [Document(SampleDatabases.Mongodb, SampleCollections.Comments)] 
     [Alias("comments")]
     public class CommentDocument
     {
-        [BsonId]
+        [DocumentId, BsonId]
         public String CommentId { get; set; }
         public String UserId { get; set; }
         public String QuestionId { get; set; }

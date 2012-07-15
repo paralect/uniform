@@ -5,11 +5,11 @@ using ServiceStack.DataAnnotations;
 
 namespace Uniform.Sample.Documents
 {
-    [Document(SampleDatabases.Mongodb, "questions")]
+    [Document(SampleDatabases.Mongodb, SampleCollections.Questions)]
     [Alias("questions")]
     public class QuestionDocument
     {
-        [BsonId]
+        [DocumentId, BsonId]
         public String QuestionId { get; set; }
         public String UserId { get; set; }
         public String Question { get; set; }

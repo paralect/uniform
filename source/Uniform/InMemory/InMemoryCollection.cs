@@ -12,6 +12,8 @@ namespace Uniform.InMemory
     /// </summary>
     public class InMemoryCollection<TDocument> : ICollection<TDocument>, IInMemoryCollection where TDocument : new()
     {
+        private readonly DatabaseMetadata _metadata;
+
         /// <summary>
         /// Main data structure that contains all documents of type TDocument, hashed by key
         /// </summary>
@@ -23,6 +25,11 @@ namespace Uniform.InMemory
         public Dictionary<String, Object> Documents
         {
             get { return _documents; }
+        }
+
+        public InMemoryCollection(DatabaseMetadata metadata)
+        {
+            _metadata = metadata;
         }
 
         /// <summary>
@@ -125,6 +132,15 @@ namespace Uniform.InMemory
         {
             if (key == null) throw new ArgumentNullException("key");
             _documents.Remove(key);
+        }
+
+        public void Save(IEnumerable<TDocument> docs)
+        {
+            foreach (var document in docs)
+            {
+                var id = _metadata.GetDocumentId(document);
+                _documents[id] = document;
+            }
         }
 
         /// <summary>

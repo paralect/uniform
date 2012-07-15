@@ -105,6 +105,7 @@
     <Compile Include="AdoNet\AdoNetFlusher.cs" />
     <Compile Include="AdoNet\AdoNetQuery.cs" />
     <Compile Include="Attributes\DocumentAttribute.cs" />
+    <Compile Include="Attributes\DocumentIdAttribute.cs" />
     <Compile Include="Configuration\DocumentConfiguration.cs" />
     <Compile Include="Configuration\DatabaseConfiguration.cs" />
     <Compile Include="Configuration\DatabaseConfigurationExtensions.cs" />

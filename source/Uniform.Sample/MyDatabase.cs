@@ -19,31 +19,31 @@ namespace Uniform.Sample
 
     public class MyDatabase
     {
-        private readonly IDatabase _database;
+        private readonly UniformDatabase _database;
 
-        public MyDatabase(IDatabase database)
+        public MyDatabase(UniformDatabase database)
         {
             _database = database;
         }
 
         public ICollection<UserDocument> Users
         {
-            get { return _database.GetCollection<UserDocument>(SampleCollections.Users); }
+            get { return _database.GetCollection<UserDocument>(SampleDatabases.Mongodb, SampleCollections.Users); }
         }        
         
         public ICollection<QuestionDocument> Questions
         {
-            get { return _database.GetCollection<QuestionDocument>(SampleCollections.Questions); }
+            get { return _database.GetCollection<QuestionDocument>(SampleDatabases.Mongodb, SampleCollections.Questions); }
         }
 
         public ICollection<CommentDocument> Comments
         {
-            get { return _database.GetCollection<CommentDocument>(SampleCollections.Comments); }
+            get { return _database.GetCollection<CommentDocument>(SampleDatabases.Mongodb, SampleCollections.Comments); }
         }
 
         public ICollection<VoteDocument> Votes
         {
-            get { return _database.GetCollection<VoteDocument>(SampleCollections.Votes); }
+            get { return _database.GetCollection<VoteDocument>(SampleDatabases.Mongodb, SampleCollections.Votes); }
         }
     }
 }

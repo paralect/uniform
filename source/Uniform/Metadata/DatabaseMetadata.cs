@@ -20,6 +20,14 @@ namespace Uniform
         /// </summary>
         private readonly DatabaseConfiguration _configuration;
 
+        private Dictionary<String, IDatabase> _databases = new Dictionary<string, IDatabase>();
+
+        public Dictionary<string, IDatabase> Databases
+        {
+            get { return _databases; }
+            set { _databases = value; }
+        }
+
         /// <summary>
         /// All registered document types. 
         /// </summary>
@@ -39,6 +47,8 @@ namespace Uniform
             _configuration = configuration;
             foreach (var documentConfiguration in configuration.DocumentConfigurations)
                 _documentConfigurations[documentConfiguration.DocumentType] = documentConfiguration;
+
+            _databases = configuration.Databases;
         }
 
         /// <summary>
@@ -51,7 +61,7 @@ namespace Uniform
 
         #region ID properties services
         /// <summary>
-        /// Cache for ID properties. (DocumentType -> Id PropertyInfo)
+        /// Cache for ID properties. (DocumentType -> Id PropertyInfo) 
         /// </summary>
         private readonly ConcurrentDictionary<Type, PropertyInfo> _idPropertiesCache = new ConcurrentDictionary<Type, PropertyInfo>();
 
@@ -86,12 +96,12 @@ namespace Uniform
             if (!_idPropertiesCache.TryGetValue(type, out info))
             {
                 PropertyInfo[] propertyInfos = type.GetProperties()
-                    .Where(x => Attribute.IsDefined(x, typeof(BsonIdAttribute), false))
+                    .Where(x => Attribute.IsDefined(x, typeof(DocumentIdAttribute), false))
                     .ToArray();
 
                 if (propertyInfos.Length <= 0)
                     throw new Exception(String.Format(
-                        "Document of type '{0}' does not have id property, marked with [BsonId] attribute. Please mark it :)'", type.FullName));
+                        "Document of type '{0}' does not have id property, marked with [DocumentId] attribute. Please mark property with this attribute :)'", type.FullName));
 
                 _idPropertiesCache[type] = info = propertyInfos[0];
             }

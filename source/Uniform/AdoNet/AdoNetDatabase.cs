@@ -21,6 +21,11 @@ namespace Uniform.AdoNet
             get { return _connection; }
         }
 
+        public OrmLiteConnectionFactory DbFactory
+        {
+            get { return _dbFactory; }
+        }
+
         public AdoNetDatabase(String connectionString)
         {
             _dbFactory = new OrmLiteConnectionFactory(connectionString, MySqlDialectProvider.Instance);

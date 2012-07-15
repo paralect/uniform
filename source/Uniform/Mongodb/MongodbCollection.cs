@@ -12,14 +12,20 @@ namespace Uniform.Mongodb
     public class MongodbCollection<TDocument> : ICollection<TDocument> where TDocument : new()
     {
         private readonly MongodbDatabase _database;
+        private readonly string _collectionName;
         private readonly MongoCollection<TDocument> _collection;
 
-        public MongodbCollection(MongodbDatabase database, String name)
+        public MongodbCollection(MongodbDatabase database, String collectionName)
         {
-            if (name == null) throw new ArgumentNullException("name");
+            if (collectionName == null) throw new ArgumentNullException("collectionName");
 
             _database = database;
-            _collection = _database.Database.GetCollection<TDocument>(name);
+            _collectionName = collectionName;
+
+            var mongoSettings = _database.Database.CreateCollectionSettings<TDocument>(_collectionName);
+            mongoSettings.AssignIdOnInsert = false;
+
+            _collection = _database.Database.GetCollection<TDocument>(mongoSettings);
         }
 
         /// <summary>
@@ -122,6 +128,14 @@ namespace Uniform.Mongodb
             if (key == null) throw new ArgumentNullException("key");
 
             _collection.Remove(Query.EQ("_id", key));
+        }
+
+        public void Save(IEnumerable<TDocument> docs)
+        {
+            var mongoInsertOptions = new MongoInsertOptions();
+            mongoInsertOptions.CheckElementNames = false;
+            mongoInsertOptions.SafeMode = SafeMode.True;
+            _collection.InsertBatch(docs, mongoInsertOptions);
         }
     }
 }

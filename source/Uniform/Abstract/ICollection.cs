@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Uniform
@@ -27,6 +28,8 @@ namespace Uniform
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
         void Save(String key, Action<TDocument> creator);
+
+        void Save(IEnumerable<TDocument> docs);
 
         /// <summary>
         /// Updates document with specified key.

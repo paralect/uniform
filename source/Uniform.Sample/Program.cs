@@ -30,44 +30,30 @@ namespace Uniform.Sample
     {
         public static void Main(string[] args)
         {
-            TestLoading();
-            Console.WriteLine("Done!");
-            Console.ReadKey();
-
-/*
-            var mysqlFlusher = new MySqlFlusher(null, "server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test");
-            mysqlFlusher.Flush();*/
+            // 1. Create databases.
+            var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local");
+            var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
 
 
-
-            // 1. Create database metadata
+            // 2. Create database metadata
             var database = UniformDatabase.Create(config => config
                 .RegisterDocument<UserDocument>()
                 .RegisterDocument<QuestionDocument>()
                 .RegisterDocument<CommentDocument>()
                 .RegisterDocument<VoteDocument>()
+                .RegisterDatabase(SampleDatabases.Mongodb, mongodbDatabase)
+                .RegisterDatabase(SampleDatabases.Sql, mysqlDatabase)
             );
 
-            // 2. Create database. Choose euther in-memory or mongodb.
-            var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local");
-            var inMemoryDatabase = new InMemoryDatabase();
-            //var mysqlDatabase = new MySqlDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;", metadata);
-            var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
+            database.EnterInMemoryMode();
 
             // 3. Optional.
-            RunViewModelRegeneration(inMemoryDatabase);
+            RunViewModelRegeneration(database);
 
-            var adoFlusher = new AdoNetFlusher(inMemoryDatabase, "server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
-            adoFlusher.Flush<UserDocument>();
-            Console.ReadKey();
-
-
-            // 4. Flush to MongoDB
-            //FlushToMongoDb(inMemoryDatabase, "mongodb://localhost:27017/local");
-
+            database.LeaveInMemoryMode();
         }
 
-        public static void RunViewModelRegeneration(IDatabase database)
+        public static void RunViewModelRegeneration(UniformDatabase database)
         {
             Console.Write("Creating list of events in memory... ");
 
@@ -99,7 +85,7 @@ namespace Uniform.Sample
             Console.WriteLine("Done. Managed memory used: {0:n0} mb.", GC.GetTotalMemory(false) / 1024 / 1024);
 
             var container = new UnityContainer();
-            container.RegisterInstance<IDatabase>(database);
+            container.RegisterInstance<UniformDatabase>(database);
 
             var dispatcher = Dispatcher.Create(builder => builder
                 .SetServiceLocator(new UnityServiceLocator(container))
