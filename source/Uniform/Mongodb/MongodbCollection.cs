@@ -71,5 +71,10 @@ namespace Uniform.Mongodb
             mongoInsertOptions.SafeMode = SafeMode.True;
             _collection.InsertBatch(docs, mongoInsertOptions);
         }
+
+        public void DropAndPrepare()
+        {
+            _collection.Drop();
+        }
     }
 }

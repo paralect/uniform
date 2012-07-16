@@ -73,5 +73,7 @@ namespace Uniform
         /// If document with such key doesn't exists - no changes to collection will be made.
         /// </summary>
         void Delete(String key);
+
+        void DropAndPrepare();
     }
 }

@@ -81,5 +81,10 @@ namespace Uniform
             updater(doc);
             _collection.Save(key, doc);            
         }
+
+        public void DropAndPrepare()
+        {
+            _collection.DropAndPrepare();
+        }
     }
 }

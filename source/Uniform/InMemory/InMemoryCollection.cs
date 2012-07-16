@@ -85,5 +85,10 @@ namespace Uniform.InMemory
         {
             _documents[key] = document;
         }
+
+        public void DropAndPrepare()
+        {
+            _documents.Clear();
+        }
     }
 }

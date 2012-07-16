@@ -51,5 +51,10 @@ namespace Uniform.AdoNet
                 }
             }
         }
+
+        public void DropAndPrepare()
+        {
+            _command.CreateTable(true, _documentType);
+        }
     }
 }

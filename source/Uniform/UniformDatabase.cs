@@ -49,8 +49,12 @@ namespace Uniform
             var newDatabases = new Dictionary<String, IDatabase>();
 
             foreach (var database in _metadata.Databases)
-                newDatabases[database.Key] = new InMemoryDatabase();
-
+            {
+                var inmemory = new InMemoryDatabase();
+                inmemory.Initialize(this);
+                newDatabases[database.Key] = inmemory;
+            }
+                
             _metadata.Databases = newDatabases;
         }
 
@@ -77,6 +81,10 @@ namespace Uniform
                 foreach (KeyValuePair<CollectionInfo, ICollection> collectionPair in inMemory.Collections)
                 {
                     var collection = (IInMemoryCollection) collectionPair.Value;
+                    var toCollection = normal.GetCollection(collectionPair.Key.DocumentType, collectionPair.Key.CollectionName);
+
+                    toCollection.DropAndPrepare();
+                    toCollection.Save(collection.Documents.Values);
                 }
             }
         }
