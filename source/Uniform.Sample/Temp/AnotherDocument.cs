@@ -5,7 +5,7 @@ using ServiceStack.DataAnnotations;
 
 namespace Uniform.Sample.Temp
 {
-    [Document(SampleDatabases.Mongodb, "anothers")]
+    [Document]
     [Alias("anothers")]
     public class AnotherDocument
     {

@@ -11,27 +11,9 @@ namespace Uniform
         /// <summary>
         /// Registers single document that belong to specified database and collection
         /// </summary>
-        public static DatabaseConfiguration RegisterDocument<TDocument>(this DatabaseConfiguration configuration, String databaseName, String collectionName)
-        {
-            configuration.RegisterDocument(databaseName, collectionName, typeof (TDocument));
-            return configuration;
-        }
-
-        /// <summary>
-        /// Registers single document. 
-        /// Name of database and collection will be discovered by looking to [Document] attribute of TDocument type.
-        /// </summary>
         public static DatabaseConfiguration RegisterDocument<TDocument>(this DatabaseConfiguration configuration)
         {
-            var collectionAttributes = ReflectionHelper.GetAllAttributes<DocumentAttribute>(typeof (TDocument));
-
-            foreach (var documentAttribute in collectionAttributes)
-            {
-                string databaseName = documentAttribute.DatabaseName;
-                string collectionName = documentAttribute.CollectionName;
-                configuration.RegisterDocument(databaseName, collectionName, typeof(TDocument));
-            }
-
+            configuration.RegisterDocument(typeof (TDocument));
             return configuration;
         }
 
@@ -50,7 +32,7 @@ namespace Uniform
 
             foreach (var tuple in result)
                 foreach (var documentAttribute in tuple.Item2)
-                    configuration.RegisterDocument(documentAttribute.DatabaseName, documentAttribute.CollectionName, tuple.Item1);
+                    configuration.RegisterDocument(tuple.Item1);
             
             return configuration;
         }

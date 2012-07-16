@@ -7,8 +7,7 @@ namespace Uniform.Tests.Specs.database
          
     }
 
-    [Document("sample_db", "sample_collection")]
-    [Document("sample_db1", "sample_collection")]
+    [Document]
     public class SampleDocument
     {
         public String UserId { get; set; }

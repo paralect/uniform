@@ -10,28 +10,41 @@ namespace Uniform.AdoNet
         private readonly Type _documentType;
         private readonly AdoNetDatabase _database;
         private IDbCommand _command;
+        private readonly IDbConnectionFactory _factory;
 
         public AdoNetCollection(Type documentType, AdoNetDatabase database)
         {
             _documentType = documentType;
             _database = database;
             _command = _database.Connection.CreateCommand();
-
+            _factory = database.DbFactory;
         }
 
         public object GetById(string key)
         {
-            return _command.GetByIdOrDefault(_documentType, key);
+            using (var connection = _factory.OpenDbConnection())
+            {
+                var command = connection.CreateCommand();
+                return command.GetByIdOrDefault(_documentType, key);
+            }
         }
 
         public void Save(string key, Object obj)
         {
-            _command.Save(_documentType, obj, _database.UniformDatabase.Metadata.GetDocumentId(obj));
+            using (var connection = _factory.OpenDbConnection())
+            {
+                var command = connection.CreateCommand();
+                command.Save(_documentType, obj, _database.UniformDatabase.Metadata.GetDocumentId(obj));
+            }
         }
 
         public void Delete(string key)
         {
-            _command.DeleteById(_documentType, key);
+            using (var connection = _factory.OpenDbConnection())
+            {
+                var command = connection.CreateCommand();
+                command.DeleteById(_documentType, key);
+            }
         }
 
 /*        public void CreateTable()
@@ -42,11 +55,12 @@ namespace Uniform.AdoNet
 
         public void Save(IEnumerable<Object> docs)
         {
-            using (var connection = _database.DbFactory.OpenDbConnection())
+            using (var connection = _factory.OpenDbConnection())
             {
-                using(var transaction = _database.Connection.BeginTransaction())
+                using(var transaction = connection.BeginTransaction())
                 {
-                    _command.InsertAll(docs);
+                    var command = connection.CreateCommand();
+                    command.InsertAll(docs);
                     transaction.Commit();
                 }
             }
@@ -54,7 +68,11 @@ namespace Uniform.AdoNet
 
         public void DropAndPrepare()
         {
-            _command.CreateTable(true, _documentType);
+            using (var connection = _factory.OpenDbConnection())
+            {
+                var command = connection.CreateCommand();
+                command.CreateTable(true, _documentType);
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Uniform.Sample
 
         public ICollection<UserDocument> Users
         {
-            get { return _database.GetCollection<UserDocument>(SampleDatabases.Mongodb, SampleCollections.Users); }
+            get { return _database.GetCollection<UserDocument>(SampleDatabases.Sql, SampleCollections.Users); }
         }        
         
         public ICollection<QuestionDocument> Questions
@@ -38,7 +38,7 @@ namespace Uniform.Sample
 
         public ICollection<CommentDocument> Comments
         {
-            get { return _database.GetCollection<CommentDocument>(SampleDatabases.Mongodb, SampleCollections.Comments); }
+            get { return _database.GetCollection<CommentDocument>(SampleDatabases.Sql, SampleCollections.Comments); }
         }
 
         public ICollection<VoteDocument> Votes

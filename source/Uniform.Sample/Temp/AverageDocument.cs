@@ -5,7 +5,7 @@ using ServiceStack.DataAnnotations;
 
 namespace Uniform.Sample.Temp
 {
-    [Document(SampleDatabases.Mongodb, "averages")]
+    [Document]
     [Alias("averages")]
     public class AverageDocument
     {

@@ -6,7 +6,7 @@ using ServiceStack.DataAnnotations;
 
 namespace Uniform.Sample.Documents
 {
-    [Document(SampleDatabases.Sql, SampleCollections.Users)]
+    [Document]
     [Alias("users")]
     public class UserDocument
     {

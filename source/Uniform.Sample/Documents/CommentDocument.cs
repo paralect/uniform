@@ -7,7 +7,7 @@ using Uniform.Mongodb;
 
 namespace Uniform.Sample.Documents
 {
-    [Document(SampleDatabases.Sql, SampleCollections.Comments)] 
+    [Document] 
     [Alias("comments")]
     public class CommentDocument
     {

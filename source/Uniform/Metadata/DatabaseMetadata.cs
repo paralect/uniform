@@ -20,9 +20,12 @@ namespace Uniform
         /// </summary>
         private readonly DatabaseConfiguration _configuration;
 
+        public DatabaseConfiguration Configuration
+        {
+            get { return _configuration; }
+        }
+
         private Dictionary<String, IDatabase> _databases = new Dictionary<string, IDatabase>();
-
-
 
         public Dictionary<string, IDatabase> Databases
         {
@@ -47,15 +50,6 @@ namespace Uniform
         public DatabaseMetadata(DatabaseConfiguration configuration)
         {
             _configuration = configuration;
-            foreach (var documentConfiguration in configuration.DocumentConfigurations)
-            {
-                List<DocumentConfiguration> documentConfigurations;
-                if (!_documentConfigurations.TryGetValue(documentConfiguration.DocumentType, out documentConfigurations))
-                    _documentConfigurations[documentConfiguration.DocumentType] = documentConfigurations = new List<DocumentConfiguration>();
-
-                documentConfigurations.Add(documentConfiguration);
-            }
-
             _databases = configuration.Databases;
         }
 
