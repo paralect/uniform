@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using Uniform.InMemory;
+using System.Threading.Tasks.Dataflow;
 
 namespace Uniform
 {
@@ -73,20 +75,46 @@ namespace Uniform
 
         private void Flush(Dictionary<String, IDatabase> from, Dictionary<String, IDatabase> to)
         {
-            foreach (var pair in from)
+            var flush = new ActionBlock<FlushTo>(s =>
             {
-                var inMemory = (InMemoryDatabase) pair.Value;
-                var normal = to[pair.Key];
+                s.To.DropAndPrepare();
+                s.To.Save(s.Data);
+            }, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = 10 });
 
-                foreach (KeyValuePair<CollectionInfo, ICollection> collectionPair in inMemory.Collections)
+            foreach (var inMemoryDatabasePair in from)
+            {
+                var inMemoryDatabase = (InMemoryDatabase) inMemoryDatabasePair.Value;
+                var destinationDatabase = to[inMemoryDatabasePair.Key];
+
+                foreach (var inMemoryCollectionPair in inMemoryDatabase.Collections)
                 {
-                    var collection = (IInMemoryCollection) collectionPair.Value;
-                    var toCollection = normal.GetCollection(collectionPair.Key.DocumentType, collectionPair.Key.CollectionName);
+                    var inMemoryCollection = (IInMemoryCollection) inMemoryCollectionPair.Value;
+                    var documentType = inMemoryCollectionPair.Key.DocumentType;
+                    var collectionName = inMemoryCollectionPair.Key.CollectionName;
+                    
+                    var destinationCollection = destinationDatabase.GetCollection(documentType, collectionName);
 
-                    toCollection.DropAndPrepare();
-                    toCollection.Save(collection.Documents.Values);
+                    flush.Post(new FlushTo(destinationCollection, inMemoryCollection.Documents.Values));
+
+                    //destinationCollection.DropAndPrepare();
+                    //destinationCollection.Save(inMemoryCollection.Documents.Values);
                 }
             }
+
+            flush.Complete();
+            flush.Completion.Wait();
+        }
+    }
+
+    public class FlushTo
+    {
+        public ICollection To { get; set; }
+        public IEnumerable<Object> Data { get; set; }
+
+        public FlushTo(ICollection to, IEnumerable<object> data)
+        {
+            To = to;
+            Data = data;
         }
     }
 }

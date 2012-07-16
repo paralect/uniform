@@ -22,6 +22,8 @@ namespace Uniform
 
         private Dictionary<String, IDatabase> _databases = new Dictionary<string, IDatabase>();
 
+
+
         public Dictionary<string, IDatabase> Databases
         {
             get { return _databases; }
@@ -31,7 +33,7 @@ namespace Uniform
         /// <summary>
         /// All registered document types. 
         /// </summary>
-        private readonly Dictionary<Type, DocumentConfiguration> _documentConfigurations = new Dictionary<Type, DocumentConfiguration>();
+        private readonly Dictionary<Type, List<DocumentConfiguration>> _documentConfigurations = new Dictionary<Type, List<DocumentConfiguration>>();
 
         public IEnumerable<Type> DocumentTypes
         {
@@ -46,9 +48,20 @@ namespace Uniform
         {
             _configuration = configuration;
             foreach (var documentConfiguration in configuration.DocumentConfigurations)
-                _documentConfigurations[documentConfiguration.DocumentType] = documentConfiguration;
+            {
+                List<DocumentConfiguration> documentConfigurations;
+                if (!_documentConfigurations.TryGetValue(documentConfiguration.DocumentType, out documentConfigurations))
+                    _documentConfigurations[documentConfiguration.DocumentType] = documentConfigurations = new List<DocumentConfiguration>();
+
+                documentConfigurations.Add(documentConfiguration);
+            }
 
             _databases = configuration.Databases;
+        }
+
+        public List<DocumentConfiguration> GetDocumentConfigurations(Type documentType)
+        {
+            return _documentConfigurations[documentType];
         }
 
         /// <summary>

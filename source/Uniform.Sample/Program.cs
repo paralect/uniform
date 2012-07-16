@@ -41,8 +41,8 @@ namespace Uniform.Sample
                 .RegisterDocument<QuestionDocument>()
                 .RegisterDocument<CommentDocument>()
                 .RegisterDocument<VoteDocument>()
-                .RegisterDatabase(SampleDatabases.Mongodb, mysqlDatabase)
-//                .RegisterDatabase(SampleDatabases.Sql, mysqlDatabase)
+                .RegisterDatabase(SampleDatabases.Mongodb, mongodbDatabase)
+                .RegisterDatabase(SampleDatabases.Sql, mysqlDatabase)
             );
 
             database.EnterInMemoryMode();
@@ -50,7 +50,10 @@ namespace Uniform.Sample
             // 3. Optional.
             RunViewModelRegeneration(database);
 
+            var stopwatch = Stopwatch.StartNew();
             database.LeaveInMemoryMode(true);
+            stopwatch.Stop();
+            Console.WriteLine("Flushed in {0:n0} ms", stopwatch.ElapsedMilliseconds);
         }
 
         public static void RunViewModelRegeneration(UniformDatabase database)

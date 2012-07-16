@@ -6,6 +6,7 @@ namespace Uniform
     public class DatabaseConfiguration
     {
         public HashSet<DocumentConfiguration> DocumentConfigurations { get; set; }
+
         public Dictionary<String, IDatabase> Databases { get; set; } 
 
         public DatabaseConfiguration()
@@ -22,7 +23,8 @@ namespace Uniform
             if (databaseName == null) throw new ArgumentNullException("databaseName");
             if (collectionName == null) throw new ArgumentNullException("collectionName");
 
-            var added = DocumentConfigurations.Add(new DocumentConfiguration(databaseName, collectionName, documentType));
+            var documentConfiguration = new DocumentConfiguration(databaseName, collectionName, documentType);
+            var added = DocumentConfigurations.Add(documentConfiguration);
 
             if (added == false)
                 throw new Exception(String.Format("Duplicate registration for document of type {0}" +
