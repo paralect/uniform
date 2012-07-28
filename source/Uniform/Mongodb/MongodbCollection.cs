@@ -40,6 +40,14 @@ namespace Uniform.Mongodb
             return _collection.FindOneByIdAs(_documentType, key);
         }
 
+        public IEnumerable<object> GetById(IEnumerable<string> keys)
+        {
+            var bsonIdArray = BsonArray.Create(keys);
+            MongoCursor cursor = _collection.FindAs(_documentType, Query.In("_id", bsonIdArray));
+            foreach (var doc in cursor)
+                yield return doc;
+        }
+
         /// <summary>
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
@@ -51,6 +59,12 @@ namespace Uniform.Mongodb
 
             _database.UniformDatabase.Metadata.SetDocumentId(document, key);
             _collection.Save(document);
+        }
+
+        public void Save(object obj)
+        {
+            var key = _database.UniformDatabase.Metadata.GetDocumentId(obj);
+            Save(key, obj);
         }
 
         /// <summary>

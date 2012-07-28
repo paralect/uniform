@@ -23,9 +23,32 @@ namespace Uniform
             return GetById(key);
         }
 
+        IEnumerable<TDocument> ICollection<TDocument>.GetById(IEnumerable<string> keys)
+        {
+            var docs = _collection.GetById(keys);
+
+            foreach (var doc in docs)
+                yield return (TDocument) doc;
+        }
+
+        IEnumerable<object> ICollection.GetById(IEnumerable<string> keys)
+        {
+            return _collection.GetById(keys);
+        }
+
         public void Save(string key, object obj)
         {
             _collection.Save(key, obj);
+        }
+
+        public void Save(object obj)
+        {
+            _collection.Save(obj);
+        }
+
+        public void Save(TDocument obj)
+        {
+            _collection.Save(obj);
         }
 
         public void Save(IEnumerable<object> docs)

@@ -29,13 +29,24 @@ namespace Uniform.AdoNet
             }
         }
 
+        public IEnumerable<object> GetById(IEnumerable<string> keys)
+        {
+            throw new NotImplementedException("GetById(IEnumerable<String> keys) not implemented for AdoNetCollection");
+        }
+
         public void Save(string key, Object obj)
         {
             using (var connection = _factory.OpenDbConnection())
             {
                 var command = connection.CreateCommand();
-                command.Save(_documentType, obj, _database.UniformDatabase.Metadata.GetDocumentId(obj));
+                command.Save(_documentType, obj, key);
             }
+        }
+
+        public void Save(Object obj)
+        {
+            var key = _database.UniformDatabase.Metadata.GetDocumentId(obj);
+            Save(key, obj);
         }
 
         public void Delete(string key)

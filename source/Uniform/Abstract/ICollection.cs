@@ -17,10 +17,23 @@ namespace Uniform
         new TDocument GetById(String key);
 
         /// <summary>
+        /// Returns documents by theirs key. 
+        /// If some document doesn't exists - it will be skipped. So it is possible to receive 5 documents
+        /// when you asked for 20.
+        /// </summary>
+        new IEnumerable<TDocument> GetById(IEnumerable<String> keys);
+
+        /// <summary>
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
         void Save(String key, TDocument obj);
+
+        /// <summary>
+        /// Saves document to collection using specified key.
+        /// If document with such key already exists, it will be silently overwritten.
+        /// </summary>
+        void Save(TDocument obj);
 
         /// <summary>
         /// Saves document to collection using specified key. 
@@ -58,10 +71,23 @@ namespace Uniform
         Object GetById(String key);
 
         /// <summary>
+        /// Returns documents by theirs key. 
+        /// If some document doesn't exists - it will be skipped. So it is possible to receive 5 documents
+        /// when you asked for 20.
+        /// </summary>
+        IEnumerable<Object> GetById(IEnumerable<String> keys);
+
+        /// <summary>
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
         void Save(String key, Object obj);
+
+        /// <summary>
+        /// Saves document to collection
+        /// If document with such key already exists, it will be silently overwritten.
+        /// </summary>
+        void Save(Object obj);
 
         /// <summary>
         /// Bulk save

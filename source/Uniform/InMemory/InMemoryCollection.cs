@@ -47,6 +47,17 @@ namespace Uniform.InMemory
             return document;
         }
 
+        public IEnumerable<object> GetById(IEnumerable<string> keys)
+        {
+            foreach (var key in keys)
+            {
+                var doc = GetById(key);
+
+                if (doc != null)
+                    yield return doc;
+            }
+        }
+
         /// <summary>
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
@@ -57,6 +68,12 @@ namespace Uniform.InMemory
             if (document == null) throw new ArgumentNullException("document");
 
             SaveInternal(key, document);
+        }
+
+        public void Save(object obj)
+        {
+            var key = _metadata.GetDocumentId(obj);
+            Save(key, obj);
         }
 
         /// <summary>

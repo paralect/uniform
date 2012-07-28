@@ -32,7 +32,7 @@ namespace Uniform.Sample
         {
             // 1. Create databases.
             var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local");
-            var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
+            //var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
 
 
             // 2. Create database metadata
@@ -42,7 +42,7 @@ namespace Uniform.Sample
                 .RegisterDocument<CommentDocument>()
                 .RegisterDocument<VoteDocument>()
                 .RegisterDatabase(SampleDatabases.Mongodb, mongodbDatabase)
-                .RegisterDatabase(SampleDatabases.Sql, mysqlDatabase)
+                .RegisterDatabase(SampleDatabases.Sql, mongodbDatabase)
             );
 
             database.EnterInMemoryMode();
