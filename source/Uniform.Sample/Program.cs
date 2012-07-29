@@ -31,7 +31,7 @@ namespace Uniform.Sample
         public static void Main(string[] args)
         {
             // 1. Create databases.
-            var mongodbDatabase = new MongodbDatabase("mongodb://localhost:27017/local");
+            var mongodbDatabase = new MongodbDatabase("mongodb://admin(admin):adminpwd0375@localhost:27017/local");
             //var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
 
 

@@ -42,6 +42,9 @@ namespace Uniform.Mongodb
 
         public IEnumerable<object> GetById(IEnumerable<string> keys)
         {
+            if (keys.Count() == 0)
+                yield break;
+
             var bsonIdArray = BsonArray.Create(keys);
             MongoCursor cursor = _collection.FindAs(_documentType, Query.In("_id", bsonIdArray));
             foreach (var doc in cursor)

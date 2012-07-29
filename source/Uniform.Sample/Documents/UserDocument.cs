@@ -14,6 +14,7 @@ namespace Uniform.Sample.Documents
         public String UserId { get; set; }
         public String UserName { get; set; }
         public String About { get; set; }
+        public String Nothing { get; set; }
 
         [StringLength(6000)]
         public String Aga { get; set; }
