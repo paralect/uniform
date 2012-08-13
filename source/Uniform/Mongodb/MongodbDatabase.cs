@@ -8,7 +8,7 @@ namespace Uniform.Mongodb
     /// Each collection can contains only one type of documents.
     /// Thread-safe.
     /// </summary>
-    public class MongodbDatabase : IDatabase
+    public class MongodbDatabase : IDocumentDatabase
     {
         /// <summary>
         /// MongoDB Server
@@ -61,12 +61,12 @@ namespace Uniform.Mongodb
         /// Gets collection with specifed name that contains documents of specified type (TDocument)
         /// Will be created, if not already exists.
         /// </summary>
-        public ICollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new()
+        public IDocumentCollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new()
         {
             return new GenericCollection<TDocument>(GetCollection(typeof (TDocument), name));
         }
 
-        public ICollection GetCollection(Type documentType, string name)
+        public IDocumentCollection GetCollection(Type documentType, string name)
         {
             return new MongodbCollection(this, documentType, name);
         }

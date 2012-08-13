@@ -9,9 +9,10 @@ using MongoDB.Driver.Linq;
 
 namespace Uniform.Mongodb
 {
-    public class MongodbCollection : ICollection
+    public class MongodbCollection : IDocumentCollection
     {
         private readonly MongodbDatabase _database;
+        private readonly DatabaseMetadata _metadata;
         private readonly Type _documentType;
         private readonly string _collectionName;
         private readonly MongoCollection _collection;
@@ -23,6 +24,7 @@ namespace Uniform.Mongodb
             _database = database;
             _documentType = documentType;
             _collectionName = collectionName;
+            _metadata = _database.UniformDatabase.Metadata;
 
             var mongoSettings = _database.Database.CreateCollectionSettings(documentType, _collectionName);
             mongoSettings.AssignIdOnInsert = false;
@@ -55,19 +57,50 @@ namespace Uniform.Mongodb
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
-        public void Save(String key, Object document)
+        public bool Save(String key, Object document)
         {
             if (key == null) throw new ArgumentNullException("key");
             if (document == null) throw new ArgumentNullException("document");
 
-            _database.UniformDatabase.Metadata.SetDocumentId(document, key);
-            _collection.Save(document);
+            _metadata.SetDocumentId(document, key);
+            _collection.Save(_documentType, document);
+            return true;
         }
 
-        public void Save(object obj)
+        public bool Save(object obj)
         {
-            var key = _database.UniformDatabase.Metadata.GetDocumentId(obj);
-            Save(key, obj);
+            var key = _metadata.GetDocumentId(obj);
+            return Save(key, obj);
+        }
+
+        public bool Replace(String key, object document)
+        {
+            if (key == null) throw new ArgumentNullException("key");
+            if (document == null) throw new ArgumentNullException("document");
+
+            _metadata.SetDocumentId(document, key);
+            var version = _metadata.GetDocumentVersion(document);
+
+            var updateOptions = new MongoUpdateOptions
+            {
+                CheckElementNames = true, Flags = UpdateFlags.None, SafeMode = SafeMode.True
+            };
+
+            IMongoQuery query = Query.EQ("_id", key);
+
+            if (version != null)
+            {
+                // Increment version of document
+                _metadata.SetDocumentVersion(document, version.Value + 1);
+
+                var versionProperty = _metadata.GetDocumentVersionPropertyInfo(_documentType);
+                query = Query.And(query, Query.EQ(versionProperty.Name, version));
+            }
+
+            var update = Update.Replace(_documentType, document);
+
+            var result = _collection.Update(query, update, updateOptions);
+            return result.DocumentsAffected > 0;
         }
 
         /// <summary>

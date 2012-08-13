@@ -6,7 +6,7 @@ namespace Uniform
     /// Simple abstraction for document database. Documents organized in collections. 
     /// Each collection can contains only one type of documents.
     /// </summary>
-    public interface IDatabase
+    public interface IDocumentDatabase
     {
         void Initialize(UniformDatabase database);
 
@@ -14,8 +14,8 @@ namespace Uniform
         /// Gets collection with specifed name that contains documents of specified type (TDocument)
         /// Will be created, if not already exists.
         /// </summary>
-        ICollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new();
+        IDocumentCollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new();
 
-        ICollection GetCollection(Type documentType, String name);
+        IDocumentCollection GetCollection(Type documentType, String name);
     }
 }

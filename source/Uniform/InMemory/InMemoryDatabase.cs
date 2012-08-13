@@ -8,12 +8,12 @@ namespace Uniform.InMemory
     /// Each collection can contains only one type of documents.
     /// Not thread-safe.
     /// </summary>
-    public class InMemoryDatabase : IDatabase
+    public class InMemoryDatabase : IDocumentDatabase
     {
         /// <summary>
         /// Contains database collections, hashed by collection name
         /// </summary>
-        private readonly Dictionary<CollectionInfo, ICollection> _collections = new Dictionary<CollectionInfo, ICollection>();
+        private readonly Dictionary<CollectionInfo, IDocumentCollection> _collections = new Dictionary<CollectionInfo, IDocumentCollection>();
 
         private UniformDatabase _uniformDatabase;
 
@@ -25,7 +25,7 @@ namespace Uniform.InMemory
         /// <summary>
         /// Contains database collections, hashed by collection name
         /// </summary>
-        public Dictionary<CollectionInfo, ICollection> Collections
+        public Dictionary<CollectionInfo, IDocumentCollection> Collections
         {
             get { return _collections; }
         }
@@ -47,17 +47,17 @@ namespace Uniform.InMemory
         /// Gets collection with specifed name that contains documents of specified type (TDocument)
         /// Will be created, if not already exists.
         /// </summary>
-        public ICollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
+        public IDocumentCollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
         {
             return new GenericCollection<TDocument>(GetCollection(typeof (TDocument), name));
         }
 
-        public ICollection GetCollection(Type documentType, string name)
+        public IDocumentCollection GetCollection(Type documentType, string name)
         {
             if (name == null) throw new ArgumentNullException("name");
             var info = new CollectionInfo(documentType, name);
 
-            ICollection collection;
+            IDocumentCollection collection;
             if (!_collections.TryGetValue(info, out collection))
                 _collections[info] = collection = new InMemoryCollection(_uniformDatabase.Metadata);
 

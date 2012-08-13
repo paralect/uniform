@@ -12,6 +12,10 @@ namespace Uniform.Sample.Documents
     {
         [DocumentId, BsonId]
         public String UserId { get; set; }
+
+        [DocumentVersion]
+        public Int32 Version { get; set; }
+
         public String UserName { get; set; }
         public String About { get; set; }
         public String Nothing { get; set; }

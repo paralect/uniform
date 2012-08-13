@@ -9,7 +9,7 @@ namespace Uniform
     public class UniformDatabase
     {
         private Boolean _inMemory = false;
-        private Dictionary<String, IDatabase> _databases = new Dictionary<string, IDatabase>();
+        private Dictionary<String, IDocumentDatabase> _databases = new Dictionary<string, IDocumentDatabase>();
 
         private readonly DatabaseMetadata _metadata;
 
@@ -38,7 +38,7 @@ namespace Uniform
             return database;
         }
 
-        public ICollection<TDocument> GetCollection<TDocument>(String databaseName, String collectionName) where TDocument : new()
+        public IDocumentCollection<TDocument> GetCollection<TDocument>(String databaseName, String collectionName) where TDocument : new()
         {
             return _metadata.Databases[databaseName].GetCollection<TDocument>(collectionName);
         }
@@ -48,7 +48,7 @@ namespace Uniform
             _inMemory = true;
             _databases = _metadata.Databases;
 
-            var newDatabases = new Dictionary<String, IDatabase>();
+            var newDatabases = new Dictionary<String, IDocumentDatabase>();
 
             foreach (var database in _metadata.Databases)
             {
@@ -73,12 +73,21 @@ namespace Uniform
                 Flush(inmemoryDB, _databases);
         }
 
-        private void Flush(Dictionary<String, IDatabase> from, Dictionary<String, IDatabase> to)
+        private void Flush(Dictionary<String, IDocumentDatabase> from, Dictionary<String, IDocumentDatabase> to)
         {
             var flush = new ActionBlock<FlushTo>(s =>
             {
-                s.To.DropAndPrepare();
-                s.To.Save(s.Data);
+                try
+                {
+                    s.To.DropAndPrepare();
+
+                    if (s.Data.Count > 0)
+                        s.To.Save(s.Data);
+                }
+                catch (Exception)
+                {
+                    // yes, should be logged
+                }
             }, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = 10 });
 
             foreach (var inMemoryDatabasePair in from)
@@ -108,10 +117,10 @@ namespace Uniform
 
     public class FlushTo
     {
-        public ICollection To { get; set; }
-        public IEnumerable<Object> Data { get; set; }
+        public IDocumentCollection To { get; set; }
+        public ICollection<Object> Data { get; set; }
 
-        public FlushTo(ICollection to, IEnumerable<object> data)
+        public FlushTo(IDocumentCollection to, ICollection<object> data)
         {
             To = to;
             Data = data;

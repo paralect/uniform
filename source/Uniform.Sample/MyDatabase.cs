@@ -26,22 +26,22 @@ namespace Uniform.Sample
             _database = database;
         }
 
-        public ICollection<UserDocument> Users
+        public IDocumentCollection<UserDocument> Users
         {
             get { return _database.GetCollection<UserDocument>(SampleDatabases.Sql, SampleCollections.Users); }
         }        
         
-        public ICollection<QuestionDocument> Questions
+        public IDocumentCollection<QuestionDocument> Questions
         {
             get { return _database.GetCollection<QuestionDocument>(SampleDatabases.Mongodb, SampleCollections.Questions); }
         }
 
-        public ICollection<CommentDocument> Comments
+        public IDocumentCollection<CommentDocument> Comments
         {
             get { return _database.GetCollection<CommentDocument>(SampleDatabases.Sql, SampleCollections.Comments); }
         }
 
-        public ICollection<VoteDocument> Votes
+        public IDocumentCollection<VoteDocument> Votes
         {
             get { return _database.GetCollection<VoteDocument>(SampleDatabases.Mongodb, SampleCollections.Votes); }
         }

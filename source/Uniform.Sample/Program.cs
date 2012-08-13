@@ -45,6 +45,8 @@ namespace Uniform.Sample
                 .RegisterDatabase(SampleDatabases.Sql, mongodbDatabase)
             );
 
+            var mydb = new MyDatabase(database);
+
             database.EnterInMemoryMode();
 
             // 3. Optional.
@@ -61,7 +63,7 @@ namespace Uniform.Sample
             Console.Write("Creating list of events in memory... ");
 
             var events = new List<Object>();
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 100000; i++)
             {
                 var userId = String.Format("user/{0}", i);
                 var question1 = String.Format("user/{0}/question/{1}", i, 1);

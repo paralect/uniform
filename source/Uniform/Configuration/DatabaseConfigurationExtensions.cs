@@ -37,7 +37,7 @@ namespace Uniform
             return configuration;
         }
 
-        public static DatabaseConfiguration RegisterDatabase(this DatabaseConfiguration configuration, String databaseName, IDatabase database)
+        public static DatabaseConfiguration RegisterDatabase(this DatabaseConfiguration configuration, String databaseName, IDocumentDatabase database)
         {
             if (databaseName == null) throw new ArgumentNullException("databaseName");
             if (database == null) throw new ArgumentNullException("database");

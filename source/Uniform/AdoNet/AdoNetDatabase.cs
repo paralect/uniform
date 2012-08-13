@@ -5,7 +5,7 @@ using ServiceStack.OrmLite.MySql;
 
 namespace Uniform.AdoNet
 {
-    public class AdoNetDatabase : IDatabase
+    public class AdoNetDatabase : IDocumentDatabase
     {
         private readonly OrmLiteConnectionFactory _dbFactory;
         private IDbConnection _connection;
@@ -37,13 +37,13 @@ namespace Uniform.AdoNet
             _uniformDatabase = database;
         }
 
-        public ICollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
+        public IDocumentCollection<TDocument> GetCollection<TDocument>(string name) where TDocument : new()
         {
             return new GenericCollection<TDocument>(
                 GetCollection(typeof(TDocument), name));
         }
 
-        public ICollection GetCollection(Type documentType, string name)
+        public IDocumentCollection GetCollection(Type documentType, string name)
         {
             return new AdoNetCollection(documentType, this);
         }

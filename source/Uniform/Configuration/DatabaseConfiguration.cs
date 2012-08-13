@@ -7,12 +7,12 @@ namespace Uniform
     {
         public Dictionary<Type, DocumentConfiguration> DocumentConfigurations { get; set; }
 
-        public Dictionary<String, IDatabase> Databases { get; set; } 
+        public Dictionary<String, IDocumentDatabase> Databases { get; set; } 
 
         public DatabaseConfiguration()
         {
             DocumentConfigurations = new Dictionary<Type, DocumentConfiguration>();
-            Databases = new Dictionary<string, IDatabase>();
+            Databases = new Dictionary<string, IDocumentDatabase>();
         }
 
         /// <summary>

@@ -4,26 +4,26 @@ using System.Linq;
 
 namespace Uniform
 {
-    public class GenericCollection<TDocument> : ICollection<TDocument> where TDocument : new()
+    public class GenericCollection<TDocument> : IDocumentCollection<TDocument> where TDocument : new()
     {
-        private readonly ICollection _collection;
+        private readonly IDocumentCollection _collection;
 
-        public ICollection Collection
+        public IDocumentCollection Collection
         {
             get { return _collection; }
         }
 
-        public GenericCollection(ICollection collection)
+        public GenericCollection(IDocumentCollection collection)
         {
             _collection = collection;
         }
 
-        object ICollection.GetById(string key)
+        object IDocumentCollection.GetById(string key)
         {
             return GetById(key);
         }
 
-        IEnumerable<TDocument> ICollection<TDocument>.GetById(IEnumerable<string> keys)
+        IEnumerable<TDocument> IDocumentCollection<TDocument>.GetById(IEnumerable<string> keys)
         {
             var docs = _collection.GetById(keys);
 
@@ -31,19 +31,19 @@ namespace Uniform
                 yield return (TDocument) doc;
         }
 
-        IEnumerable<object> ICollection.GetById(IEnumerable<string> keys)
+        IEnumerable<object> IDocumentCollection.GetById(IEnumerable<string> keys)
         {
             return _collection.GetById(keys);
         }
 
-        public void Save(string key, object obj)
+        public bool Save(string key, object obj)
         {
-            _collection.Save(key, obj);
+            return _collection.Save(key, obj);
         }
 
-        public void Save(object obj)
+        public bool Save(object obj)
         {
-            _collection.Save(obj);
+            return _collection.Save(obj);
         }
 
         public void Save(TDocument obj)
@@ -54,6 +54,11 @@ namespace Uniform
         public void Save(IEnumerable<object> docs)
         {
             _collection.Save(docs);
+        }
+
+        public bool Replace(String key, object obj)
+        {
+            return _collection.Replace(key, obj);
         }
 
         public void Delete(string key)
@@ -78,6 +83,13 @@ namespace Uniform
             _collection.Save(key, doc);
         }
 
+        public void Save(Action<TDocument> creator)
+        {
+            var doc = new TDocument();
+            creator(doc);
+            _collection.Save(doc);
+        }
+
         public void Save(IEnumerable<TDocument> docs)
         {
             _collection.Save(docs.Cast<Object>());
@@ -85,24 +97,50 @@ namespace Uniform
 
         public void Update(string key, Action<TDocument> updater)
         {
-            var doc = GetById(key);
+            MakeAttempts(() =>
+            {
+                var doc = GetById(key);
 
-            if (doc == null)
-                return;
+                if (doc == null)
+                    return true;
 
-            updater(doc);
-            _collection.Save(key, doc);
+                updater(doc);
+                return _collection.Replace(key, doc);
+            });
         }
 
         public void UpdateOrSave(string key, Action<TDocument> updater)
         {
-            var doc = GetById(key);
+            MakeAttempts(() =>
+            {
+                var doc = GetById(key);
 
-            if (doc == null)
-                doc = new TDocument();
+                if (doc == null)
+                {
+                    doc = new TDocument();
+                    updater(doc);
+                    _collection.Save(key, doc);
+                }
 
-            updater(doc);
-            _collection.Save(key, doc);            
+                updater(doc);
+                return _collection.Replace(key, doc);
+            });
+        }
+
+        private void MakeAttempts(Func<Boolean> action)
+        {
+            const Int32 maxAttempts = 6;
+            var attempts = 0;
+
+            while (attempts < maxAttempts)
+            {
+                bool saved = action();
+
+                if (saved)
+                    return;
+
+                attempts++;
+            }
         }
 
         public void DropAndPrepare()

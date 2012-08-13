@@ -5,7 +5,7 @@ using ServiceStack.OrmLite;
 
 namespace Uniform.AdoNet
 {
-    public class AdoNetCollection : ICollection
+    public class AdoNetCollection : IDocumentCollection
     {
         private readonly Type _documentType;
         private readonly AdoNetDatabase _database;
@@ -34,19 +34,26 @@ namespace Uniform.AdoNet
             throw new NotImplementedException("GetById(IEnumerable<String> keys) not implemented for AdoNetCollection");
         }
 
-        public void Save(string key, Object obj)
+        public bool Save(string key, Object obj)
         {
             using (var connection = _factory.OpenDbConnection())
             {
                 var command = connection.CreateCommand();
                 command.Save(_documentType, obj, key);
             }
+
+            return true;
         }
 
-        public void Save(Object obj)
+        public bool Save(Object obj)
         {
             var key = _database.UniformDatabase.Metadata.GetDocumentId(obj);
-            Save(key, obj);
+            return Save(key, obj);
+        }
+
+        public bool Replace(String key, object obj)
+        {
+            return Save(key, obj);
         }
 
         public void Delete(string key)

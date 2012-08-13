@@ -101,6 +101,7 @@
     <Compile Include="AdoNet\AdoNetQuery.cs" />
     <Compile Include="Attributes\DocumentAttribute.cs" />
     <Compile Include="Attributes\DocumentIdAttribute.cs" />
+    <Compile Include="Attributes\DocumentVersionAttribute.cs" />
     <Compile Include="CollectionInfo.cs" />
     <Compile Include="CollectionWrapper.cs" />
     <Compile Include="Configuration\DocumentConfiguration.cs" />
@@ -117,8 +118,8 @@
     <Compile Include="Mongodb\MongodbBulkLoader.cs" />
     <Compile Include="Mongodb\MongodbFlusher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Abstract\ICollection.cs" />
-    <Compile Include="Abstract\IDatabase.cs" />
+    <Compile Include="Abstract\IDocumentCollection.cs" />
+    <Compile Include="Abstract\IDocumentDatabase.cs" />
     <Compile Include="Mongodb\MongodbCollection.cs" />
     <Compile Include="Mongodb\MongodbDatabase.cs" />
     <Compile Include="UniformDatabase.cs" />

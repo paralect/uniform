@@ -8,7 +8,7 @@ namespace Uniform
     /// Simple abstraction that represents typed collection of documents.
     /// Collection always consists only of one type of documents.
     /// </summary>
-    public interface ICollection<TDocument> : ICollection where TDocument : new()
+    public interface IDocumentCollection<TDocument> : IDocumentCollection where TDocument : new()
     {
         /// <summary>
         /// Returns document by it's key. 
@@ -43,6 +43,13 @@ namespace Uniform
         void Save(String key, Action<TDocument> creator);
 
         /// <summary>
+        /// Saves document to collection using specified key. 
+        /// 'Creator' function will be applied to automatically created document of type TDocument.
+        /// If document with such key already exists, it will be silently overwritten.
+        /// </summary>
+        void Save(Action<TDocument> creator);
+
+        /// <summary>
         /// Bulk save
         /// </summary>
         void Save(IEnumerable<TDocument> docs);
@@ -62,7 +69,7 @@ namespace Uniform
         void UpdateOrSave(String key, Action<TDocument> updater);
     }
 
-    public interface ICollection
+    public interface IDocumentCollection
     {
         /// <summary>
         /// Returns document by it's key. 
@@ -81,13 +88,19 @@ namespace Uniform
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
-        void Save(String key, Object obj);
+        bool Save(String key, Object obj);
 
         /// <summary>
         /// Saves document to collection
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
-        void Save(Object obj);
+        bool Save(Object obj);
+
+        /// <summary>
+        /// Replace document with the new one
+        /// If document with such id doesn't exist - no actions will be performed
+        /// </summary>
+        bool Replace(String key, Object obj);
 
         /// <summary>
         /// Bulk save

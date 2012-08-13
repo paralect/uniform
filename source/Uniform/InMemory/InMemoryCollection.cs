@@ -11,7 +11,7 @@ namespace Uniform.InMemory
     /// Collection always consists only of one type of documents.
     /// Not thread-safe.
     /// </summary>
-    public class InMemoryCollection : ICollection, IInMemoryCollection
+    public class InMemoryCollection : IDocumentCollection, IInMemoryCollection
     {
         private readonly DatabaseMetadata _metadata;
 
@@ -63,18 +63,25 @@ namespace Uniform.InMemory
         /// Saves document to collection using specified key.
         /// If document with such key already exists, it will be silently overwritten.
         /// </summary>
-        public void Save(String key, Object document)
+        public bool Save(String key, Object document)
         {
             if (key == null) throw new ArgumentNullException("key");
             if (document == null) throw new ArgumentNullException("document");
 
             SaveInternal(key, document);
+            return true;
         }
 
-        public void Save(object obj)
+        public bool Save(object obj)
         {
             var key = _metadata.GetDocumentId(obj);
-            Save(key, obj);
+            return Save(key, obj);
+        }
+
+        public bool Replace(String key, object obj)
+        {
+            _metadata.SetDocumentId(obj, key);
+            return Save(key, obj);
         }
 
         /// <summary>
