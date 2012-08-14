@@ -78,6 +78,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\libs\MySql\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\libs\NLog\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.OrmLite.MySql">
       <HintPath>..\..\libs\ServiceStack.OrmLite\MySql\ServiceStack.OrmLite.MySql.dll</HintPath>
     </Reference>

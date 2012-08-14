@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using NLog;
 using Uniform.InMemory;
 using System.Threading.Tasks.Dataflow;
 
@@ -8,6 +9,7 @@ namespace Uniform
 {
     public class UniformDatabase
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private Boolean _inMemory = false;
         private Dictionary<String, IDocumentDatabase> _databases = new Dictionary<string, IDocumentDatabase>();
 
@@ -84,9 +86,9 @@ namespace Uniform
                     if (s.Data.Count > 0)
                         s.To.Save(s.Data);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // yes, should be logged
+                    _logger.Fatal(ex);
                 }
             }, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = 10 });
 
@@ -104,9 +106,6 @@ namespace Uniform
                     var destinationCollection = destinationDatabase.GetCollection(documentType, collectionName);
 
                     flush.Post(new FlushTo(destinationCollection, inMemoryCollection.Documents.Values));
-
-                    //destinationCollection.DropAndPrepare();
-                    //destinationCollection.Save(inMemoryCollection.Documents.Values);
                 }
             }
 
