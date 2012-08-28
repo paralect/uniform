@@ -8,7 +8,6 @@ namespace Uniform.AdoNet
     public class AdoNetDatabase : IDocumentDatabase
     {
         private readonly OrmLiteConnectionFactory _dbFactory;
-        private IDbConnection _connection;
         private UniformDatabase _uniformDatabase;
 
         public UniformDatabase UniformDatabase
@@ -16,20 +15,14 @@ namespace Uniform.AdoNet
             get { return _uniformDatabase; }
         }
 
-        public IDbConnection Connection
-        {
-            get { return _connection; }
-        }
-
         public OrmLiteConnectionFactory DbFactory
         {
             get { return _dbFactory; }
         }
 
-        public AdoNetDatabase(String connectionString)
+        public AdoNetDatabase(String connectionString, IOrmLiteDialectProvider dialectProvider)
         {
-            _dbFactory = new OrmLiteConnectionFactory(connectionString, MySqlDialectProvider.Instance);
-            _connection = _dbFactory.OpenDbConnection();
+            _dbFactory = new OrmLiteConnectionFactory(connectionString, dialectProvider);
         }
 
         public void Initialize(UniformDatabase database)

@@ -32,8 +32,7 @@ namespace Uniform.Sample
         {
             // 1. Create databases.
             var mongodbDatabase = new MongodbDatabase("mongodb://admin(admin):adminpwd0375@localhost:27017/local");
-            //var mysqlDatabase = new AdoNetDatabase("server=127.0.0.1;Uid=root;Pwd=qwerty;Database=test;");
-
+            var mysqlDatabase = new AdoNetDatabase("server=.\\SQLEXPRESS; Database=UniformTest; Trusted_Connection=yes;", SqlServerDialect.Provider);
 
             // 2. Create database metadata
             var database = UniformDatabase.Create(config => config
@@ -42,7 +41,7 @@ namespace Uniform.Sample
                 .RegisterDocument<CommentDocument>()
                 .RegisterDocument<VoteDocument>()
                 .RegisterDatabase(SampleDatabases.Mongodb, mongodbDatabase)
-                .RegisterDatabase(SampleDatabases.Sql, mongodbDatabase)
+                .RegisterDatabase(SampleDatabases.Sql, mysqlDatabase)
             );
 
             var mydb = new MyDatabase(database);
@@ -56,6 +55,7 @@ namespace Uniform.Sample
             database.LeaveInMemoryMode(true);
             stopwatch.Stop();
             Console.WriteLine("Flushed in {0:n0} ms", stopwatch.ElapsedMilliseconds);
+            Console.ReadKey();
         }
 
         public static void RunViewModelRegeneration(UniformDatabase database)
@@ -63,7 +63,7 @@ namespace Uniform.Sample
             Console.Write("Creating list of events in memory... ");
 
             var events = new List<Object>();
-            for (int i = 0; i < 100000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 var userId = String.Format("user/{0}", i);
                 var question1 = String.Format("user/{0}/question/{1}", i, 1);

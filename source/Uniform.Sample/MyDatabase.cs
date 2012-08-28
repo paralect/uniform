@@ -33,7 +33,7 @@ namespace Uniform.Sample
         
         public IDocumentCollection<QuestionDocument> Questions
         {
-            get { return _database.GetCollection<QuestionDocument>(SampleDatabases.Mongodb, SampleCollections.Questions); }
+            get { return _database.GetCollection<QuestionDocument>(SampleDatabases.Sql, SampleCollections.Questions); }
         }
 
         public IDocumentCollection<CommentDocument> Comments
@@ -43,7 +43,7 @@ namespace Uniform.Sample
 
         public IDocumentCollection<VoteDocument> Votes
         {
-            get { return _database.GetCollection<VoteDocument>(SampleDatabases.Mongodb, SampleCollections.Votes); }
+            get { return _database.GetCollection<VoteDocument>(SampleDatabases.Sql, SampleCollections.Votes); }
         }
     }
 }

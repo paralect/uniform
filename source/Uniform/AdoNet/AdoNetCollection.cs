@@ -9,14 +9,12 @@ namespace Uniform.AdoNet
     {
         private readonly Type _documentType;
         private readonly AdoNetDatabase _database;
-        private IDbCommand _command;
         private readonly IDbConnectionFactory _factory;
 
         public AdoNetCollection(Type documentType, AdoNetDatabase database)
         {
             _documentType = documentType;
             _database = database;
-            _command = _database.Connection.CreateCommand();
             _factory = database.DbFactory;
         }
 
@@ -36,6 +34,9 @@ namespace Uniform.AdoNet
 
         public bool Save(string key, Object obj)
         {
+            if (key == null) throw new ArgumentNullException("key");
+            if (obj == null) throw new ArgumentNullException("obj");
+
             using (var connection = _factory.OpenDbConnection())
             {
                 var command = connection.CreateCommand();
@@ -47,6 +48,8 @@ namespace Uniform.AdoNet
 
         public bool Save(Object obj)
         {
+            if (obj == null) throw new ArgumentNullException("obj");
+
             var key = _database.UniformDatabase.Metadata.GetDocumentId(obj);
             return Save(key, obj);
         }
@@ -58,6 +61,8 @@ namespace Uniform.AdoNet
 
         public void Delete(string key)
         {
+            if (key == null) throw new ArgumentNullException("key");
+
             using (var connection = _factory.OpenDbConnection())
             {
                 var command = connection.CreateCommand();
@@ -65,22 +70,15 @@ namespace Uniform.AdoNet
             }
         }
 
-/*        public void CreateTable()
-        {
-            _command.DropTable<TDocument>();
-            _command.CreateTable<TDocument>();
-        }*/
-
         public void Save(IEnumerable<Object> docs)
         {
             using (var connection = _factory.OpenDbConnection())
+            using (var transaction = connection.BeginTransaction())
             {
-                using(var transaction = connection.BeginTransaction())
-                {
-                    var command = connection.CreateCommand();
-                    command.InsertAll(docs);
-                    transaction.Commit();
-                }
+                var command = connection.CreateCommand();
+                command.Transaction = transaction;
+                command.InsertAll(docs);
+                transaction.Commit();
             }
         }
 

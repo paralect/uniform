@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using ServiceStack.Common.Utils;
 using ServiceStack.Logging;
 
@@ -361,10 +362,31 @@ namespace ServiceStack.OrmLite
 		public static void InsertAll<T>(this IDbCommand dbCmd, IEnumerable<T> objs)
 			where T : new()
 		{
+            var query = new StringBuilder();
+		    var counter = 0;
 			foreach (var obj in objs)
 			{
-				dbCmd.ExecuteSql(OrmLiteConfig.DialectProvider.ToInsertRowStatement(obj, dbCmd));
+                if (counter != 0)
+                    query.Append(Environment.NewLine);
+
+			    var insertRowStatement = OrmLiteConfig.DialectProvider.ToInsertRowStatement(obj, dbCmd);
+			    query.Append(insertRowStatement);
+
+                if (counter != 0 && counter % 1000 == 0)
+                {
+                    dbCmd.ExecuteSql(query.ToString());
+                    query.Length = 0; // clear buffer
+                }
+
+			    counter++;
 			}
+
+		    var q = query.ToString();
+
+            if (!String.IsNullOrEmpty(q))
+            {
+                dbCmd.ExecuteSql(q);                
+            }
 		}
 
         public static IDbCommand CreateInsertStatement<T>(this IDbConnection connection, T obj)

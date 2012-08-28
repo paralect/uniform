@@ -68,18 +68,24 @@ namespace Uniform.InMemory
             if (key == null) throw new ArgumentNullException("key");
             if (document == null) throw new ArgumentNullException("document");
 
+            _metadata.SetDocumentId(document, key);
             SaveInternal(key, document);
             return true;
         }
 
-        public bool Save(object obj)
+        public bool Save(object document)
         {
-            var key = _metadata.GetDocumentId(obj);
-            return Save(key, obj);
+            if (document == null) throw new ArgumentNullException("document");
+
+            var key = _metadata.GetDocumentId(document);
+            return Save(key, document);
         }
 
         public bool Replace(String key, object obj)
         {
+            if (key == null) throw new ArgumentNullException("key");
+            if (obj == null) throw new ArgumentNullException("obj");
+
             _metadata.SetDocumentId(obj, key);
             return Save(key, obj);
         }
