@@ -11,6 +11,8 @@ namespace Uniform.Sample.Documents
     {
         [DocumentId, BsonId]
         public String VoteId { get; set; }
+
+        [References(typeof(UserDocument))]
         public String UserId { get; set; }
         public String Content { get; set; }
 

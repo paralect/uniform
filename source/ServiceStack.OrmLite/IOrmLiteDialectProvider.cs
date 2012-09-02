@@ -83,7 +83,7 @@ namespace ServiceStack.OrmLite
 
         string ToExecuteProcedureStatement(object objWithProperties);
 
-        string ToCreateTableStatement(Type tableType);
+        string ToCreateTableStatement(Type tableType, bool createConstraints);
 
         List<string> ToCreateIndexStatements(Type tableType);
         List<string> ToCreateSequenceStatements(Type tableType);

@@ -11,6 +11,8 @@ namespace Uniform.Sample.Documents
     {
         [DocumentId, BsonId]
         public String QuestionId { get; set; }
+
+        [References(typeof(UserDocument))]
         public String UserId { get; set; }
         public String Question { get; set; }
 

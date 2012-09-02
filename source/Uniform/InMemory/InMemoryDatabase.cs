@@ -63,5 +63,10 @@ namespace Uniform.InMemory
 
             return collection;            
         }
+
+        public void DropAllCollections()
+        {
+            
+        }
     }
 }

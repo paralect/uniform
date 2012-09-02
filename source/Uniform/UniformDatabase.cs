@@ -97,13 +97,17 @@ namespace Uniform
                 var inMemoryDatabase = (InMemoryDatabase) inMemoryDatabasePair.Value;
                 var destinationDatabase = to[inMemoryDatabasePair.Key];
 
+                destinationDatabase.DropAllCollections();
+
                 foreach (var inMemoryCollectionPair in inMemoryDatabase.Collections)
                 {
-                    var inMemoryCollection = (IInMemoryCollection) inMemoryCollectionPair.Value;
+                    var inMemoryCollection = (IInMemoryCollection)inMemoryCollectionPair.Value;
                     var documentType = inMemoryCollectionPair.Key.DocumentType;
                     var collectionName = inMemoryCollectionPair.Key.CollectionName;
-                    
+
                     var destinationCollection = destinationDatabase.GetCollection(documentType, collectionName);
+
+                    destinationCollection.DropAndPrepare();
 
                     flush.Post(new FlushTo(destinationCollection, inMemoryCollection.Documents.Values));
                 }

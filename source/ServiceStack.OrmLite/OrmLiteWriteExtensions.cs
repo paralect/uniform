@@ -38,7 +38,7 @@ namespace ServiceStack.OrmLite
         {
             foreach (var tableType in tableTypes)
             {
-                CreateTable(dbCmd, overwrite, tableType);
+                CreateTable(dbCmd, overwrite, tableType, true);
             }
         }
 
@@ -46,17 +46,17 @@ namespace ServiceStack.OrmLite
             where T : new()
         {
             var tableType = typeof(T);
-            CreateTable(dbCmd, false, tableType);
+            CreateTable(dbCmd, false, tableType, true);
         }
 
-        public static void CreateTable<T>(this IDbCommand dbCmd, bool overwrite)
+        public static void CreateTable<T>(this IDbCommand dbCmd, bool overwrite, bool createConstraints)
             where T : new()
         {
             var tableType = typeof(T);
-            CreateTable(dbCmd, overwrite, tableType);
+            CreateTable(dbCmd, overwrite, tableType, createConstraints);
         }
 
-        public static void CreateTable(this IDbCommand dbCmd, bool overwrite, Type modelType)
+        public static void CreateTable(this IDbCommand dbCmd, bool overwrite, Type modelType, bool createConstraints)
         {
             var modelDef = modelType.GetModelDefinition();
 
@@ -73,7 +73,7 @@ namespace ServiceStack.OrmLite
             {
 				if (!tableExists)
 				{
-					ExecuteSql(dbCmd, dialectProvider.ToCreateTableStatement(modelType));
+					ExecuteSql(dbCmd, dialectProvider.ToCreateTableStatement(modelType, createConstraints));
 
 					var sqlIndexes = dialectProvider.ToCreateIndexStatements(modelType);
 					foreach (var sqlIndex in sqlIndexes)
@@ -136,9 +136,10 @@ namespace ServiceStack.OrmLite
             {
                 dbCmd.ExecuteSql(string.Format("DROP TABLE {0};", OrmLiteConfig.DialectProvider.GetQuotedTableName(modelDef)));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Log.DebugFormat("Cannot drop non-existing table '{0}': {1}", modelDef.ModelName, ex.Message);
+                Log.DebugFormat("Cannot drop non-existing table '{0}': {1}", modelDef.ModelName, ex.Message);
+                throw;
             }
         }
 

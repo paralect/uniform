@@ -13,7 +13,11 @@ namespace Uniform.Sample.Documents
     {
         [DocumentId, BsonId]
         public String CommentId { get; set; }
+
+        [References(typeof(UserDocument))]
         public String UserId { get; set; }
+
+        [References(typeof(QuestionDocument))]
         public String QuestionId { get; set; }
         public String Content { get; set; }
         

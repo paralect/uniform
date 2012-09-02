@@ -36,9 +36,9 @@ namespace Uniform.Sample
 
             // 2. Create database metadata
             var database = UniformDatabase.Create(config => config
+                .RegisterDocument<CommentDocument>()
                 .RegisterDocument<UserDocument>()
                 .RegisterDocument<QuestionDocument>()
-                .RegisterDocument<CommentDocument>()
                 .RegisterDocument<VoteDocument>()
                 .RegisterDatabase(SampleDatabases.Mongodb, mongodbDatabase)
                 .RegisterDatabase(SampleDatabases.Sql, mysqlDatabase)
@@ -47,6 +47,7 @@ namespace Uniform.Sample
             var mydb = new MyDatabase(database);
 
             database.EnterInMemoryMode();
+            mydb.Comments.Save("asdfasdkhafhasldfh", c => { });
 
             // 3. Optional.
             RunViewModelRegeneration(database);

@@ -17,5 +17,7 @@ namespace Uniform
         IDocumentCollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new();
 
         IDocumentCollection GetCollection(Type documentType, String name);
+
+        void DropAllCollections();
     }
 }

@@ -40,5 +40,18 @@ namespace Uniform.AdoNet
         {
             return new AdoNetCollection(documentType, this);
         }
+
+        public void DropAllCollections()
+        {
+            using (var connection = _dbFactory.OpenDbConnection())
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = "EXEC sp_msforeachtable \"ALTER TABLE ? NOCHECK CONSTRAINT all\"";
+                command.ExecuteNonQuery();
+
+                command.CommandText = "EXEC sp_MSForEachTable \"DELETE FROM ?\"";
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }

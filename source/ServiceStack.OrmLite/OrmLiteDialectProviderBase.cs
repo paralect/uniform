@@ -720,7 +720,7 @@ namespace ServiceStack.OrmLite
             return sql.ToString();
         }
 
-        public virtual string ToCreateTableStatement(Type tableType)
+        public virtual string ToCreateTableStatement(Type tableType, Boolean createConstraints)
         {
             var sbColumns = new StringBuilder();
             var sbConstraints = new StringBuilder();
@@ -743,6 +743,8 @@ namespace ServiceStack.OrmLite
                 sbColumns.Append(columnDefinition);
 
                 if (fieldDef.ReferencesType == null) continue;
+
+                if (!createConstraints) continue;
 
                 var refModelDef = fieldDef.ReferencesType.GetModelDefinition();
                 sbConstraints.AppendFormat(

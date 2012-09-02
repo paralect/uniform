@@ -87,7 +87,7 @@ namespace Uniform.AdoNet
             using (var connection = _factory.OpenDbConnection())
             {
                 var command = connection.CreateCommand();
-                command.CreateTable(true, _documentType);
+                command.CreateTable(true, _documentType, false);
             }
         }
     }

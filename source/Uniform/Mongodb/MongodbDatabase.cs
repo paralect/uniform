@@ -70,5 +70,10 @@ namespace Uniform.Mongodb
         {
             return new MongodbCollection(this, documentType, name);
         }
+
+        public void DropAllCollections()
+        {
+            
+        }
     }
 }
