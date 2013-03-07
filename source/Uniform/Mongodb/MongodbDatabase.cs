@@ -30,7 +30,7 @@ namespace Uniform.Mongodb
         /// <summary>
         /// MongoDB Server
         /// </summary>
-        private MongoServer Server
+        protected MongoServer Server
         {
             get { return _server; }
         }
@@ -38,7 +38,7 @@ namespace Uniform.Mongodb
         /// <summary>
         /// Get database
         /// </summary>
-        public MongoDatabase Database
+        public virtual MongoDatabase Database
         {
             get { return _server.GetDatabase(_databaseName); }
         }
