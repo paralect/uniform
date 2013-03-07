@@ -44,8 +44,11 @@ namespace Uniform.Mongodb
         public MongodbFlusher(InMemoryDatabase inMemoryDatabase, String connectionString)
         {
             _inMemoryDatabase = inMemoryDatabase;
-            _databaseName = MongoUrl.Create(connectionString).DatabaseName;
-            _server = MongoServer.Create(connectionString);
+            var mongoUrl = MongoUrl.Create(connectionString);
+            _databaseName = mongoUrl.DatabaseName;
+            var mongoClient = new MongoClient(mongoUrl);
+            _server = mongoClient.GetServer();
+
             Database.Drop();
         }
 
@@ -77,7 +80,7 @@ namespace Uniform.Mongodb
                 {
                     var mongoInsertOptions = new MongoInsertOptions();
                     mongoInsertOptions.CheckElementNames = false;
-                    mongoInsertOptions.SafeMode = SafeMode.True;
+                    mongoInsertOptions.WriteConcern = WriteConcern.Acknowledged;
                     mongoCollection.InsertBatch(docs);
                 }, TaskCreationOptions.LongRunning);
 

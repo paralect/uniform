@@ -18,7 +18,7 @@ namespace Uniform.Mongodb
         /// <summary>
         /// Name of MongoDB database 
         /// </summary>
-        private readonly string _databaseName;
+        protected readonly string DatabaseName;
 
         private UniformDatabase _uniformDatabase;
 
@@ -40,7 +40,7 @@ namespace Uniform.Mongodb
         /// </summary>
         public virtual MongoDatabase Database
         {
-            get { return _server.GetDatabase(_databaseName); }
+            get { return _server.GetDatabase(DatabaseName); }
         }
 
         /// <summary>
@@ -48,8 +48,10 @@ namespace Uniform.Mongodb
         /// </summary>
         public MongodbDatabase(String connectionString)
         {
-            _databaseName = MongoUrl.Create(connectionString).DatabaseName;
-            _server = MongoServer.Create(connectionString);
+            var mongoUrl = MongoUrl.Create(connectionString);
+            DatabaseName = mongoUrl.DatabaseName;
+            var mongoClient = new MongoClient(mongoUrl);
+            _server = mongoClient.GetServer();
         }
 
         public void Initialize(UniformDatabase database)
@@ -63,7 +65,7 @@ namespace Uniform.Mongodb
         /// </summary>
         public IDocumentCollection<TDocument> GetCollection<TDocument>(String name) where TDocument : new()
         {
-            return new GenericCollection<TDocument>(GetCollection(typeof (TDocument), name));
+            return new GenericCollection<TDocument>(GetCollection(typeof(TDocument), name));
         }
 
         public IDocumentCollection GetCollection(Type documentType, string name)
@@ -73,7 +75,7 @@ namespace Uniform.Mongodb
 
         public void DropAllCollections()
         {
-            
+
         }
     }
 }
