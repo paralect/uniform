@@ -61,11 +61,9 @@ namespace Uniform.Mongodb
 
             foreach (var pair in _inMemoryDatabase.Collections)
             {
-                var mongoSettings = Database.CreateCollectionSettings(typeof (BsonDocument), pair.Key.CollectionName);
-                mongoSettings.AssignIdOnInsert = false;
-                //mongoSettings.SafeMode = SafeMode.False;
+                var mongoSettings = new MongoCollectionSettings {AssignIdOnInsert = false};
 
-                var mongoCollection = Database.GetCollection(mongoSettings);
+                var mongoCollection = Database.GetCollection(typeof(BsonDocument), pair.Key.CollectionName, mongoSettings);
                 var inMemoryCollection = (IInMemoryCollection) pair.Value;
 
                 var stopwatch = Stopwatch.StartNew();

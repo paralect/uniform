@@ -30,7 +30,7 @@ namespace Uniform.Mongodb
                 var collectionName = pair.Key;
                 var keys = bulkCollection.Documents.Keys;
 
-                var bsonIdArray = BsonArray.Create(keys);
+                var bsonIdArray = new BsonArray(keys);
 
                 var collection = _mongoDatabase.GetCollection(bulkCollection.CollectionType, collectionName);
 

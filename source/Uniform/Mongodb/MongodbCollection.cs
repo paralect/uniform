@@ -26,9 +26,8 @@ namespace Uniform.Mongodb
             _collectionName = collectionName;
             _metadata = _database.UniformDatabase.Metadata;
 
-            var mongoSettings = _database.Database.CreateCollectionSettings(documentType, _collectionName);
-            mongoSettings.AssignIdOnInsert = false;
-            _collection = _database.Database.GetCollection(mongoSettings);
+            var mongoSettings = new MongoCollectionSettings {AssignIdOnInsert = false};
+            _collection = _database.Database.GetCollection(documentType, _collectionName, mongoSettings);
         }
 
         /// <summary>
@@ -47,7 +46,7 @@ namespace Uniform.Mongodb
             if (keys.Count() == 0)
                 yield break;
 
-            var bsonIdArray = BsonArray.Create(keys);
+            var bsonIdArray = new BsonArray(keys);
             MongoCursor cursor = _collection.FindAs(_documentType, Query.In("_id", bsonIdArray));
             foreach (var doc in cursor)
                 yield return doc;
