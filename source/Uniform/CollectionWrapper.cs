@@ -119,7 +119,7 @@ namespace Uniform
                 {
                     doc = new TDocument();
                     updater(doc);
-                    _collection.Save(key, doc);
+                    return _collection.Save(key, doc);
                 }
 
                 updater(doc);
