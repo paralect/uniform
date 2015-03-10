@@ -1,8 +1,6 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using Uniform.Utils;
 
 namespace Uniform.InMemory
 {
@@ -18,12 +16,12 @@ namespace Uniform.InMemory
         /// <summary>
         /// Main data structure that contains all documents of type TDocument, hashed by key
         /// </summary>
-        private readonly Dictionary<String, Object> _documents = new Dictionary<String, Object>();
+        private readonly ConcurrentDictionary<String, Object> _documents = new ConcurrentDictionary<String, Object>();
 
         /// <summary>
         /// Main data structure that contains all documents of type TDocument, hashed by key
         /// </summary>
-        public Dictionary<String, Object> Documents
+        public ConcurrentDictionary<String, Object> Documents
         {
             get { return _documents; }
         }
@@ -97,7 +95,8 @@ namespace Uniform.InMemory
         public void Delete(String key)
         {
             if (key == null) throw new ArgumentNullException("key");
-            _documents.Remove(key);
+            object doc;
+            _documents.TryRemove(key, out doc);
         }
 
         public void Save(IEnumerable<Object> docs)

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Threading.Tasks.Dataflow;
 using NLog;
 using Uniform.InMemory;
-using System.Threading.Tasks.Dataflow;
 
 namespace Uniform
 {
@@ -62,7 +61,7 @@ namespace Uniform
             _metadata.Databases = newDatabases;
         }
 
-        public void LeaveInMemoryMode(bool flush = false)
+        public void LeaveInMemoryMode(bool flush = false, bool dropBeforeFlush = true)
         {
             if (!_inMemory)
                 return;
@@ -72,16 +71,17 @@ namespace Uniform
             _metadata.Databases = _databases;
 
             if (flush)
-                Flush(inmemoryDB, _databases);
+                Flush(inmemoryDB, _databases, dropBeforeFlush);
         }
 
-        private void Flush(Dictionary<String, IDocumentDatabase> from, Dictionary<String, IDocumentDatabase> to)
+        private void Flush(Dictionary<string, IDocumentDatabase> @from, Dictionary<string, IDocumentDatabase> to, bool dropBeforeFlush)
         {
             var flush = new ActionBlock<FlushTo>(s =>
             {
                 try
                 {
-                    s.To.DropAndPrepare();
+                    if (dropBeforeFlush)
+                        s.To.DropAndPrepare();
 
                     if (s.Data.Count > 0)
                         s.To.Save(s.Data);
@@ -90,14 +90,15 @@ namespace Uniform
                 {
                     _logger.Fatal(ex);
                 }
-            }, new ExecutionDataflowBlockOptions() { MaxDegreeOfParallelism = 10 });
+            }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 10 });
 
             foreach (var inMemoryDatabasePair in from)
             {
                 var inMemoryDatabase = (InMemoryDatabase) inMemoryDatabasePair.Value;
                 var destinationDatabase = to[inMemoryDatabasePair.Key];
 
-                destinationDatabase.DropAllCollections();
+                if (dropBeforeFlush)
+                    destinationDatabase.DropAllCollections();
 
                 foreach (var inMemoryCollectionPair in inMemoryDatabase.Collections)
                 {
@@ -107,7 +108,8 @@ namespace Uniform
 
                     var destinationCollection = destinationDatabase.GetCollection(documentType, collectionName);
 
-                    destinationCollection.DropAndPrepare();
+                    if (dropBeforeFlush)
+                        destinationCollection.DropAndPrepare();
 
                     flush.Post(new FlushTo(destinationCollection, inMemoryCollection.Documents.Values));
                 }
